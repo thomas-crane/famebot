@@ -10,6 +10,7 @@ using FameBot.Data.Enums;
 using FameBot.Data.Models;
 using Lib_K_Relay.Networking;
 using System.Runtime.InteropServices;
+using FameBot.Helpers;
 
 namespace FameBot.Core
 {
@@ -80,6 +81,7 @@ namespace FameBot.Core
             {
                 case "activate":
                     flashPtr = GetForegroundWindow();
+                    client.Notify("FameBot is now active");
                     break;
             }
         }
