@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Plugin.cs" />
+    <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Models\Cluster.cs" />
     <Compile Include="Data\Models\Point.cs" />
     <Compile Include="Data\Models\Target.cs" />
