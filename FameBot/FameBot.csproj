@@ -36,6 +36,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,9 +52,20 @@
     <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\D36n4.cs" />
+    <Compile Include="UserInterface\FameBotGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FameBotGUI.Designer.cs">
+      <DependentUpon>FameBotGUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserInterface\FameBotGUI.resx">
+      <DependentUpon>FameBotGUI.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
