@@ -10,7 +10,7 @@ namespace FameBot.Services
 {
     public static class D36n4
     {
-        public static List<Target> Invoke(List<Target> data, float epsilon = 8, int minPoints = 4)
+        public static List<Target> Invoke(List<Target> data, float epsilon = 8, int minPoints = 4, bool findNearCenter = true)
         {
             var C = 0;
             var points = new List<Point>();
@@ -43,8 +43,11 @@ namespace FameBot.Services
             if (clusters == null)
                 return null;
 
-            clusters = clusters.Where(c => c.Average(p => p.Position.DistanceTo(new Location(1000, 1000))) < 600);
-            clusters = clusters.OrderBy(c => c.Average(p => p.Position.DistanceTo(new Location(1000, 1000))));
+            if(findNearCenter)
+            {
+                clusters = clusters.Where(c => c.Average(p => p.Position.DistanceTo(new Location(1000, 1000))) < 600);
+                clusters = clusters.OrderBy(c => c.Average(p => p.Position.DistanceTo(new Location(1000, 1000))));
+            }
             return clusters.Where(c => c.Count == clusters.Max(x => x.Count)).FirstOrDefault();
         }
 
