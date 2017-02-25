@@ -212,6 +212,9 @@ namespace FameBot.Core
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
 
+            if (flashPtr == null)
+                return;
+
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < autoNexusThreshold)
