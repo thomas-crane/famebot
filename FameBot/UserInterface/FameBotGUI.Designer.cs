@@ -35,6 +35,7 @@
             // 
             // windowOnTopBox
             // 
+            this.windowOnTopBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.windowOnTopBox.AutoSize = true;
             this.windowOnTopBox.Location = new System.Drawing.Point(13, 208);
             this.windowOnTopBox.Name = "windowOnTopBox";
@@ -73,7 +74,7 @@
             this.Controls.Add(this.onButton);
             this.Controls.Add(this.windowOnTopBox);
             this.Name = "FameBotGUI";
-            this.Text = "FameBotGUI";
+            this.Text = "FameBot";
             this.ResumeLayout(false);
             this.PerformLayout();
 
