@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Lib_K_Relay;
 using System.Diagnostics;
+using FameBot.Data.Enums;
 
 namespace FameBot.Core
 {
@@ -53,6 +54,19 @@ namespace FameBot.Core
             {
                 Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /activate command when you have opened flash.");
                 Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
+            }
+        }
+
+        private void GuiEventCallback(GuiEvent evt)
+        {
+            switch (evt)
+            {
+                case GuiEvent.StartBot:
+
+                    break;
+                case GuiEvent.StopBot:
+
+                    break;
             }
         }
     }
