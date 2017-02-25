@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Lib_K_Relay;
 using System.Diagnostics;
 using FameBot.Data.Enums;
+using FameBot.Data.Models;
 
 namespace FameBot.Core
 {
@@ -38,10 +39,13 @@ namespace FameBot.Core
         #endregion
 
         private IntPtr flashPtr;
-
+        private bool followTarget = false;
+        private Queue<Target> targets;
 
         public void Initialize(Proxy proxy)
         {
+            targets = new Queue<Target>();
+
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
             {
@@ -55,6 +59,11 @@ namespace FameBot.Core
                 Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /activate command when you have opened flash.");
                 Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
             }
+
+            proxy.ClientConnected += (client) =>
+            {
+                Stop();
+            };
         }
 
         private void GuiEventCallback(GuiEvent evt)
@@ -65,9 +74,15 @@ namespace FameBot.Core
 
                     break;
                 case GuiEvent.StopBot:
-
+                    Stop();
                     break;
             }
+        }
+
+        private void Stop()
+        {
+            followTarget = false;
+            targets.Clear();
         }
     }
 }
