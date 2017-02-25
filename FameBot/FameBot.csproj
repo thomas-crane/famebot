@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Models\Cluster.cs" />
+    <Compile Include="Data\Models\Point.cs" />
+    <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\D36n4.cs" />
   </ItemGroup>
