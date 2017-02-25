@@ -8,6 +8,7 @@ using Lib_K_Relay;
 using System.Diagnostics;
 using FameBot.Data.Enums;
 using FameBot.Data.Models;
+using Lib_K_Relay.Networking;
 
 namespace FameBot.Core
 {
@@ -64,6 +65,16 @@ namespace FameBot.Core
             {
                 Stop();
             };
+        }
+
+        private void ReceiveCommand(Client client, string cmd, string[] args)
+        {
+            switch(cmd)
+            {
+                case "":
+
+                    break;
+            }
         }
 
         private void GuiEventCallback(GuiEvent evt)
