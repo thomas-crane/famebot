@@ -9,6 +9,7 @@ namespace FameBot.Data.Enums
     public enum GuiEvent
     {
         StartBot,
-        StopBot
+        StopBot,
+        GuiClosed
     }
 }
