@@ -9,6 +9,7 @@ using System.Diagnostics;
 using FameBot.Data.Enums;
 using FameBot.Data.Models;
 using Lib_K_Relay.Networking;
+using System.Runtime.InteropServices;
 
 namespace FameBot.Core
 {
@@ -43,6 +44,12 @@ namespace FameBot.Core
         private bool followTarget = false;
         private Queue<Target> targets;
 
+        #region WINAPI
+        // Get the focused window
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr GetForegroundWindow();
+        #endregion
+
         public void Initialize(Proxy proxy)
         {
             targets = new Queue<Target>();
@@ -71,8 +78,8 @@ namespace FameBot.Core
         {
             switch(cmd)
             {
-                case "":
-
+                case "activate":
+                    flashPtr = GetForegroundWindow();
                     break;
             }
         }
