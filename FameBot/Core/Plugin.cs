@@ -69,6 +69,8 @@ namespace FameBot.Core
                 Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
             }
 
+            proxy.HookCommand("activate", ReceiveCommand);
+
             proxy.ClientConnected += (client) =>
             {
                 Stop();
