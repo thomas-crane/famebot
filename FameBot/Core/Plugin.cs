@@ -36,9 +36,24 @@ namespace FameBot.Core
         }
         #endregion
 
+        private IntPtr flashPtr;
+
+
         public void Initialize(Proxy proxy)
         {
-            
+            Process[] processes = Process.GetProcessesByName("flash");
+            if (processes.Length == 1)
+            {
+                Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
+                flashPtr = processes[0].MainWindowHandle;
+            } else if(processes.Length > 1)
+            {
+                Console.WriteLine("[FameBot] Multiple instances of flash are open. Please use the /activate command on the instance you want to use the bot with.");
+            } else
+            {
+                Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /activate command when you have opened flash.");
+                Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
+            }
         }
     }
 }
