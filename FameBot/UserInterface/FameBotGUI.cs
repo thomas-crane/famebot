@@ -29,5 +29,20 @@ namespace FameBot.UserInterface
                 eventCallback?.Invoke(GuiEvent.GuiClosed);
             };
         }
+
+        private void onButton_Click(object sender, EventArgs e)
+        {
+            eventCallback(GuiEvent.StartBot);
+        }
+
+        private void offButton_Click(object sender, EventArgs e)
+        {
+            eventCallback(GuiEvent.StopBot);
+        }
+
+        private void windowOnTopBox_CheckedChanged(object sender, EventArgs e)
+        {
+            TopMost = windowOnTopBox.Checked;
+        }
     }
 }

@@ -42,6 +42,7 @@
             this.windowOnTopBox.TabIndex = 0;
             this.windowOnTopBox.Text = "Window always on top";
             this.windowOnTopBox.UseVisualStyleBackColor = true;
+            this.windowOnTopBox.CheckedChanged += new System.EventHandler(this.windowOnTopBox_CheckedChanged);
             // 
             // onButton
             // 
@@ -51,6 +52,7 @@
             this.onButton.TabIndex = 1;
             this.onButton.Text = "Start Bot";
             this.onButton.UseVisualStyleBackColor = true;
+            this.onButton.Click += new System.EventHandler(this.onButton_Click);
             // 
             // offButton
             // 
@@ -60,6 +62,7 @@
             this.offButton.TabIndex = 2;
             this.offButton.Text = "Stop Bot";
             this.offButton.UseVisualStyleBackColor = true;
+            this.offButton.Click += new System.EventHandler(this.offButton_Click);
             // 
             // FameBotGUI
             // 
