@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FameBot.Data.Models
 {
-    class Point
+    public class Point
     {
         public int ClusterId { get; set; }
         public bool Noisy { get; set; }
