@@ -24,6 +24,11 @@ namespace FameBot.Data.Events
             get { return ("[" + timestamp.ToString("HH:mm:ss") + "]"); }
         }
 
+        public string MessageWithTimestamp
+        {
+            get { return (TimestampString + " " + message); }
+        }
+
         public LogEventArgs(string message)
         {
             this.message = message;
