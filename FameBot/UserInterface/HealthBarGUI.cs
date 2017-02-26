@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FameBot.Core;
 
 namespace FameBot.UserInterface
 {
@@ -15,6 +16,16 @@ namespace FameBot.UserInterface
         public HealthBarGUI()
         {
             InitializeComponent();
+            Plugin.healthChanged += (s, e) =>
+            {
+                int hP = (int)Math.Floor(e.Health);
+                healthBar.Value = hP;
+            };
+        }
+
+        private void onTopCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            TopMost = onTopCheckBox.Checked;
         }
     }
 }
