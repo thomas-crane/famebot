@@ -82,6 +82,12 @@
     <Compile Include="UserInterface\KeyPressGUI.Designer.cs">
       <DependentUpon>KeyPressGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\SettingsGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\SettingsGUI.Designer.cs">
+      <DependentUpon>SettingsGUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
