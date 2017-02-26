@@ -108,7 +108,7 @@
             this.Controls.Add(this.wBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "KeyPressGUI";
-            this.Text = "KeyPressGUI";
+            this.Text = "[FameBot] Keys";
             this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.wBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.aBox)).EndInit();
