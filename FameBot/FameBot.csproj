@@ -35,8 +35,8 @@
       <HintPath>Dependencies\Lib K Relay.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
-    <None Include="packages.config" />
+    <Content Include="Dependencies\Newtonsoft.Json.dll" />
     <None Include="Resources\w_on.png" />
     <None Include="Resources\w_off.png" />
     <None Include="Resources\s_on.png" />
