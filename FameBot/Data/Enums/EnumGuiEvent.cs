@@ -10,6 +10,7 @@ namespace FameBot.Data.Enums
     {
         StartBot,
         StopBot,
-        GuiClosed
+        GuiClosed,
+        SettingsChanged
     }
 }
