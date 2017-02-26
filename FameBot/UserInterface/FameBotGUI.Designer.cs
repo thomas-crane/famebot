@@ -34,6 +34,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHealthBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showKeyPressesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +84,8 @@
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showHealthBarToolStripMenuItem});
+            this.showHealthBarToolStripMenuItem,
+            this.showKeyPressesToolStripMenuItem});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
             this.infoToolStripMenuItem.Text = "Info";
@@ -94,6 +96,13 @@
             this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
             this.showHealthBarToolStripMenuItem.Text = "Show health bar";
             this.showHealthBarToolStripMenuItem.Click += new System.EventHandler(this.showHealthBarToolStripMenuItem_Click);
+            // 
+            // showKeyPressesToolStripMenuItem
+            // 
+            this.showKeyPressesToolStripMenuItem.Name = "showKeyPressesToolStripMenuItem";
+            this.showKeyPressesToolStripMenuItem.Size = new System.Drawing.Size(237, 30);
+            this.showKeyPressesToolStripMenuItem.Text = "Show key presses";
+            this.showKeyPressesToolStripMenuItem.Click += new System.EventHandler(this.showKeyPressesToolStripMenuItem_Click);
             // 
             // FameBotGUI
             // 
@@ -122,5 +131,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showHealthBarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showKeyPressesToolStripMenuItem;
     }
 }

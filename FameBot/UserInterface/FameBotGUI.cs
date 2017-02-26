@@ -49,5 +49,10 @@ namespace FameBot.UserInterface
             HealthBarGUI healthBarGUI = new HealthBarGUI();
             healthBarGUI.Show();
         }
+
+        private void showKeyPressesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
