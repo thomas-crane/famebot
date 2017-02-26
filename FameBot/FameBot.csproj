@@ -114,6 +114,9 @@
     <EmbeddedResource Include="UserInterface\KeyPressGUI.resx">
       <DependentUpon>KeyPressGUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SettingsGUI.resx">
+      <DependentUpon>SettingsGUI.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
