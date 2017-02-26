@@ -135,7 +135,7 @@
             this.eventLog.ReadOnly = true;
             this.eventLog.Size = new System.Drawing.Size(290, 154);
             this.eventLog.TabIndex = 4;
-            this.eventLog.Text = "";
+            this.eventLog.Text = "---- Start of Log ----";
             // 
             // label1
             // 
