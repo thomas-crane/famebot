@@ -18,6 +18,7 @@ using Lib_K_Relay.Utilities;
 using Lib_K_Relay.Networking.Packets.Client;
 using FameBot.Services;
 using FameBot.UserInterface;
+using FameBot.Data.Events;
 
 namespace FameBot.Core
 {
@@ -60,6 +61,9 @@ namespace FameBot.Core
         private bool escapeIfNoTargets = true;
         private float teleportDistanceThreshold = 15f;
         private float followDistanceThreshold = 1.5f;
+
+        public static event HealthEventHandler healthChanged;
+        public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
 
         #region WINAPI
         // Get the focused window
@@ -219,6 +223,7 @@ namespace FameBot.Core
 
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
+            healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
             if (healthPercentage < autoNexusThreshold)
                 Escape(client);
 
