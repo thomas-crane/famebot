@@ -55,12 +55,7 @@ namespace FameBot.Core
         private Dictionary<int, Target> playerPosisions;
         private Client connectedClient;
         private int tickCount;
-
-        private float autoNexusThreshold = 0.45f;
-        private int tickCountThreshold = 10;
-        private bool escapeIfNoTargets = true;
-        private float teleportDistanceThreshold = 15f;
-        private float followDistanceThreshold = 1.5f;
+        private Configuration config;
 
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
@@ -128,6 +123,8 @@ namespace FameBot.Core
 
             var gui = new FameBotGUI(GuiEventCallback);
             PluginUtils.ShowGUI(gui);
+
+            config = ConfigManager.GetConfiguration();
 
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
@@ -242,7 +239,7 @@ namespace FameBot.Core
                         } else
                         {
                             Console.WriteLine("[FameBot] There are no players left in the target list.");
-                            if (escapeIfNoTargets)
+                            if (config.EscapeIfNoTargets)
                                 Escape(client);
                         }
                     }
@@ -259,10 +256,10 @@ namespace FameBot.Core
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
-            if (healthPercentage < autoNexusThreshold)
+            if (healthPercentage < config.AutonexusThreshold)
                 Escape(client);
 
-            if(tickCount % tickCountThreshold == 0)
+            if(tickCount % config.TickCountThreshold == 0)
             {
                 if (followTarget && playerPosisions.Count > 0)
                 {
@@ -315,7 +312,7 @@ namespace FameBot.Core
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
-                if (client.PlayerData.Pos.DistanceTo(targetPosition) > teleportDistanceThreshold)
+                if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {
                     //TeleportPacket tpPacket = Packet.Create(PacketType.TELEPORT) as TeleportPacket;
                     //tpPacket.ObjectId = targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().ObjectId;
@@ -324,7 +321,7 @@ namespace FameBot.Core
 
                 #region Movement
                 // Left or right
-                if (client.PlayerData.Pos.X < targetPosition.X - followDistanceThreshold)
+                if (client.PlayerData.Pos.X < targetPosition.X - config.FollowDistanceThreshold)
                 {
                     // Move right
                     if (!D_PRESSED)
@@ -338,7 +335,7 @@ namespace FameBot.Core
                         A_PRESSED = false;
                     }
                 }
-                else if (client.PlayerData.Pos.X <= targetPosition.X + followDistanceThreshold)
+                else if (client.PlayerData.Pos.X <= targetPosition.X + config.FollowDistanceThreshold)
                 {
                     if (D_PRESSED)
                     {
@@ -346,7 +343,7 @@ namespace FameBot.Core
                         D_PRESSED = false;
                     }
                 }
-                if (client.PlayerData.Pos.X > targetPosition.X + followDistanceThreshold)
+                if (client.PlayerData.Pos.X > targetPosition.X + config.FollowDistanceThreshold)
                 {
                     // Move left
                     if (!A_PRESSED)
@@ -360,7 +357,7 @@ namespace FameBot.Core
                         D_PRESSED = false;
                     }
                 }
-                else if (client.PlayerData.Pos.X >= targetPosition.X - followDistanceThreshold)
+                else if (client.PlayerData.Pos.X >= targetPosition.X - config.FollowDistanceThreshold)
                 {
                     if (A_PRESSED)
                     {
@@ -370,7 +367,7 @@ namespace FameBot.Core
                 }
 
                 // Up or down
-                if (client.PlayerData.Pos.Y < targetPosition.Y - followDistanceThreshold)
+                if (client.PlayerData.Pos.Y < targetPosition.Y - config.FollowDistanceThreshold)
                 {
                     // Move down
                     if (!S_PRESSED)
@@ -384,7 +381,7 @@ namespace FameBot.Core
                         W_PRESSED = false;
                     }
                 }
-                else if (client.PlayerData.Pos.Y <= targetPosition.Y + followDistanceThreshold)
+                else if (client.PlayerData.Pos.Y <= targetPosition.Y + config.FollowDistanceThreshold)
                 {
                     if (S_PRESSED)
                     {
@@ -392,7 +389,7 @@ namespace FameBot.Core
                         S_PRESSED = false;
                     }
                 }
-                if (client.PlayerData.Pos.Y > targetPosition.Y + followDistanceThreshold)
+                if (client.PlayerData.Pos.Y > targetPosition.Y + config.FollowDistanceThreshold)
                 {
                     // Move up
                     if (!W_PRESSED)
@@ -406,7 +403,7 @@ namespace FameBot.Core
                         S_PRESSED = false;
                     }
                 }
-                else if (client.PlayerData.Pos.Y >= targetPosition.Y - followDistanceThreshold)
+                else if (client.PlayerData.Pos.Y >= targetPosition.Y - config.FollowDistanceThreshold)
                 {
                     if (W_PRESSED)
                     {
