@@ -54,11 +54,15 @@ namespace FameBot.Core
         private IntPtr flashPtr;
         private bool followTarget;
         private List<Target> targets;
+        private List<Portal> portals;
         private Dictionary<int, Target> playerPosisions;
         private Client connectedClient;
         private int tickCount;
         private Configuration config;
         private FameBotGUI gui;
+        private bool autoConnect = true;
+        private bool gotoRealm;
+        private bool enabled;
 
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
@@ -129,6 +133,7 @@ namespace FameBot.Core
         {
             targets = new List<Target>();
             playerPosisions = new Dictionary<int, Target>();
+            portals = new List<Portal>();
 
             gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
@@ -162,8 +167,15 @@ namespace FameBot.Core
             proxy.ClientConnected += (client) =>
             {
                 connectedClient = client;
-                Stop();
+                targets.Clear();
+                followTarget = false;
+                A_PRESSED = false;
+                D_PRESSED = false;
+                W_PRESSED = false;
+                S_PRESSED = false;
             };
+
+            proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
 
             guiEvent += (evt) =>
             {
@@ -212,13 +224,16 @@ namespace FameBot.Core
             Log("Stopping bot");
             followTarget = false;
             targets.Clear();
+            enabled = false;
         }
 
         private void Start()
         {
             Log("Starting bot");
             targets.Clear();
-            followTarget = true;
+            if (!autoConnect)
+                followTarget = true;
+            enabled = true;
         }
 
         private void Escape(Client client)
@@ -254,8 +269,23 @@ namespace FameBot.Core
                     if (playerPosisions.ContainsKey(obj.Status.ObjectId))
                         playerPosisions.Remove(obj.Status.ObjectId);
                     playerPosisions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
-
-                    // TODO: add portals. (object id 1810)
+                }
+                if(obj.ObjectType == 1810)
+                {
+                    foreach(var data in obj.Status.Data)
+                    {
+                        if(data.StringValue != null)
+                        {
+                            // TODO: replace with regex
+                            var strArray = data.StringValue.Split(' ');
+                            var strCount = strArray[1].Split('/')[0].Remove(0, 1);
+                            var name = strArray[0].Split('.')[1];
+                            var portal = new Portal(obj.Status.ObjectId, int.Parse(strCount), name);
+                            if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
+                                portals.Remove(portals.Find(ptl => ptl.ObjectId == obj.Status.ObjectId));
+                            portals.Add(portal);
+                        }
+                    }
                 }
             }
 
@@ -284,6 +314,26 @@ namespace FameBot.Core
             }
         }
 
+        private void OnMapInfo(Client client, Packet p)
+        {
+            MapInfoPacket packet = p as MapInfoPacket;
+            if (packet == null)
+                return;
+            Task.Factory.StartNew(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+                portals.Clear();
+                if (packet.Name == "Nexus" && autoConnect)
+                    gotoRealm = true;
+                else
+                {
+                    gotoRealm = false;
+                    if (enabled)
+                        followTarget = true;
+                }
+            });
+        }
+
         private void OnHit(Client client, Packet p)
         {
             // Autonexus
@@ -302,6 +352,11 @@ namespace FameBot.Core
             // Health changed event
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
+
+            if(autoConnect && gotoRealm)
+            {
+                MoveToRealms(client, healthPercentage);
+            }
 
             if(tickCount % config.TickCountThreshold == 0)
             {
@@ -331,7 +386,7 @@ namespace FameBot.Core
                     playerPosisions[status.ObjectId].UpdatePosition(status.Position);
             }
             
-            if(!followTarget)
+            if(!followTarget && !gotoRealm)
             {
                 if (W_PRESSED)
                 {
@@ -366,101 +421,134 @@ namespace FameBot.Core
                     client.SendToServer(tpPacket);
                 }
 
-                #region Movement
-                // Left or right
-                if (client.PlayerData.Pos.X < targetPosition.X - config.FollowDistanceThreshold)
-                {
-                    // Move right
-                    if (!D_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
-                        D_PRESSED = true;
-                    }
-                    if (A_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
-                        A_PRESSED = false;
-                    }
-                }
-                else if (client.PlayerData.Pos.X <= targetPosition.X + config.FollowDistanceThreshold)
-                {
-                    if (D_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
-                        D_PRESSED = false;
-                    }
-                }
-                if (client.PlayerData.Pos.X > targetPosition.X + config.FollowDistanceThreshold)
-                {
-                    // Move left
-                    if (!A_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
-                        A_PRESSED = true;
-                    }
-                    if (D_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
-                        D_PRESSED = false;
-                    }
-                }
-                else if (client.PlayerData.Pos.X >= targetPosition.X - config.FollowDistanceThreshold)
-                {
-                    if (A_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
-                        A_PRESSED = false;
-                    }
-                }
-
-                // Up or down
-                if (client.PlayerData.Pos.Y < targetPosition.Y - config.FollowDistanceThreshold)
-                {
-                    // Move down
-                    if (!S_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
-                        S_PRESSED = true;
-                    }
-                    if (W_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
-                        W_PRESSED = false;
-                    }
-                }
-                else if (client.PlayerData.Pos.Y <= targetPosition.Y + config.FollowDistanceThreshold)
-                {
-                    if (S_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
-                        S_PRESSED = false;
-                    }
-                }
-                if (client.PlayerData.Pos.Y > targetPosition.Y + config.FollowDistanceThreshold)
-                {
-                    // Move up
-                    if (!W_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
-                        W_PRESSED = true;
-                    }
-                    if (S_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
-                        S_PRESSED = false;
-                    }
-                }
-                else if (client.PlayerData.Pos.Y >= targetPosition.Y - config.FollowDistanceThreshold)
-                {
-                    if (W_PRESSED)
-                    {
-                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
-                        W_PRESSED = false;
-                    }
-                }
-                #endregion
+                CalculateMovement(client, targetPosition);
             }
         }
         #endregion
+
+        private void MoveToRealms(Client client, float healthPercentage)
+        {
+            Location target = new Location(134, 109);
+            if (healthPercentage < 0.95f)
+                target = new Location(134, 134);
+
+            CalculateMovement(client, target);
+
+            if(client.PlayerData.Pos.Y <= 109 && client.PlayerData.Pos.Y != 0)
+            {
+                gotoRealm = false;
+                Task.Factory.StartNew(() =>
+                {
+                    AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
+                });
+            }
+        }
+
+        private async void AttemptConnection(Client client, Portal portal)
+        {
+            UsePortalPacket packet = (UsePortalPacket)Packet.Create(PacketType.USEPORTAL);
+            packet.ObjectId = portal.ObjectId;
+            client.SendToServer(packet);
+            if(client.Connected)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(0.2));
+                AttemptConnection(client, portal);
+            }
+        }
+
+        private void CalculateMovement(Client client, Location targetPosition)
+        {
+            // Left or right
+            if (client.PlayerData.Pos.X < targetPosition.X - config.FollowDistanceThreshold)
+            {
+                // Move right
+                if (!D_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
+                    D_PRESSED = true;
+                }
+                if (A_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
+                    A_PRESSED = false;
+                }
+            }
+            else if (client.PlayerData.Pos.X <= targetPosition.X + config.FollowDistanceThreshold)
+            {
+                if (D_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
+                    D_PRESSED = false;
+                }
+            }
+            if (client.PlayerData.Pos.X > targetPosition.X + config.FollowDistanceThreshold)
+            {
+                // Move left
+                if (!A_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
+                    A_PRESSED = true;
+                }
+                if (D_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
+                    D_PRESSED = false;
+                }
+            }
+            else if (client.PlayerData.Pos.X >= targetPosition.X - config.FollowDistanceThreshold)
+            {
+                if (A_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
+                    A_PRESSED = false;
+                }
+            }
+
+            // Up or down
+            if (client.PlayerData.Pos.Y < targetPosition.Y - config.FollowDistanceThreshold)
+            {
+                // Move down
+                if (!S_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
+                    S_PRESSED = true;
+                }
+                if (W_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
+                    W_PRESSED = false;
+                }
+            }
+            else if (client.PlayerData.Pos.Y <= targetPosition.Y + config.FollowDistanceThreshold)
+            {
+                if (S_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
+                    S_PRESSED = false;
+                }
+            }
+            if (client.PlayerData.Pos.Y > targetPosition.Y + config.FollowDistanceThreshold)
+            {
+                // Move up
+                if (!W_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
+                    W_PRESSED = true;
+                }
+                if (S_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
+                    S_PRESSED = false;
+                }
+            }
+            else if (client.PlayerData.Pos.Y >= targetPosition.Y - config.FollowDistanceThreshold)
+            {
+                if (W_PRESSED)
+                {
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
+                    W_PRESSED = false;
+                }
+            }
+        }
     }
 }
