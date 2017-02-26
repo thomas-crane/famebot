@@ -23,6 +23,7 @@ namespace FameBot.Data.Events
         public KeyEventArgs(Key key, bool value) : base()
         {
             this.key = key;
+            this.value = value;
         }
     }
 }
