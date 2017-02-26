@@ -89,7 +89,7 @@ namespace FameBot.Core
             set
             {
                 wPressed = value;
-                keyChanged?.Invoke(this, new KeyEventArgs(Key.W));
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.W, value));
             }
         }
         private bool A_PRESSED
@@ -98,7 +98,7 @@ namespace FameBot.Core
             set
             {
                 aPressed = value;
-                keyChanged?.Invoke(this, new KeyEventArgs(Key.A));
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.A, value));
             }
         }
         private bool S_PRESSED
@@ -107,7 +107,7 @@ namespace FameBot.Core
             set
             {
                 sPressed = value;
-                keyChanged?.Invoke(this, new KeyEventArgs(Key.S));
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.S, value));
             }
         }
         private bool D_PRESSED
@@ -116,7 +116,7 @@ namespace FameBot.Core
             set
             {
                 dPressed = value;
-                keyChanged?.Invoke(this, new KeyEventArgs(Key.D));
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.D, value));
             }
         }
         #endregion
