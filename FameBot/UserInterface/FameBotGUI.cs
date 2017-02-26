@@ -25,6 +25,8 @@ namespace FameBot.UserInterface
             Plugin.logEvent += (s, e) =>
             {
                 eventLog.Text += (e.MessageWithTimestamp + "\n");
+                eventLog.SelectionStart = eventLog.Text.Length;
+                eventLog.ScrollToCaret();
             };
         }
         
