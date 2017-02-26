@@ -55,5 +55,11 @@ namespace FameBot.UserInterface
             KeyPressGUI keyPressGUI = new KeyPressGUI();
             keyPressGUI.Show();
         }
+
+        private void openConfigManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsGUI settingsGUI = new SettingsGUI();
+            settingsGUI.Show();
+        }
     }
 }

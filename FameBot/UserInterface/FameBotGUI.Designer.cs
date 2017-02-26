@@ -35,6 +35,8 @@
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHealthBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showKeyPressesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openConfigManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,7 +76,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.infoToolStripMenuItem});
+            this.infoToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(580, 33);
@@ -93,7 +96,7 @@
             // showHealthBarToolStripMenuItem
             // 
             this.showHealthBarToolStripMenuItem.Name = "showHealthBarToolStripMenuItem";
-            this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
+            this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(237, 30);
             this.showHealthBarToolStripMenuItem.Text = "Show health bar";
             this.showHealthBarToolStripMenuItem.Click += new System.EventHandler(this.showHealthBarToolStripMenuItem_Click);
             // 
@@ -103,6 +106,21 @@
             this.showKeyPressesToolStripMenuItem.Size = new System.Drawing.Size(237, 30);
             this.showKeyPressesToolStripMenuItem.Text = "Show key presses";
             this.showKeyPressesToolStripMenuItem.Click += new System.EventHandler(this.showKeyPressesToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openConfigManagerToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // openConfigManagerToolStripMenuItem
+            // 
+            this.openConfigManagerToolStripMenuItem.Name = "openConfigManagerToolStripMenuItem";
+            this.openConfigManagerToolStripMenuItem.Size = new System.Drawing.Size(274, 30);
+            this.openConfigManagerToolStripMenuItem.Text = "Open Config Manager";
+            this.openConfigManagerToolStripMenuItem.Click += new System.EventHandler(this.openConfigManagerToolStripMenuItem_Click);
             // 
             // FameBotGUI
             // 
@@ -132,5 +150,7 @@
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showHealthBarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showKeyPressesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openConfigManagerToolStripMenuItem;
     }
 }
