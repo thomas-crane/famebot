@@ -20,18 +20,18 @@ namespace FameBot.UserInterface
 
             FormClosed += (s, e) =>
             {
-                Plugin.GuiEventCallback(GuiEvent.GuiClosed);
+                Plugin.InvokeGuiEvent(GuiEvent.GuiClosed);
             };
         }
         
         private void onButton_Click(object sender, EventArgs e)
         {
-            Plugin.GuiEventCallback(GuiEvent.StartBot);
+            Plugin.InvokeGuiEvent(GuiEvent.StartBot);
         }
 
         private void offButton_Click(object sender, EventArgs e)
         {
-            Plugin.GuiEventCallback(GuiEvent.StopBot);
+            Plugin.InvokeGuiEvent(GuiEvent.StopBot);
         }
 
         private void windowOnTopBox_CheckedChanged(object sender, EventArgs e)
