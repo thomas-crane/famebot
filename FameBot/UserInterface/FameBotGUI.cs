@@ -17,7 +17,7 @@ namespace FameBot.UserInterface
         public FameBotGUI()
         {
             InitializeComponent();
-
+            eventLog.Text += "\n";
             FormClosed += (s, e) =>
             {
                 Plugin.InvokeGuiEvent(GuiEvent.GuiClosed);
