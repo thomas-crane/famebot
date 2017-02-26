@@ -314,9 +314,9 @@ namespace FameBot.Core
 
                 if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {
-                    //TeleportPacket tpPacket = Packet.Create(PacketType.TELEPORT) as TeleportPacket;
-                    //tpPacket.ObjectId = targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().ObjectId;
-                    //client.SendToServer(tpPacket);
+                    var tpPacket = (PlayerTextPacket)Packet.Create(PacketType.PLAYERTEXT);
+                    tpPacket.Text = "/teleport " + targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().Name;
+                    client.SendToServer(tpPacket);
                 }
 
                 #region Movement
