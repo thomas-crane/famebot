@@ -14,7 +14,7 @@ namespace FameBot.Data.Events
             get { return health; }
         }
 
-        public HealthChangedEventArgs(float health)
+        public HealthChangedEventArgs(float health) : base()
         {
             this.health = health;
         }
