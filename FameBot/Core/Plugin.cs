@@ -170,6 +170,9 @@ namespace FameBot.Core
                     case GuiEvent.StopBot:
                         Stop();
                         break;
+                    case GuiEvent.SettingsChanged:
+                        config = ConfigManager.GetConfiguration();
+                        break;
                 }
             };
         }
