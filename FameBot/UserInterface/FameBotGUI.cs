@@ -52,7 +52,8 @@ namespace FameBot.UserInterface
 
         private void showKeyPressesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            KeyPressGUI keyPressGUI = new KeyPressGUI();
+            keyPressGUI.Show();
         }
     }
 }
