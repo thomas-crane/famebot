@@ -76,14 +76,6 @@ namespace FameBot.Core
 
         #region KeyCodes
         private bool W_PRESSED, A_PRESSED, S_PRESSED, D_PRESSED;
-
-        public const int WM_KEYDOWN = 0x0100;
-        public const int WM_KEYUP = 0x0101;
-
-        public const short VK_A = 0x41;
-        public const short VK_D = 0x44;
-        public const short VK_W = 0x57;
-        public const short VK_S = 0x53;
         #endregion
 
         public void Initialize(Proxy proxy)
@@ -257,22 +249,22 @@ namespace FameBot.Core
                 if (W_PRESSED)
                 {
                     W_PRESSED = false;
-                    PostMessage(flashPtr, WM_KEYUP, VK_W, 0);
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                 }
                 if (A_PRESSED)
                 {
                     A_PRESSED = false;
-                    PostMessage(flashPtr, WM_KEYUP, VK_A, 0);
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                 }
                 if (S_PRESSED)
                 {
                     S_PRESSED = false;
-                    PostMessage(flashPtr, WM_KEYUP, VK_S, 0);
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                 }
                 if (D_PRESSED)
                 {
                     D_PRESSED = false;
-                    PostMessage(flashPtr, WM_KEYUP, VK_D, 0);
+                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                 }
             }
 
@@ -294,12 +286,12 @@ namespace FameBot.Core
                     // Move right
                     if (!D_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYDOWN, VK_D, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
                         D_PRESSED = true;
                     }
                     if (A_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_A, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                         A_PRESSED = false;
                     }
                 }
@@ -307,7 +299,7 @@ namespace FameBot.Core
                 {
                     if (D_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_D, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                         D_PRESSED = false;
                     }
                 }
@@ -316,12 +308,12 @@ namespace FameBot.Core
                     // Move left
                     if (!A_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYDOWN, VK_A, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
                         A_PRESSED = true;
                     }
                     if (D_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_D, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                         D_PRESSED = false;
                     }
                 }
@@ -329,7 +321,7 @@ namespace FameBot.Core
                 {
                     if (A_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_A, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                         A_PRESSED = false;
                     }
                 }
@@ -340,12 +332,12 @@ namespace FameBot.Core
                     // Move down
                     if (!S_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYDOWN, VK_S, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
                         S_PRESSED = true;
                     }
                     if (W_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_W, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                         W_PRESSED = false;
                     }
                 }
@@ -353,7 +345,7 @@ namespace FameBot.Core
                 {
                     if (S_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_S, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                         S_PRESSED = false;
                     }
                 }
@@ -362,12 +354,12 @@ namespace FameBot.Core
                     // Move up
                     if (!W_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYDOWN, VK_W, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
                         W_PRESSED = true;
                     }
                     if (S_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_S, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                         S_PRESSED = false;
                     }
                 }
@@ -375,7 +367,7 @@ namespace FameBot.Core
                 {
                     if (W_PRESSED)
                     {
-                        PostMessage(flashPtr, WM_KEYUP, VK_W, 0);
+                        PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                         W_PRESSED = false;
                     }
                 }
