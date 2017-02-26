@@ -36,6 +36,7 @@ namespace FameBot.UserInterface
                 MinPoints = (int)minPoints.Value
             };
             ConfigManager.WriteXML(newConfig);
+            MessageBox.Show("Settings have been saved", "[FameBot]");
         }
 
         private void UpdateUI(Configuration cfg)
