@@ -17,5 +17,9 @@ namespace FameBot.Data.Models
         public bool FindClustersNearCenter { get; set; }
         public float Epsilon { get; set; }
         public int MinPoints { get; set; }
+
+        public Configuration()
+        {
+        }
     }
 }
