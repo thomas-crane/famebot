@@ -65,6 +65,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\ConfigManager.cs" />
     <Compile Include="Services\D36n4.cs" />
     <Compile Include="UserInterface\FameBotGUI.cs">
       <SubType>Form</SubType>
