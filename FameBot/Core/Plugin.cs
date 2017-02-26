@@ -65,6 +65,9 @@ namespace FameBot.Core
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
 
+        public static event KeyEventHandler keyChanged;
+        public delegate void KeyEventHandler(object sender, KeyEventArgs args);
+
         #region WINAPI
         // Get the focused window
         [DllImport("user32.dll", SetLastError = true)]
@@ -74,8 +77,48 @@ namespace FameBot.Core
         public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
         #endregion
 
-        #region KeyCodes
-        private bool W_PRESSED, A_PRESSED, S_PRESSED, D_PRESSED;
+        #region Keys
+        private bool wPressed;
+        private bool aPressed;
+        private bool sPressed;
+        private bool dPressed;
+
+        private bool W_PRESSED
+        {
+            get { return wPressed; }
+            set
+            {
+                wPressed = value;
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.W));
+            }
+        }
+        private bool A_PRESSED
+        {
+            get { return aPressed; }
+            set
+            {
+                aPressed = value;
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.A));
+            }
+        }
+        private bool S_PRESSED
+        {
+            get { return sPressed; }
+            set
+            {
+                sPressed = value;
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.S));
+            }
+        }
+        private bool D_PRESSED
+        {
+            get { return dPressed; }
+            set
+            {
+                dPressed = value;
+                keyChanged?.Invoke(this, new KeyEventArgs(Key.D));
+            }
+        }
         #endregion
 
         public void Initialize(Proxy proxy)
