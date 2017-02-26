@@ -1,7 +1,7 @@
 # FameBot
 A bot for Realm of the Mad God designed to automate the process of collecting fame.
 ## How to use
-This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf clientwhich can connect to the proxy server.
+This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf client which can connect to the proxy server.
 
 1. Clone this repo to a folder somewhere on your computer.
 
