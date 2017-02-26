@@ -66,6 +66,9 @@ namespace FameBot.Core
         public static event KeyEventHandler keyChanged;
         public delegate void KeyEventHandler(object sender, KeyEventArgs args);
 
+        private static event GuiEventHandler guiEvent;
+        private delegate void GuiEventHandler(GuiEvent evt);
+
         #region WINAPI
         // Get the focused window
         [DllImport("user32.dll", SetLastError = true)]
@@ -124,7 +127,7 @@ namespace FameBot.Core
             targets = new List<Target>();
             playerPosisions = new Dictionary<int, Target>();
 
-            gui = new FameBotGUI(GuiEventCallback);
+            gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
 
             config = ConfigManager.GetConfiguration();
@@ -156,6 +159,19 @@ namespace FameBot.Core
                 connectedClient = client;
                 Stop();
             };
+
+            guiEvent += (evt) =>
+            {
+                switch (evt)
+                {
+                    case GuiEvent.StartBot:
+                        Start();
+                        break;
+                    case GuiEvent.StopBot:
+                        Stop();
+                        break;
+                }
+            };
         }
 
         private void ReceiveCommand(Client client, string cmd, string[] args)
@@ -172,23 +188,15 @@ namespace FameBot.Core
                     break;
                 case "gui":
                     if (gui == null)
-                        gui = new FameBotGUI(GuiEventCallback);
+                        gui = new FameBotGUI();
                     gui.Show();
                     break;
             }
         }
 
-        public static void GuiEventCallback(GuiEvent evt)
+        public static void InvokeGuiEvent(GuiEvent evt)
         {
-            switch (evt)
-            {
-                case GuiEvent.StartBot:
-                    Start();
-                    break;
-                case GuiEvent.StopBot:
-                    Stop();
-                    break;
-            }
+            guiEvent?.Invoke(evt);
         }
 
         private void Stop()
