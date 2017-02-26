@@ -22,7 +22,10 @@ namespace FameBot.UserInterface
             {
                 Plugin.InvokeGuiEvent(GuiEvent.GuiClosed);
             };
-
+            Plugin.logEvent += (s, e) =>
+            {
+                eventLog.Text += (e.MessageWithTimestamp + "\n");
+            };
         }
         
         private void onButton_Click(object sender, EventArgs e)
