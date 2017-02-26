@@ -41,7 +41,9 @@
             // 
             // wBox
             // 
-            this.wBox.InitialImage = global::FameBot.Properties.Resources.w_off;
+            this.wBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.wBox.Image = global::FameBot.Properties.Resources.w_off;
+            this.wBox.InitialImage = null;
             this.wBox.Location = new System.Drawing.Point(82, 12);
             this.wBox.Name = "wBox";
             this.wBox.Size = new System.Drawing.Size(64, 64);
@@ -50,7 +52,9 @@
             // 
             // aBox
             // 
-            this.aBox.InitialImage = global::FameBot.Properties.Resources.a_off;
+            this.aBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.aBox.Image = global::FameBot.Properties.Resources.a_off;
+            this.aBox.InitialImage = null;
             this.aBox.Location = new System.Drawing.Point(11, 82);
             this.aBox.Name = "aBox";
             this.aBox.Size = new System.Drawing.Size(64, 64);
@@ -59,7 +63,9 @@
             // 
             // sBox
             // 
-            this.sBox.InitialImage = global::FameBot.Properties.Resources.s_off;
+            this.sBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.sBox.Image = global::FameBot.Properties.Resources.s_off;
+            this.sBox.InitialImage = null;
             this.sBox.Location = new System.Drawing.Point(82, 82);
             this.sBox.Name = "sBox";
             this.sBox.Size = new System.Drawing.Size(64, 64);
@@ -68,7 +74,9 @@
             // 
             // dBox
             // 
-            this.dBox.InitialImage = global::FameBot.Properties.Resources.d_off;
+            this.dBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.dBox.Image = global::FameBot.Properties.Resources.d_off;
+            this.dBox.InitialImage = null;
             this.dBox.Location = new System.Drawing.Point(153, 82);
             this.dBox.Name = "dBox";
             this.dBox.Size = new System.Drawing.Size(64, 64);
