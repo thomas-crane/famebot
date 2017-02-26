@@ -401,7 +401,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MinimumSize = new System.Drawing.Size(480, 640);
             this.Name = "SettingsGUI";
-            this.Text = " [FameBot] Config Manager";
+            this.Text = " [FameBot] Config";
             this.generalSettings.ResumeLayout(false);
             this.generalSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.followDistanceThreshold)).EndInit();
