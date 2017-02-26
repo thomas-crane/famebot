@@ -42,7 +42,7 @@ namespace FameBot.Services
             XmlSerializer xmlS = new XmlSerializer(typeof(Configuration));
             string path = Directory.GetCurrentDirectory() + "\\Plugins\\famebot_config.xml";
 
-            using (FileStream file = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write))
+            using (FileStream file = File.Open(path, FileMode.Create, FileAccess.Write))
             {
                 xmlS.Serialize(file, cfg);
             }
