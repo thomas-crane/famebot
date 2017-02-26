@@ -1,4 +1,5 @@
-﻿using FameBot.Data.Enums;
+﻿using FameBot.Core;
+using FameBot.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,30 +14,24 @@ namespace FameBot.UserInterface
 {
     public partial class FameBotGUI : Form
     {
-        private Action<GuiEvent> eventCallback;
         public FameBotGUI()
         {
             InitializeComponent();
-        }
-        
-        public FameBotGUI(Action<GuiEvent> callback)
-        {
-            eventCallback = callback;
-            InitializeComponent();
+
             FormClosed += (s, e) =>
             {
-                eventCallback?.Invoke(GuiEvent.GuiClosed);
+                Plugin.GuiEventCallback(GuiEvent.GuiClosed);
             };
         }
-
+        
         private void onButton_Click(object sender, EventArgs e)
         {
-            eventCallback(GuiEvent.StartBot);
+            Plugin.GuiEventCallback(GuiEvent.StartBot);
         }
 
         private void offButton_Click(object sender, EventArgs e)
         {
-            eventCallback(GuiEvent.StopBot);
+            Plugin.GuiEventCallback(GuiEvent.StopBot);
         }
 
         private void windowOnTopBox_CheckedChanged(object sender, EventArgs e)

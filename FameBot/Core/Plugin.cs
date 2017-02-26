@@ -178,7 +178,7 @@ namespace FameBot.Core
             }
         }
 
-        private void GuiEventCallback(GuiEvent evt)
+        public static void GuiEventCallback(GuiEvent evt)
         {
             switch (evt)
             {
@@ -262,7 +262,7 @@ namespace FameBot.Core
         {
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
-            if (healthPercentage < config.AutonexusThreshold)
+            if (healthPercentage * 100f < config.AutonexusThreshold)
                 Escape(client);
         }
 
