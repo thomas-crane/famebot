@@ -54,6 +54,11 @@
     <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Helpers\ClientExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\D36n4.cs" />
     <Compile Include="UserInterface\FameBotGUI.cs">
       <SubType>Form</SubType>
@@ -67,11 +72,29 @@
     <Compile Include="UserInterface\HealthBarGUI.Designer.cs">
       <DependentUpon>HealthBarGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\KeyPressGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\KeyPressGUI.Designer.cs">
+      <DependentUpon>KeyPressGUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
+    <None Include="Resources\w_on.png" />
+    <None Include="Resources\w_off.png" />
+    <None Include="Resources\s_on.png" />
+    <None Include="Resources\s_off.png" />
+    <None Include="Resources\d_on.png" />
+    <None Include="Resources\d_off.png" />
+    <None Include="Resources\a_on.png" />
+    <None Include="Resources\a_off.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FameBotGUI.resx">
       <DependentUpon>FameBotGUI.cs</DependentUpon>
     </EmbeddedResource>
