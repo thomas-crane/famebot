@@ -31,6 +31,10 @@
             this.windowOnTopBox = new System.Windows.Forms.CheckBox();
             this.onButton = new System.Windows.Forms.Button();
             this.offButton = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showHealthBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // windowOnTopBox
@@ -47,7 +51,7 @@
             // 
             // onButton
             // 
-            this.onButton.Location = new System.Drawing.Point(13, 13);
+            this.onButton.Location = new System.Drawing.Point(13, 52);
             this.onButton.Name = "onButton";
             this.onButton.Size = new System.Drawing.Size(253, 40);
             this.onButton.TabIndex = 1;
@@ -57,7 +61,7 @@
             // 
             // offButton
             // 
-            this.offButton.Location = new System.Drawing.Point(13, 59);
+            this.offButton.Location = new System.Drawing.Point(13, 98);
             this.offButton.Name = "offButton";
             this.offButton.Size = new System.Drawing.Size(253, 40);
             this.offButton.TabIndex = 2;
@@ -65,16 +69,46 @@
             this.offButton.UseVisualStyleBackColor = true;
             this.offButton.Click += new System.EventHandler(this.offButton_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.infoToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(580, 33);
+            this.menuStrip1.TabIndex = 3;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // infoToolStripMenuItem
+            // 
+            this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showHealthBarToolStripMenuItem});
+            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
+            this.infoToolStripMenuItem.Text = "Info";
+            // 
+            // showHealthBarToolStripMenuItem
+            // 
+            this.showHealthBarToolStripMenuItem.Name = "showHealthBarToolStripMenuItem";
+            this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
+            this.showHealthBarToolStripMenuItem.Text = "Show health bar";
+            this.showHealthBarToolStripMenuItem.Click += new System.EventHandler(this.showHealthBarToolStripMenuItem_Click);
+            // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(278, 244);
+            this.ClientSize = new System.Drawing.Size(580, 244);
             this.Controls.Add(this.offButton);
             this.Controls.Add(this.onButton);
             this.Controls.Add(this.windowOnTopBox);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "FameBotGUI";
             this.Text = "FameBot";
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -85,5 +119,8 @@
         private System.Windows.Forms.CheckBox windowOnTopBox;
         private System.Windows.Forms.Button onButton;
         private System.Windows.Forms.Button offButton;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showHealthBarToolStripMenuItem;
     }
 }

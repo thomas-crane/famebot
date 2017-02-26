@@ -17,6 +17,7 @@ using Lib_K_Relay.Networking.Packets.DataObjects;
 using Lib_K_Relay.Utilities;
 using Lib_K_Relay.Networking.Packets.Client;
 using FameBot.Services;
+using FameBot.UserInterface;
 
 namespace FameBot.Core
 {
@@ -85,6 +86,9 @@ namespace FameBot.Core
         {
             targets = new List<Target>();
             playerPosisions = new Dictionary<int, Target>();
+
+            var gui = new FameBotGUI(GuiEventCallback);
+            PluginUtils.ShowGUI(gui);
 
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)

@@ -60,6 +60,12 @@
     <Compile Include="UserInterface\FameBotGUI.Designer.cs">
       <DependentUpon>FameBotGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\HealthBarGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\HealthBarGUI.Designer.cs">
+      <DependentUpon>HealthBarGUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
@@ -67,6 +73,9 @@
   <ItemGroup>
     <EmbeddedResource Include="UserInterface\FameBotGUI.resx">
       <DependentUpon>FameBotGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\HealthBarGUI.resx">
+      <DependentUpon>HealthBarGUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

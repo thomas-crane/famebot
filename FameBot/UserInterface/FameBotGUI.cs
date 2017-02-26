@@ -14,7 +14,7 @@ namespace FameBot.UserInterface
     public partial class FameBotGUI : Form
     {
         private Action<GuiEvent> eventCallback;
-
+        public event EventHandler updateHealth;
         public FameBotGUI()
         {
             InitializeComponent();
@@ -43,6 +43,11 @@ namespace FameBot.UserInterface
         private void windowOnTopBox_CheckedChanged(object sender, EventArgs e)
         {
             TopMost = windowOnTopBox.Checked;
+        }
+
+        private void showHealthBarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Show health bar");
         }
     }
 }
