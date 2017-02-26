@@ -16,5 +16,10 @@ namespace FameBot.UserInterface
         {
             InitializeComponent();
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            TopMost = checkBox1.Checked;
+        }
     }
 }
