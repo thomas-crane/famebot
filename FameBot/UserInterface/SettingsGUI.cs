@@ -32,6 +32,7 @@ namespace FameBot.UserInterface
                 EscapeIfNoTargets = escapeIfNoTargets.Checked,
                 TeleportDistanceThreshold = (float)teleportDistanceThreshold.Value,
                 FollowDistanceThreshold = (float)followDistanceThreshold.Value,
+                FindClustersNearCenter = findNearCenter.Checked,
                 Epsilon = (float)epsilon.Value,
                 MinPoints = (int)minPoints.Value
             };
