@@ -101,6 +101,7 @@ namespace FameBot.Core
             }
 
             proxy.HookCommand("activate", ReceiveCommand);
+            proxy.HookCommand("start", ReceiveCommand);
 
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
@@ -212,9 +213,6 @@ namespace FameBot.Core
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
 
-            if (flashPtr == null)
-                return;
-
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < autoNexusThreshold)
@@ -222,12 +220,27 @@ namespace FameBot.Core
 
             if(tickCount % tickCountThreshold == 0)
             {
-                if (playerPosisions.Count > 0)
+                if (followTarget && playerPosisions.Count > 0)
                 {
-                    targets = D36n4.Invoke(playerPosisions.Values.ToList());
-                    Console.WriteLine("[FameBot] Now targeting {0} players", targets.Count);
+                    List<Target> newTargets = D36n4.Invoke(playerPosisions.Values.ToList());
+                    if(newTargets == null)
+                    {
+                        targets.Clear();
+                        Console.WriteLine("[FameBot] Player search didn't return any good results");
+                    } else
+                    {
+                        targets = newTargets;
+                        Console.WriteLine("[FameBot] Now targeting {0} players", targets.Count);
+                    }
                 }
                 tickCount = 0;
+            }
+
+            // Update player positions
+            foreach(Status status in packet.Statuses)
+            {
+                if (playerPosisions.ContainsKey(status.ObjectId))
+                    playerPosisions[status.ObjectId].UpdatePosition(status.Position);
             }
             
             if(!followTarget)
@@ -258,11 +271,11 @@ namespace FameBot.Core
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
-                if(client.PlayerData.Pos.DistanceTo(targetPosition) > teleportDistanceThreshold)
+                if (client.PlayerData.Pos.DistanceTo(targetPosition) > teleportDistanceThreshold)
                 {
-                    TeleportPacket tpPacket = Packet.Create(PacketType.TELEPORT) as TeleportPacket;
-                    tpPacket.ObjectId = targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().ObjectId;
-                    client.SendToServer(tpPacket);
+                    //TeleportPacket tpPacket = Packet.Create(PacketType.TELEPORT) as TeleportPacket;
+                    //tpPacket.ObjectId = targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().ObjectId;
+                    //client.SendToServer(tpPacket);
                 }
 
                 #region Movement
