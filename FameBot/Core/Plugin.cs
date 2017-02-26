@@ -34,13 +34,15 @@ namespace FameBot.Core
         {
             return new string[]
             {
-                "TODO: list commands"
+                "/activate - binds the bot to the client where the command is used.",
+                "/start - starts the bot",
+                "/gui - opens the gui"
             };
         }
 
         public string GetDescription()
         {
-            return "TODO: add description";
+            return "A bot designed to automate the process of collecting fame.";
         }
 
         public string GetName()
@@ -56,6 +58,7 @@ namespace FameBot.Core
         private Client connectedClient;
         private int tickCount;
         private Configuration config;
+        private FameBotGUI gui;
 
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
@@ -121,7 +124,7 @@ namespace FameBot.Core
             targets = new List<Target>();
             playerPosisions = new Dictionary<int, Target>();
 
-            var gui = new FameBotGUI(GuiEventCallback);
+            gui = new FameBotGUI(GuiEventCallback);
             PluginUtils.ShowGUI(gui);
 
             config = ConfigManager.GetConfiguration();
@@ -142,9 +145,11 @@ namespace FameBot.Core
 
             proxy.HookCommand("activate", ReceiveCommand);
             proxy.HookCommand("start", ReceiveCommand);
+            proxy.HookCommand("gui", ReceiveCommand);
 
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
+            proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
 
             proxy.ClientConnected += (client) =>
             {
@@ -165,6 +170,11 @@ namespace FameBot.Core
                     Start();
                     client.Notify("FameBot is starting");
                     break;
+                case "gui":
+                    if (gui == null)
+                        gui = new FameBotGUI(GuiEventCallback);
+                    gui.Show();
+                    break;
             }
         }
 
@@ -173,7 +183,7 @@ namespace FameBot.Core
             switch (evt)
             {
                 case GuiEvent.StartBot:
-
+                    Start();
                     break;
                 case GuiEvent.StopBot:
                     Stop();
@@ -248,26 +258,34 @@ namespace FameBot.Core
             }
         }
 
+        private void OnHit(Client client, Packet p)
+        {
+            // Autonexus
+            float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
+            if (healthPercentage < config.AutonexusThreshold)
+                Escape(client);
+        }
+
         private void OnNewTick(Client client, Packet p)
         {
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
 
-            // Autonexus
+            // Health changed event
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
-            if (healthPercentage < config.AutonexusThreshold)
-                Escape(client);
 
             if(tickCount % config.TickCountThreshold == 0)
             {
                 if (followTarget && playerPosisions.Count > 0)
                 {
-                    List<Target> newTargets = D36n4.Invoke(playerPosisions.Values.ToList());
+                    List<Target> newTargets = D36n4.Invoke(playerPosisions.Values.ToList(), config.Epsilon, config.MinPoints, config.FindClustersNearCenter);
                     if(newTargets == null)
                     {
+                        if (targets.Count != 0 && config.EscapeIfNoTargets)
+                            Escape(client); 
                         targets.Clear();
-                        Console.WriteLine("[FameBot] Player search didn't return any good results");
+                        Console.WriteLine("[FameBot] Player search didn't return any good results, If this keeps happening try adjusting your clustering settings.");
                     } else
                     {
                         targets = newTargets;
