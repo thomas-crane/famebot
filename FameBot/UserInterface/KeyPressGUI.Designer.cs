@@ -32,6 +32,7 @@
             this.aBox = new System.Windows.Forms.PictureBox();
             this.sBox = new System.Windows.Forms.PictureBox();
             this.dBox = new System.Windows.Forms.PictureBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.wBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.aBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sBox)).BeginInit();
@@ -74,22 +75,38 @@
             this.dBox.TabIndex = 3;
             this.dBox.TabStop = false;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(11, 153);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(191, 24);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "Window always on top";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // KeyPressGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(234, 200);
+            this.ClientSize = new System.Drawing.Size(227, 182);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.dBox);
             this.Controls.Add(this.sBox);
             this.Controls.Add(this.aBox);
             this.Controls.Add(this.wBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "KeyPressGUI";
             this.Text = "KeyPressGUI";
+            this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.wBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.aBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -99,5 +116,6 @@
         private System.Windows.Forms.PictureBox aBox;
         private System.Windows.Forms.PictureBox sBox;
         private System.Windows.Forms.PictureBox dBox;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
