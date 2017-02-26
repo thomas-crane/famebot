@@ -37,6 +37,9 @@
             this.showKeyPressesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eventLog = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.clearButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,7 +83,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(580, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(578, 33);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -122,16 +125,52 @@
             this.openConfigManagerToolStripMenuItem.Text = "Open Config Manager";
             this.openConfigManagerToolStripMenuItem.Click += new System.EventHandler(this.openConfigManagerToolStripMenuItem_Click);
             // 
+            // eventLog
+            // 
+            this.eventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.eventLog.Location = new System.Drawing.Point(276, 78);
+            this.eventLog.Name = "eventLog";
+            this.eventLog.ReadOnly = true;
+            this.eventLog.Size = new System.Drawing.Size(290, 154);
+            this.eventLog.TabIndex = 4;
+            this.eventLog.Text = "";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(272, 47);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 20);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Event Log";
+            // 
+            // clearButton
+            // 
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Location = new System.Drawing.Point(455, 42);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(110, 30);
+            this.clearButton.TabIndex = 6;
+            this.clearButton.Text = "Clear log";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
+            // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(580, 244);
+            this.ClientSize = new System.Drawing.Size(578, 244);
+            this.Controls.Add(this.clearButton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.eventLog);
             this.Controls.Add(this.offButton);
             this.Controls.Add(this.onButton);
             this.Controls.Add(this.windowOnTopBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(600, 300);
             this.Name = "FameBotGUI";
             this.Text = "FameBot";
             this.menuStrip1.ResumeLayout(false);
@@ -152,5 +191,8 @@
         private System.Windows.Forms.ToolStripMenuItem showKeyPressesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openConfigManagerToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox eventLog;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button clearButton;
     }
 }

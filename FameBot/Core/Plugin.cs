@@ -69,6 +69,9 @@ namespace FameBot.Core
         private static event GuiEventHandler guiEvent;
         private delegate void GuiEventHandler(GuiEvent evt);
 
+        public static event LogEventHandler logEvent;
+        public delegate void LogEventHandler(object sender, LogEventArgs args);
+
         #region WINAPI
         // Get the focused window
         [DllImport("user32.dll", SetLastError = true)]

@@ -22,6 +22,7 @@ namespace FameBot.UserInterface
             {
                 Plugin.InvokeGuiEvent(GuiEvent.GuiClosed);
             };
+
         }
         
         private void onButton_Click(object sender, EventArgs e)
@@ -55,6 +56,11 @@ namespace FameBot.UserInterface
         {
             SettingsGUI settingsGUI = new SettingsGUI();
             settingsGUI.Show();
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            eventLog.Text = "";
         }
     }
 }
