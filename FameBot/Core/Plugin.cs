@@ -139,9 +139,11 @@ namespace FameBot.Core
             if (processes.Length == 1)
             {
                 Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
+                Log("Automatically bound to client");
                 flashPtr = processes[0].MainWindowHandle;
             } else if(processes.Length > 1)
             {
+                Log("Multiple clients running. use the /activate command on the client you want to use");
                 Console.WriteLine("[FameBot] Multiple instances of flash are open. Please use the /activate command on the instance you want to use the bot with.");
             } else
             {
@@ -207,12 +209,14 @@ namespace FameBot.Core
 
         private void Stop()
         {
+            Log("Stopping bot");
             followTarget = false;
             targets.Clear();
         }
 
         private void Start()
         {
+            Log("Starting bot");
             targets.Clear();
             followTarget = true;
         }
@@ -220,7 +224,13 @@ namespace FameBot.Core
         private void Escape(Client client)
         {
             Console.WriteLine("[FameBot] Escaping to nexus.");
+            Log("Escaping to nexus");
             client.SendToServer(Packet.Create(PacketType.ESCAPE));
+        }
+
+        private void Log(string message)
+        {
+            logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
         #region PacketHookMethods
@@ -259,9 +269,11 @@ namespace FameBot.Core
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
+                            Log(string.Format("Dropping {0} from targets", playerPosisions[dropId].Name));
                             Console.WriteLine("[FameBot] The player \"{0}\" was dropped from the target list.", playerPosisions[dropId].Name);
                         } else
                         {
+                            Log("No targets in target list");
                             Console.WriteLine("[FameBot] There are no players left in the target list.");
                             if (config.EscapeIfNoTargets)
                                 Escape(client);
@@ -276,6 +288,8 @@ namespace FameBot.Core
         {
             // Autonexus
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
+            if (healthPercentage * 100f < config.AutonexusThreshold * 1.25f)
+                Log(string.Format("Health at {0}%", (int)(healthPercentage * 100f)));
             if (healthPercentage * 100f < config.AutonexusThreshold)
                 Escape(client);
         }
@@ -299,6 +313,7 @@ namespace FameBot.Core
                         if (targets.Count != 0 && config.EscapeIfNoTargets)
                             Escape(client); 
                         targets.Clear();
+                        Log("No valid clusters found");
                         Console.WriteLine("[FameBot] Player search didn't return any good results, If this keeps happening try adjusting your clustering settings.");
                     } else
                     {
