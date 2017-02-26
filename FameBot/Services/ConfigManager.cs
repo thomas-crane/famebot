@@ -12,12 +12,6 @@ namespace FameBot.Services
 {
     public static class ConfigManager
     {
-        public static void Test()
-        {
-            var cwd = Directory.GetCurrentDirectory();
-            Console.WriteLine(cwd);
-        }
-
         public static Configuration GetConfiguration()
         {
             string path = Directory.GetCurrentDirectory() + "\\Plugins\\famebot_config.xml";
