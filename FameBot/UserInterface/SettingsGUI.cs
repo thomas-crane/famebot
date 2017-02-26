@@ -1,4 +1,6 @@
-﻿using FameBot.Data.Models;
+﻿using FameBot.Core;
+using FameBot.Data.Enums;
+using FameBot.Data.Models;
 using FameBot.Services;
 using System;
 using System.Collections.Generic;
@@ -38,6 +40,16 @@ namespace FameBot.UserInterface
             };
             ConfigManager.WriteXML(newConfig);
             MessageBox.Show("Settings have been saved", "[FameBot]");
+            
+            // There is a 0.5 second delay between saving settings and telling Plugin
+            // that the settings have changes due to a problem with Windows indexing
+            // where if a file is written to and then read from immediately afterwards
+            // an error will be thrown.
+            Task.Factory.StartNew(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                Plugin.GuiEventCallback(GuiEvent.SettingsChanged);
+            });
         }
 
         private void UpdateUI(Configuration cfg)
