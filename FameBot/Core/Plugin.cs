@@ -451,7 +451,7 @@ namespace FameBot.Core
                 callAgain = false;
                 AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
             }
-            await Task.Delay(15);
+            await Task.Delay(5);
             if (callAgain)
             {
                 MoveToRealms(client);
