@@ -24,6 +24,7 @@ namespace FameBot.Services
                     TickCountThreshold = 10,
                     TeleportDistanceThreshold = 15f,
                     FollowDistanceThreshold = 1.5f,
+                    AutoConnect = true,
                     FindClustersNearCenter = true,
                     Epsilon = 8f,
                     MinPoints = 5,

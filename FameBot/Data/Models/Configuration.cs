@@ -13,6 +13,7 @@ namespace FameBot.Data.Models
         public bool EscapeIfNoTargets { get; set; }
         public float TeleportDistanceThreshold { get; set; }
         public float FollowDistanceThreshold { get; set; }
+        public bool AutoConnect { get; set; }
 
         public bool FindClustersNearCenter { get; set; }
         public float Epsilon { get; set; }
