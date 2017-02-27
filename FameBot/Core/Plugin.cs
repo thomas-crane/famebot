@@ -140,6 +140,9 @@ namespace FameBot.Core
 
             config = ConfigManager.GetConfiguration();
 
+            if (config.AutoConnect)
+                Start();
+
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
             {
@@ -231,7 +234,7 @@ namespace FameBot.Core
         {
             Log("Starting bot");
             targets.Clear();
-            if (!autoConnect)
+            if (!config.AutoConnect)
                 followTarget = true;
             enabled = true;
         }
@@ -280,7 +283,7 @@ namespace FameBot.Core
                             var strArray = data.StringValue.Split(' ');
                             var strCount = strArray[1].Split('/')[0].Remove(0, 1);
                             var name = strArray[0].Split('.')[1];
-                            var portal = new Portal(obj.Status.ObjectId, int.Parse(strCount), name);
+                            var portal = new Portal(obj.Status.ObjectId, int.Parse(strCount), name, obj.Status.Position);
                             if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
                                 portals.Remove(portals.Find(ptl => ptl.ObjectId == obj.Status.ObjectId));
                             portals.Add(portal);
@@ -323,8 +326,11 @@ namespace FameBot.Core
             {
                 await Task.Delay(TimeSpan.FromSeconds(10));
                 portals.Clear();
-                if (packet.Name == "Nexus" && autoConnect)
+                if (packet.Name == "Nexus" && config.AutoConnect)
+                {
                     gotoRealm = true;
+                    MoveToRealms(client);
+                }
                 else
                 {
                     gotoRealm = false;
@@ -353,14 +359,9 @@ namespace FameBot.Core
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
 
-            if(autoConnect && gotoRealm)
-            {
-                MoveToRealms(client, healthPercentage);
-            }
-
             if(tickCount % config.TickCountThreshold == 0)
             {
-                if (followTarget && playerPosisions.Count > 0)
+                if (followTarget && playerPosisions.Count > 0 && !gotoRealm)
                 {
                     List<Target> newTargets = D36n4.Invoke(playerPosisions.Values.ToList(), config.Epsilon, config.MinPoints, config.FindClustersNearCenter);
                     if(newTargets == null)
@@ -421,26 +422,42 @@ namespace FameBot.Core
                     client.SendToServer(tpPacket);
                 }
 
-                CalculateMovement(client, targetPosition);
+                CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
             }
         }
         #endregion
 
-        private void MoveToRealms(Client client, float healthPercentage)
+        private async void MoveToRealms(Client client)
         {
             Location target = new Location(134, 109);
+            var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
+            var callAgain = true;
             if (healthPercentage < 0.95f)
                 target = new Location(134, 134);
 
-            CalculateMovement(client, target);
+            if(client.PlayerData.Pos.Y <= 115 && client.PlayerData.Pos.Y != 0)
+            {
+                if (portals.Count != 0)
+                    target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
+                else
+                    target = new Location(134, 109);
+            }
 
-            if(client.PlayerData.Pos.Y <= 109 && client.PlayerData.Pos.Y != 0)
+            CalculateMovement(client, target, 0.5f);
+
+            if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
                 gotoRealm = false;
-                Task.Factory.StartNew(() =>
-                {
-                    AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
-                });
+                callAgain = false;
+                AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
+            }
+            await Task.Delay(15);
+            if (callAgain)
+            {
+                MoveToRealms(client);
+            } else
+            {
+                Log("Finished moving to realm. Attempting connection");
             }
         }
 
@@ -448,18 +465,19 @@ namespace FameBot.Core
         {
             UsePortalPacket packet = (UsePortalPacket)Packet.Create(PacketType.USEPORTAL);
             packet.ObjectId = portal.ObjectId;
-            client.SendToServer(packet);
-            if(client.Connected)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(0.2));
+            if (client.Connected)
+                client.SendToServer(packet);
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            if (client.Connected)
                 AttemptConnection(client, portal);
-            }
+            else
+                Log("Connection successful");
         }
 
-        private void CalculateMovement(Client client, Location targetPosition)
+        private void CalculateMovement(Client client, Location targetPosition, float tolerance)
         {
             // Left or right
-            if (client.PlayerData.Pos.X < targetPosition.X - config.FollowDistanceThreshold)
+            if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
             {
                 // Move right
                 if (!D_PRESSED)
@@ -473,7 +491,7 @@ namespace FameBot.Core
                     A_PRESSED = false;
                 }
             }
-            else if (client.PlayerData.Pos.X <= targetPosition.X + config.FollowDistanceThreshold)
+            else if (client.PlayerData.Pos.X <= targetPosition.X + tolerance)
             {
                 if (D_PRESSED)
                 {
@@ -481,7 +499,7 @@ namespace FameBot.Core
                     D_PRESSED = false;
                 }
             }
-            if (client.PlayerData.Pos.X > targetPosition.X + config.FollowDistanceThreshold)
+            if (client.PlayerData.Pos.X > targetPosition.X + tolerance)
             {
                 // Move left
                 if (!A_PRESSED)
@@ -495,7 +513,7 @@ namespace FameBot.Core
                     D_PRESSED = false;
                 }
             }
-            else if (client.PlayerData.Pos.X >= targetPosition.X - config.FollowDistanceThreshold)
+            else if (client.PlayerData.Pos.X >= targetPosition.X - tolerance)
             {
                 if (A_PRESSED)
                 {
@@ -505,7 +523,7 @@ namespace FameBot.Core
             }
 
             // Up or down
-            if (client.PlayerData.Pos.Y < targetPosition.Y - config.FollowDistanceThreshold)
+            if (client.PlayerData.Pos.Y < targetPosition.Y - tolerance)
             {
                 // Move down
                 if (!S_PRESSED)
@@ -519,7 +537,7 @@ namespace FameBot.Core
                     W_PRESSED = false;
                 }
             }
-            else if (client.PlayerData.Pos.Y <= targetPosition.Y + config.FollowDistanceThreshold)
+            else if (client.PlayerData.Pos.Y <= targetPosition.Y + tolerance)
             {
                 if (S_PRESSED)
                 {
@@ -527,7 +545,7 @@ namespace FameBot.Core
                     S_PRESSED = false;
                 }
             }
-            if (client.PlayerData.Pos.Y > targetPosition.Y + config.FollowDistanceThreshold)
+            if (client.PlayerData.Pos.Y > targetPosition.Y + tolerance)
             {
                 // Move up
                 if (!W_PRESSED)
@@ -541,7 +559,7 @@ namespace FameBot.Core
                     S_PRESSED = false;
                 }
             }
-            else if (client.PlayerData.Pos.Y >= targetPosition.Y - config.FollowDistanceThreshold)
+            else if (client.PlayerData.Pos.Y >= targetPosition.Y - tolerance)
             {
                 if (W_PRESSED)
                 {
