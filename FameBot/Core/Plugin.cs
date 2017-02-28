@@ -171,6 +171,7 @@ namespace FameBot.Core
             {
                 connectedClient = client;
                 targets.Clear();
+                playerPosisions.Clear();
                 followTarget = false;
                 A_PRESSED = false;
                 D_PRESSED = false;
