@@ -325,7 +325,7 @@ namespace FameBot.Core
                 return;
             Task.Factory.StartNew(async () =>
             {
-                await Task.Delay(TimeSpan.FromSeconds(10));
+                await Task.Delay(TimeSpan.FromSeconds(1));
                 portals.Clear();
                 if (packet.Name == "Nexus" && config.AutoConnect)
                 {
@@ -431,6 +431,14 @@ namespace FameBot.Core
         private async void MoveToRealms(Client client)
         {
             Location target = new Location(134, 109);
+
+            if(client.PlayerData == null)
+            {
+                await Task.Delay(5);
+                MoveToRealms(client);
+                return;
+            }
+
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             var callAgain = true;
             if (healthPercentage < 0.95f)
