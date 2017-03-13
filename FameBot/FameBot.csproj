@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\newest krelay\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Plugin.cs" />
+    <Compile Include="Data\Enums\EnumEnemy.cs" />
     <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Enums\EnumKey.cs" />
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Data\Models\Portal.cs" />
     <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Helpers\ClientExtensions.cs" />
+    <Compile Include="Helpers\LocationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -83,6 +85,12 @@
     </Compile>
     <Compile Include="UserInterface\KeyPressGUI.Designer.cs">
       <DependentUpon>KeyPressGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\OverlayGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\OverlayGUI.Designer.cs">
+      <DependentUpon>OverlayGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\SettingsGUI.cs">
       <SubType>Form</SubType>
