@@ -10,7 +10,7 @@ namespace FameBot.Data.Enums
     {
         WhiteDemon = 1617,
         SpriteGod = 1618,
-        Medusa = 1920,
+        Medusa = 1620,
         EntGod = 1621,
         Beholder = 1622,
         FlyingBrain = 1623,
