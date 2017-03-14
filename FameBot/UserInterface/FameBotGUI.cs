@@ -14,6 +14,7 @@ namespace FameBot.UserInterface
 {
     public partial class FameBotGUI : Form
     {
+        private IntPtr flashPtr;
         public FameBotGUI()
         {
             InitializeComponent();
@@ -30,6 +31,11 @@ namespace FameBot.UserInterface
             };
         }
         
+        public void SetHandle(IntPtr handle)
+        {
+            flashPtr = handle;
+        }
+
         private void onButton_Click(object sender, EventArgs e)
         {
             Plugin.InvokeGuiEvent(GuiEvent.StartBot);
@@ -66,6 +72,12 @@ namespace FameBot.UserInterface
         private void clearButton_Click(object sender, EventArgs e)
         {
             eventLog.Text = "";
+        }
+
+        private void showGraphicsOverlayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OverlayGUI overlayGUI = new OverlayGUI(flashPtr);
+            overlayGUI.Show();
         }
     }
 }

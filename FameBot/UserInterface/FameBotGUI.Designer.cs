@@ -35,6 +35,7 @@
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHealthBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showKeyPressesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGraphicsOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eventLog = new System.Windows.Forms.RichTextBox();
@@ -91,7 +92,8 @@
             // 
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showHealthBarToolStripMenuItem,
-            this.showKeyPressesToolStripMenuItem});
+            this.showKeyPressesToolStripMenuItem,
+            this.showGraphicsOverlayToolStripMenuItem});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
             this.infoToolStripMenuItem.Text = "Info";
@@ -99,16 +101,24 @@
             // showHealthBarToolStripMenuItem
             // 
             this.showHealthBarToolStripMenuItem.Name = "showHealthBarToolStripMenuItem";
-            this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(237, 30);
+            this.showHealthBarToolStripMenuItem.Size = new System.Drawing.Size(275, 30);
             this.showHealthBarToolStripMenuItem.Text = "Show health bar";
             this.showHealthBarToolStripMenuItem.Click += new System.EventHandler(this.showHealthBarToolStripMenuItem_Click);
             // 
             // showKeyPressesToolStripMenuItem
             // 
             this.showKeyPressesToolStripMenuItem.Name = "showKeyPressesToolStripMenuItem";
-            this.showKeyPressesToolStripMenuItem.Size = new System.Drawing.Size(237, 30);
+            this.showKeyPressesToolStripMenuItem.Size = new System.Drawing.Size(275, 30);
             this.showKeyPressesToolStripMenuItem.Text = "Show key presses";
             this.showKeyPressesToolStripMenuItem.Click += new System.EventHandler(this.showKeyPressesToolStripMenuItem_Click);
+            // 
+            // showGraphicsOverlayToolStripMenuItem
+            // 
+            this.showGraphicsOverlayToolStripMenuItem.Enabled = false;
+            this.showGraphicsOverlayToolStripMenuItem.Name = "showGraphicsOverlayToolStripMenuItem";
+            this.showGraphicsOverlayToolStripMenuItem.Size = new System.Drawing.Size(275, 30);
+            this.showGraphicsOverlayToolStripMenuItem.Text = "Show graphics overlay";
+            this.showGraphicsOverlayToolStripMenuItem.Click += new System.EventHandler(this.showGraphicsOverlayToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -194,5 +204,6 @@
         private System.Windows.Forms.RichTextBox eventLog;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button clearButton;
+        private System.Windows.Forms.ToolStripMenuItem showGraphicsOverlayToolStripMenuItem;
     }
 }
