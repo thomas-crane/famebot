@@ -63,6 +63,7 @@ namespace FameBot.Core
         private FameBotGUI gui;
         private bool gotoRealm;
         private bool enabled;
+        private string currentMapName;
 
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
@@ -231,6 +232,7 @@ namespace FameBot.Core
         {
             Log("Stopping bot");
             followTarget = false;
+            gotoRealm = false;
             targets.Clear();
             enabled = false;
         }
@@ -239,9 +241,19 @@ namespace FameBot.Core
         {
             Log("Starting bot");
             targets.Clear();
-            if (!config.AutoConnect)
-                followTarget = true;
             enabled = true;
+            if (currentMapName == null)
+                return;
+            if (currentMapName.Equals("Nexus") && config.AutoConnect)
+            {
+                gotoRealm = true;
+                followTarget = false;
+                MoveToRealms(connectedClient);
+            } else
+            {
+                gotoRealm = false;
+                followTarget = true;
+            }
         }
 
         private void Escape(Client client)
@@ -336,6 +348,7 @@ namespace FameBot.Core
             if (packet == null)
                 return;
             portals.Clear();
+            currentMapName = packet.Name;
             if (packet.Name == "Nexus" && config.AutoConnect && enabled)
             {
                 gotoRealm = true;
@@ -441,6 +454,11 @@ namespace FameBot.Core
 
         private async void MoveToRealms(Client client)
         {
+            if(client == null)
+            {
+                Log("No client passed to MoveToRealms");
+                return;
+            }
             Location target = new Location(134, 109);
 
             if(client.PlayerData == null)
@@ -451,7 +469,6 @@ namespace FameBot.Core
             }
 
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
-            var callAgain = true;
             if (healthPercentage < 0.95f)
                 target = new Location(134, 134);
 
@@ -467,17 +484,17 @@ namespace FameBot.Core
 
             if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
+                Log("Finished moving to realm. Attempting connection");
                 gotoRealm = false;
-                callAgain = false;
                 AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
             }
             await Task.Delay(5);
-            if (callAgain)
+            if (gotoRealm)
             {
                 MoveToRealms(client);
             } else
             {
-                Log("Finished moving to realm. Attempting connection");
+                Log("Stopped moving to realm.");
             }
         }
 
