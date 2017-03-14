@@ -27,14 +27,14 @@ namespace FameBot.Core
         #region IPlugin
         public string GetAuthor()
         {
-            return "Chicken";
+            return "tcrane";
         }
 
         public string[] GetCommands()
         {
             return new string[]
             {
-                "/activate - binds the bot to the client where the command is used.",
+                "/bind - binds the bot to the client where the command is used.",
                 "/start - starts the bot",
                 "/gui - opens the gui"
             };
@@ -47,7 +47,7 @@ namespace FameBot.Core
 
         public string GetName()
         {
-            return "FameBot by Chicken";
+            return "FameBot by tcrane";
         }
         #endregion
 
@@ -153,15 +153,15 @@ namespace FameBot.Core
                 gui?.SetHandle(flashPtr);
             } else if(processes.Length > 1)
             {
-                Log("Multiple clients running. use the /activate command on the client you want to use");
-                Console.WriteLine("[FameBot] Multiple instances of flash are open. Please use the /activate command on the instance you want to use the bot with.");
+                Log("Multiple clients running. use the /bind command on the client you want to use");
+                Console.WriteLine("[FameBot] Multiple instances of flash are open. Please use the /bind command on the instance you want to use the bot with.");
             } else
             {
-                Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /activate command when you have opened flash.");
+                Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /bind command when you have opened flash.");
                 Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
             }
 
-            proxy.HookCommand("activate", ReceiveCommand);
+            proxy.HookCommand("bind", ReceiveCommand);
             proxy.HookCommand("start", ReceiveCommand);
             proxy.HookCommand("gui", ReceiveCommand);
 
@@ -204,7 +204,7 @@ namespace FameBot.Core
         {
             switch(cmd)
             {
-                case "activate":
+                case "bind":
                     flashPtr = GetForegroundWindow();
                     gui?.SetHandle(flashPtr);
                     client.Notify("FameBot is now active");
