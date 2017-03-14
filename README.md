@@ -3,6 +3,17 @@ A bot for Realm of the Mad God designed to automate the process of collecting fa
 ## How to use
 This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf client which can connect to the proxy server.
 
+### There are 2 options available to get this plugin.
+#### Option 1 (easiest)
+1. Go to the 'Release' folder of this repo.
+
+2. Download FameBot.dll
+
+3. Place it in the Plugins folder of your KRelay.
+
+4. Start using the FameBot.
+
+#### Option 2
 1. Clone this repo to a folder somewhere on your computer.
 
 2. Open FameBot.sln using Visual Studio 2015.
