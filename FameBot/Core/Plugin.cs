@@ -56,11 +56,11 @@ namespace FameBot.Core
         private List<Target> targets;
         private List<Portal> portals;
         private Dictionary<int, Target> playerPosisions;
+        private Dictionary<int, Location> enemies;
         private Client connectedClient;
         private int tickCount;
         private Configuration config;
         private FameBotGUI gui;
-        private bool autoConnect = true;
         private bool gotoRealm;
         private bool enabled;
 
@@ -134,6 +134,7 @@ namespace FameBot.Core
             targets = new List<Target>();
             playerPosisions = new Dictionary<int, Target>();
             portals = new List<Portal>();
+            enemies = new Dictionary<int, Location>();
 
             gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
@@ -149,6 +150,7 @@ namespace FameBot.Core
                 Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
                 Log("Automatically bound to client");
                 flashPtr = processes[0].MainWindowHandle;
+                gui?.SetHandle(flashPtr);
             } else if(processes.Length > 1)
             {
                 Log("Multiple clients running. use the /activate command on the client you want to use");
@@ -204,6 +206,7 @@ namespace FameBot.Core
             {
                 case "activate":
                     flashPtr = GetForegroundWindow();
+                    gui?.SetHandle(flashPtr);
                     client.Notify("FameBot is now active");
                     break;
                 case "start":
@@ -214,6 +217,7 @@ namespace FameBot.Core
                     if (gui == null)
                         gui = new FameBotGUI();
                     gui.Show();
+                    gui.SetHandle(flashPtr);
                     break;
             }
         }
@@ -291,8 +295,14 @@ namespace FameBot.Core
                         }
                     }
                 }
+                if(Enum.IsDefined(typeof(Enemy), (int)obj.ObjectType))
+                {
+                    if (!enemies.ContainsKey(obj.Status.ObjectId))
+                        enemies.Add(obj.Status.ObjectId, obj.Status.Position);
+                    enemies[obj.Status.ObjectId] = obj.Status.Position;
+                }
             }
-
+            
             // Remove old info
             foreach (int dropId in packet.Drops)
             {
@@ -315,6 +325,8 @@ namespace FameBot.Core
                     }
                     playerPosisions.Remove(dropId);
                 }
+                if (enemies.ContainsKey(dropId))
+                    enemies.Remove(dropId);
             }
         }
 
@@ -323,22 +335,18 @@ namespace FameBot.Core
             MapInfoPacket packet = p as MapInfoPacket;
             if (packet == null)
                 return;
-            Task.Factory.StartNew(async () =>
+            portals.Clear();
+            if (packet.Name == "Nexus" && config.AutoConnect && enabled)
             {
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                portals.Clear();
-                if (packet.Name == "Nexus" && config.AutoConnect)
-                {
-                    gotoRealm = true;
-                    MoveToRealms(client);
-                }
-                else
-                {
-                    gotoRealm = false;
-                    if (enabled)
-                        followTarget = true;
-                }
-            });
+                gotoRealm = true;
+                MoveToRealms(client);
+            }
+            else
+            {
+                gotoRealm = false;
+                if (enabled)
+                    followTarget = true;
+            }
         }
 
         private void OnHit(Client client, Packet p)
@@ -386,6 +394,9 @@ namespace FameBot.Core
             {
                 if (playerPosisions.ContainsKey(status.ObjectId))
                     playerPosisions[status.ObjectId].UpdatePosition(status.Position);
+
+                if (enemies.ContainsKey(status.ObjectId))
+                    enemies[status.ObjectId] = status.Position;
             }
             
             if(!followTarget && !gotoRealm)
