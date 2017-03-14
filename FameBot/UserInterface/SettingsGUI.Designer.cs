@@ -53,6 +53,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.epsilon = new System.Windows.Forms.NumericUpDown();
             this.saveButton = new System.Windows.Forms.Button();
+            this.autoConnect = new System.Windows.Forms.CheckBox();
             this.generalSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.followDistanceThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teleportDistanceThreshold)).BeginInit();
@@ -65,6 +66,7 @@
             // 
             // generalSettings
             // 
+            this.generalSettings.Controls.Add(this.autoConnect);
             this.generalSettings.Controls.Add(this.label8);
             this.generalSettings.Controls.Add(this.followDistanceThreshold);
             this.generalSettings.Controls.Add(this.label5);
@@ -76,7 +78,7 @@
             this.generalSettings.Controls.Add(this.label2);
             this.generalSettings.Location = new System.Drawing.Point(12, 56);
             this.generalSettings.Name = "generalSettings";
-            this.generalSettings.Size = new System.Drawing.Size(434, 161);
+            this.generalSettings.Size = new System.Drawing.Size(434, 208);
             this.generalSettings.TabIndex = 0;
             this.generalSettings.TabStop = false;
             this.generalSettings.Text = "General";
@@ -283,7 +285,7 @@
             this.groupBox1.Controls.Add(this.epsilon);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.findNearCenter);
-            this.groupBox1.Location = new System.Drawing.Point(12, 223);
+            this.groupBox1.Location = new System.Drawing.Point(12, 270);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(434, 272);
             this.groupBox1.TabIndex = 2;
@@ -381,7 +383,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(12, 525);
+            this.saveButton.Location = new System.Drawing.Point(12, 571);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(434, 47);
             this.saveButton.TabIndex = 3;
@@ -389,11 +391,26 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // autoConnect
+            // 
+            this.autoConnect.AutoSize = true;
+            this.autoConnect.Checked = true;
+            this.autoConnect.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoConnect.Location = new System.Drawing.Point(11, 170);
+            this.autoConnect.Name = "autoConnect";
+            this.autoConnect.Size = new System.Drawing.Size(129, 24);
+            this.autoConnect.TabIndex = 9;
+            this.autoConnect.Text = "AutoConnect";
+            this.toolTip1.SetToolTip(this.autoConnect, "If this is checked the bot will automatically\r\nwalk to the most full realm and co" +
+        "nnect to it\r\nwhen it is in the nexus. If it has to, it will stop\r\nto heal on the" +
+        " way.\r\n");
+            this.autoConnect.UseVisualStyleBackColor = true;
+            // 
             // SettingsGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(458, 584);
+            this.ClientSize = new System.Drawing.Size(458, 630);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
@@ -443,5 +460,6 @@
         private System.Windows.Forms.Label tickLabel;
         private System.Windows.Forms.NumericUpDown tickPerScan;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox autoConnect;
     }
 }

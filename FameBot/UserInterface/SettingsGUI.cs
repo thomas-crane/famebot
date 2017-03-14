@@ -34,6 +34,7 @@ namespace FameBot.UserInterface
                 EscapeIfNoTargets = escapeIfNoTargets.Checked,
                 TeleportDistanceThreshold = (float)teleportDistanceThreshold.Value,
                 FollowDistanceThreshold = (float)followDistanceThreshold.Value,
+                AutoConnect = autoConnect.Checked,
                 FindClustersNearCenter = findNearCenter.Checked,
                 Epsilon = (float)epsilon.Value,
                 MinPoints = (int)minPoints.Value
@@ -60,6 +61,7 @@ namespace FameBot.UserInterface
             escapeIfNoTargets.Checked = cfg.EscapeIfNoTargets;
             teleportDistanceThreshold.Value = (decimal)cfg.TeleportDistanceThreshold;
             followDistanceThreshold.Value = (decimal)cfg.FollowDistanceThreshold;
+            autoConnect.Checked = cfg.AutoConnect;
             findNearCenter.Checked = cfg.FindClustersNearCenter;
             epsilon.Value = (decimal)cfg.Epsilon;
             minPoints.Value = cfg.MinPoints;
