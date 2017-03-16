@@ -14,9 +14,9 @@ namespace FameBot.Services
     {
         public static Configuration GetConfiguration()
         {
-            string path = Directory.GetCurrentDirectory() + "\\Plugins\\famebot_config.xml";
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Plugins", "famebot_config.xml");
 
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 Configuration cfg = new Configuration()
                 {
@@ -41,7 +41,7 @@ namespace FameBot.Services
         public static void WriteXML(Configuration cfg)
         {
             XmlSerializer xmlS = new XmlSerializer(typeof(Configuration));
-            string path = Directory.GetCurrentDirectory() + "\\Plugins\\famebot_config.xml";
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Plugins", "famebot_config.xml");
 
             using (FileStream file = File.Open(path, FileMode.Create, FileAccess.Write))
             {
@@ -52,7 +52,7 @@ namespace FameBot.Services
         public static Configuration ReadXML()
         {
             XmlSerializer xmlS = new XmlSerializer(typeof(Configuration));
-            string path = Directory.GetCurrentDirectory() + "\\Plugins\\famebot_config.xml";
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Plugins", "famebot_config.xml");
 
             Configuration config = new Configuration();
 
