@@ -168,7 +168,7 @@ namespace FameBot.Core
 
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
-            proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
+            //proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
 
             proxy.ClientConnected += (client) =>
             {
@@ -364,12 +364,7 @@ namespace FameBot.Core
 
         private void OnHit(Client client, Packet p)
         {
-            // Autonexus
-            float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
-            if (healthPercentage * 100f < config.AutonexusThreshold * 1.25f)
-                Log(string.Format("Health at {0}%", (int)(healthPercentage * 100f)));
-            if (healthPercentage * 100f < config.AutonexusThreshold)
-                Escape(client);
+            
         }
 
         private void OnNewTick(Client client, Packet p)
@@ -381,7 +376,13 @@ namespace FameBot.Core
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage * 100f));
 
-            if(tickCount % config.TickCountThreshold == 0)
+            // Autonexus
+            if (healthPercentage * 100f < config.AutonexusThreshold * 1.25f)
+                Log(string.Format("Health at {0}%", (int)(healthPercentage * 100f)));
+            if (healthPercentage * 100f < config.AutonexusThreshold && !(currentMapName?.Equals("Nexus") ?? false))
+                Escape(client);
+
+            if (tickCount % config.TickCountThreshold == 0)
             {
                 if (followTarget && playerPosisions.Count > 0 && !gotoRealm)
                 {
