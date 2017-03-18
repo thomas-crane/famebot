@@ -20,7 +20,7 @@ namespace FameBot.Services
             {
                 Configuration cfg = new Configuration()
                 {
-                    AutonexusThreshold = 0.45f,
+                    AutonexusThreshold = 45f,
                     TickCountThreshold = 10,
                     TeleportDistanceThreshold = 15f,
                     FollowDistanceThreshold = 1.5f,
