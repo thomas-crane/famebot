@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FameBotGUI));
             this.windowOnTopBox = new System.Windows.Forms.CheckBox();
             this.onButton = new System.Windows.Forms.Button();
             this.offButton = new System.Windows.Forms.Button();
@@ -179,6 +180,7 @@
             this.Controls.Add(this.onButton);
             this.Controls.Add(this.windowOnTopBox);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(600, 300);
             this.Name = "FameBotGUI";

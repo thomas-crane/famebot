@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\Lib K Relay.dll" />
+    <Content Include="Resources\icon.ico" />
     <None Include="Resources\w_on.png" />
     <None Include="Resources\w_off.png" />
     <None Include="Resources\s_on.png" />
@@ -114,6 +115,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FameBotGUI.resx">
       <DependentUpon>FameBotGUI.cs</DependentUpon>

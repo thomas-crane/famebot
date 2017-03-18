@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsGUI));
             this.generalSettings = new System.Windows.Forms.GroupBox();
+            this.autoConnect = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.followDistanceThreshold = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -53,7 +55,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.epsilon = new System.Windows.Forms.NumericUpDown();
             this.saveButton = new System.Windows.Forms.Button();
-            this.autoConnect = new System.Windows.Forms.CheckBox();
             this.generalSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.followDistanceThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teleportDistanceThreshold)).BeginInit();
@@ -82,6 +83,21 @@
             this.generalSettings.TabIndex = 0;
             this.generalSettings.TabStop = false;
             this.generalSettings.Text = "General";
+            // 
+            // autoConnect
+            // 
+            this.autoConnect.AutoSize = true;
+            this.autoConnect.Checked = true;
+            this.autoConnect.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoConnect.Location = new System.Drawing.Point(11, 170);
+            this.autoConnect.Name = "autoConnect";
+            this.autoConnect.Size = new System.Drawing.Size(129, 24);
+            this.autoConnect.TabIndex = 9;
+            this.autoConnect.Text = "AutoConnect";
+            this.toolTip1.SetToolTip(this.autoConnect, "If this is checked the bot will automatically\r\nwalk to the most full realm and co" +
+        "nnect to it\r\nwhen it is in the nexus. If it has to, it will stop\r\nto heal on the" +
+        " way.\r\n");
+            this.autoConnect.UseVisualStyleBackColor = true;
             // 
             // label8
             // 
@@ -391,21 +407,6 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // autoConnect
-            // 
-            this.autoConnect.AutoSize = true;
-            this.autoConnect.Checked = true;
-            this.autoConnect.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoConnect.Location = new System.Drawing.Point(11, 170);
-            this.autoConnect.Name = "autoConnect";
-            this.autoConnect.Size = new System.Drawing.Size(129, 24);
-            this.autoConnect.TabIndex = 9;
-            this.autoConnect.Text = "AutoConnect";
-            this.toolTip1.SetToolTip(this.autoConnect, "If this is checked the bot will automatically\r\nwalk to the most full realm and co" +
-        "nnect to it\r\nwhen it is in the nexus. If it has to, it will stop\r\nto heal on the" +
-        " way.\r\n");
-            this.autoConnect.UseVisualStyleBackColor = true;
-            // 
             // SettingsGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -416,6 +417,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.generalSettings);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(480, 640);
             this.Name = "SettingsGUI";
             this.Text = " [FameBot] Config";
