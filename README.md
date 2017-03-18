@@ -28,5 +28,6 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 7. Start using the FameBot.
 
+#### Make sure the in-game camera angle is set to 0 degrees before using the FameBot.
 ### Notes
-FameBot uses a WINAPI method to send keystrokes directly to the flash player process. If your flash player is called "flash.exe" and is already running when you open KRelay the FameBot will already know which process it is. If the FameBot can't find the process when it starts, instructions on manually identifying the process will be printed to the KRelay console so make sure you are paying attention to that.
+FameBot uses a WINAPI method to send keystrokes directly to the flash player process. If your flash player is called "flash.exe" and is already running when you open KRelay the FameBot will already know which process it is. If the FameBot can't find the process when it starts, use the '/bind' command in game.
