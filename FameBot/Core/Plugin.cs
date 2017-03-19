@@ -379,7 +379,7 @@ namespace FameBot.Core
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage));
 
             // Autonexus
-            if (healthPercentage < config.AutonexusThreshold && !(currentMapName?.Equals("Nexus") ?? false))
+            if (healthPercentage < config.AutonexusThreshold && !(currentMapName?.Equals("Nexus") ?? false) && enabled)
                 Escape(client);
 
             if (tickCount % config.TickCountThreshold == 0)
@@ -506,10 +506,12 @@ namespace FameBot.Core
             if (client.Connected)
                 client.SendToServer(packet);
             await Task.Delay(TimeSpan.FromSeconds(0.1));
-            if (client.Connected)
+            if (client.Connected && enabled)
                 AttemptConnection(client, portal);
-            else
+            else if (enabled)
                 Log("Connection successful");
+            else
+                Log("Bot disabled, cancelling connection attempt");
         }
 
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
