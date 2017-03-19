@@ -147,7 +147,7 @@ namespace FameBot.Core
             if (config.AutoConnect)
                 Start();
 
-            Process[] processes = Process.GetProcessesByName("flash");
+            Process[] processes = Process.GetProcessesByName("flash"); //TODO: make this a config value
             if (processes.Length == 1)
             {
                 Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
@@ -298,8 +298,6 @@ namespace FameBot.Core
                     {
                         if(data.StringValue != null)
                         {
-                            // TODO: replace with regex
-                            // azuki-> like this?
                             Match PortalMatch = portalRegex.Match(data.ToString());
                             var portal = new Portal(obj.Status.ObjectId, int.Parse(PortalMatch.Groups["PlayersInRealm"].Value), PortalMatch.Groups["RealmName"].Value, obj.Status.Position);
                             if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
@@ -326,8 +324,8 @@ namespace FameBot.Core
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
-                            Log(string.Format("Dropping {0} from targets", playerPosisions[dropId].Name));
-                            Console.WriteLine("[FameBot] The player \"{0}\" was dropped from the target list.", playerPosisions[dropId].Name);
+                            Log($"Dropping {playerPosisions[dropId].Name} from targets");
+                            Console.WriteLine($"[FameBot] The player \"{playerPosisions[dropId].Name}\" was dropped from the target list.");
                         } else
                         {
                             Log("No targets in target list");
@@ -374,7 +372,7 @@ namespace FameBot.Core
         {
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth * 100f;
             if (healthPercentage < config.AutonexusThreshold * 1.25f)
-                Log(string.Format("Health at {0}%", (int)(healthPercentage)));
+                Log($"Health at {(int)healthPercentage}%");
         }
 
         private void OnNewTick(Client client, Packet p)
@@ -405,7 +403,7 @@ namespace FameBot.Core
                     } else
                     {
                         targets = newTargets;
-                        Console.WriteLine("[FameBot] Now targeting {0} players", targets.Count);
+                        Console.WriteLine($"[FameBot] Now targeting {targets.Count} players");
                     }
                 }
                 tickCount = 0;
@@ -495,7 +493,10 @@ namespace FameBot.Core
             {
                 Log("Finished moving to realm. Attempting connection");
                 gotoRealm = false;
-                AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
+                //This should be an easy fix so it doesn't spam 'realm is full' 
+                //ToTest: see if this works as intended
+                if (portals.OrderByDescending(p => p.PlayerCount).First().PlayerCount < 85)
+                    AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First());
             }
             await Task.Delay(5);
             if (gotoRealm)
