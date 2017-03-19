@@ -10,6 +10,7 @@ using FameBot.Data.Enums;
 using FameBot.Data.Models;
 using Lib_K_Relay.Networking;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using FameBot.Helpers;
 using Lib_K_Relay.Networking.Packets;
 using Lib_K_Relay.Networking.Packets.Server;
@@ -64,6 +65,7 @@ namespace FameBot.Core
         private bool gotoRealm;
         private bool enabled;
         private string currentMapName;
+        private Regex portalRegex = new Regex(@"Id=(?<id>[^\=V]+)(?:[^\.]+\.)(?<RealmName>[^\= ]+) \((?<PlayersInRealm>[^\=/]+)");
 
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
@@ -297,10 +299,9 @@ namespace FameBot.Core
                         if(data.StringValue != null)
                         {
                             // TODO: replace with regex
-                            var strArray = data.StringValue.Split(' ');
-                            var strCount = strArray[1].Split('/')[0].Remove(0, 1);
-                            var name = strArray[0].Split('.')[1];
-                            var portal = new Portal(obj.Status.ObjectId, int.Parse(strCount), name, obj.Status.Position);
+                            // azuki-> like this?
+                            Match PortalMatch = portalRegex.Match(data.ToString());
+                            var portal = new Portal(obj.Status.ObjectId, int.Parse(PortalMatch.Groups["PlayersInRealm"].Value), PortalMatch.Groups["RealmName"].Value, obj.Status.Position);
                             if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
                                 portals.Remove(portals.Find(ptl => ptl.ObjectId == obj.Status.ObjectId));
                             portals.Add(portal);
