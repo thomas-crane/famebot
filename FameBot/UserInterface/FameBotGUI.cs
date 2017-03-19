@@ -9,12 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FameBot.Data.Events;
 
 namespace FameBot.UserInterface
 {
     public partial class FameBotGUI : Form
     {
         private IntPtr flashPtr;
+
+        private delegate void UpdateEventLogInvoker(object sender, LogEventArgs args);
         public FameBotGUI()
         {
             InitializeComponent();
@@ -25,12 +28,24 @@ namespace FameBot.UserInterface
             };
             Plugin.logEvent += (s, e) =>
             {
-                eventLog.Text += (e.MessageWithTimestamp + "\n");
-                eventLog.SelectionStart = eventLog.Text.Length;
-                eventLog.ScrollToCaret();
+                UpdateEventLog(s, e);
             };
         }
         
+        private void UpdateEventLog(object sender, LogEventArgs args)
+        {
+            if (this.eventLog.InvokeRequired)
+            {
+                var inv = new UpdateEventLogInvoker(UpdateEventLog);
+                this.eventLog.Invoke(inv, sender, args);
+            } else
+            {
+                eventLog.Text += (args.MessageWithTimestamp + "\n");
+                eventLog.SelectionStart = eventLog.Text.Length;
+                eventLog.ScrollToCaret();
+            }
+        }
+
         public void SetHandle(IntPtr handle)
         {
             flashPtr = handle;
