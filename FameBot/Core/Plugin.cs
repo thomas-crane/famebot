@@ -497,6 +497,8 @@ namespace FameBot.Core
                         
                 //    }
                 //}
+
+                //ToTest: test this in game
                 if (BagLocation != Location.Empty)
                 {
                     CalculateMovement(client, BagLocation, 0f);
