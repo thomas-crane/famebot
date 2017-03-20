@@ -148,19 +148,18 @@ namespace FameBot.Core
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
             {
-                Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
+                Console.WriteLine("[FameBot]      Flash process handle aquired automatically.");
                 Log("Automatically bound to client.");
                 flashPtr = processes[0].MainWindowHandle;
                 gui?.SetHandle(flashPtr);
             } else if(processes.Length > 1)
             {
                 Log("Multiple clients running. Use the /bind command on the client you want to use");
-                Console.WriteLine("[FameBot] Multiple instances of flash are open. Please use the /bind command on the instance you want to use the bot with.");
+                Console.WriteLine("[FameBot]      Multiple instances of flash are open. Please use the /bind command on the instance you want to use the bot with.");
             } else
             {
                 Log("Couldn't find flash player. Use the /bind command in game then restart the bot.");
-                Console.WriteLine("[FameBot] Couldn't find any instances of flash player. Use the /bind command when you have opened flash.");
-                Console.WriteLine("[FameBot] FameBot will only detect instances of flash player which are called \"flash.exe\"");
+                Console.WriteLine("[FameBot]      Couldn't find any instances of flash player. Use the /bind command when you have opened flash.  FameBot will only detect instances of flash player which are called \"flash.exe\"");
             }
 
             proxy.HookCommand("bind", ReceiveCommand);
@@ -259,7 +258,6 @@ namespace FameBot.Core
 
         private void Escape(Client client)
         {
-            Console.WriteLine("[FameBot] Escaping to nexus.");
             Log("Escaping to nexus");
             client.SendToServer(Packet.Create(PacketType.ESCAPE));
         }
@@ -327,12 +325,10 @@ namespace FameBot.Core
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
-                            Log(string.Format("Dropping {0} from targets", playerPosisions[dropId].Name));
-                            Console.WriteLine("[FameBot] The player \"{0}\" was dropped from the target list.", playerPosisions[dropId].Name);
+                            Log(string.Format("Dropping \"{0}\" from targets", playerPosisions[dropId].Name));
                         } else
                         {
-                            Log("No targets in target list");
-                            Console.WriteLine("[FameBot] There are no players left in the target list.");
+                            Log("No targets left in target list.");
                             if (config.EscapeIfNoTargets)
                                 Escape(client);
                         }
@@ -405,11 +401,11 @@ namespace FameBot.Core
                             Escape(client); 
                         targets.Clear();
                         Log("No valid clusters found");
-                        Console.WriteLine("[FameBot] Player search didn't return any good results, If this keeps happening try adjusting your clustering settings.");
                     } else
                     {
+                        if (targets.Count != newTargets.Count)
+                            Log(string.Format("Now targeting {0} players", newTargets.Count));
                         targets = newTargets;
-                        Console.WriteLine("[FameBot] Now targeting {0} players", targets.Count);
                     }
                 }
                 tickCount = 0;
