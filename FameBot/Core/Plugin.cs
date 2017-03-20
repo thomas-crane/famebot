@@ -82,6 +82,7 @@ namespace FameBot.Core
 
 #if Experimental
         public List<EnemyShootPacket> BulletList = new List<EnemyShootPacket>();
+        private Location BagLocation = Location.Empty;
 #endif
         #region WINAPI
         // Get the focused window
@@ -319,9 +320,12 @@ namespace FameBot.Core
                         enemies.Add(obj.Status.ObjectId, obj.Status.Position);
                     enemies[obj.Status.ObjectId] = obj.Status.Position;
                 }
-
-                string text = LootHelper.BagTypeToString(obj.ObjectType);
-                Console.WriteLine(text);
+                //Loot
+                string BagText = LootHelper.BagTypeToString(obj.ObjectType);
+                if (BagText == "Blue")
+                {
+                    BagLocation = obj.Status.Position;
+                }
             }
             
             // Remove old info
@@ -483,14 +487,22 @@ namespace FameBot.Core
                     }
                 }
 #if Experimental
-                foreach (EnemyShootPacket Bullet in BulletList)
-                {
-                    if (Bullet.Location.IntersectsRadius(client.PlayerData.Pos, 7))
-                    {
+                //foreach (EnemyShootPacket Bullet in BulletList)
+                //{
+                //    if (Bullet.Location.IntersectsRadius(client.PlayerData.Pos, 7))
+                //    {
                         
-                    }
+                //    }
+                //}
+                if (BagLocation != Location.Empty)
+                {
+                    CalculateMovement(client, BagLocation, 0f);
+                    BagLocation = Location.Empty;
                 }
-                CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
+                else
+                {
+                    CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
+                }
 #else
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
 #endif
