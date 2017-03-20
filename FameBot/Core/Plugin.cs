@@ -55,7 +55,7 @@ namespace FameBot.Core
         private bool followTarget;
         private List<Target> targets;
         private List<Portal> portals;
-        private Dictionary<int, Target> playerPosisions;
+        private Dictionary<int, Target> playerPositions;
         private Dictionary<int, Location> enemies;
         private Client connectedClient;
         private int tickCount;
@@ -133,7 +133,7 @@ namespace FameBot.Core
         public void Initialize(Proxy proxy)
         {
             targets = new List<Target>();
-            playerPosisions = new Dictionary<int, Target>();
+            playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
             enemies = new Dictionary<int, Location>();
 
@@ -174,7 +174,7 @@ namespace FameBot.Core
             {
                 connectedClient = client;
                 targets.Clear();
-                playerPosisions.Clear();
+                playerPositions.Clear();
                 followTarget = false;
                 A_PRESSED = false;
                 D_PRESSED = false;
@@ -285,9 +285,9 @@ namespace FameBot.Core
                         playerData.Parse(data.Id, data.IntValue, data.StringValue);
                     }
 
-                    if (playerPosisions.ContainsKey(obj.Status.ObjectId))
-                        playerPosisions.Remove(obj.Status.ObjectId);
-                    playerPosisions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
+                    if (playerPositions.ContainsKey(obj.Status.ObjectId))
+                        playerPositions.Remove(obj.Status.ObjectId);
+                    playerPositions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
                 }
                 if(obj.ObjectType == 1810)
                 {
@@ -318,14 +318,14 @@ namespace FameBot.Core
             // Remove old info
             foreach (int dropId in packet.Drops)
             {
-                if (playerPosisions.ContainsKey(dropId))
+                if (playerPositions.ContainsKey(dropId))
                 {
                     if(followTarget && targets.Exists(t => t.ObjectId == dropId))
                     {
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
-                            Log(string.Format("Dropping \"{0}\" from targets", playerPosisions[dropId].Name));
+                            Log(string.Format("Dropping \"{0}\" from targets", playerPositions[dropId].Name));
                         } else
                         {
                             Log("No targets left in target list.");
@@ -333,7 +333,7 @@ namespace FameBot.Core
                                 Escape(client);
                         }
                     }
-                    playerPosisions.Remove(dropId);
+                    playerPositions.Remove(dropId);
                 }
                 if (enemies.ContainsKey(dropId))
                     enemies.Remove(dropId);
@@ -392,9 +392,9 @@ namespace FameBot.Core
 
             if (tickCount % config.TickCountThreshold == 0)
             {
-                if (followTarget && playerPosisions.Count > 0 && !gotoRealm)
+                if (followTarget && playerPositions.Count > 0 && !gotoRealm)
                 {
-                    List<Target> newTargets = D36n4.Invoke(playerPosisions.Values.ToList(), config.Epsilon, config.MinPoints, config.FindClustersNearCenter);
+                    List<Target> newTargets = D36n4.Invoke(playerPositions.Values.ToList(), config.Epsilon, config.MinPoints, config.FindClustersNearCenter);
                     if(newTargets == null)
                     {
                         if (targets.Count != 0 && config.EscapeIfNoTargets)
@@ -415,8 +415,8 @@ namespace FameBot.Core
             foreach(Status status in packet.Statuses)
             {
                 // Update player positions
-                if (playerPosisions.ContainsKey(status.ObjectId))
-                    playerPosisions[status.ObjectId].UpdatePosition(status.Position);
+                if (playerPositions.ContainsKey(status.ObjectId))
+                    playerPositions[status.ObjectId].UpdatePosition(status.Position);
 
                 // Update enemy positions
                 if (enemies.ContainsKey(status.ObjectId))
