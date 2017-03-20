@@ -1,4 +1,4 @@
-﻿using Lib_K_Relay.Interface;
+using Lib_K_Relay.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -361,14 +361,13 @@ namespace FameBot.Core
             portals.Clear();
             currentMapName = packet.Name;
             Console.WriteLine("Current map name: {0}", currentMapName);
-
             if (packet.Name == "Oryx's Castle" && enabled)
             {
                 Log("Escaping from oryx's castle");
                 Escape(client);
                 return;
             }
-            
+
             if (packet.Name == "Nexus" && config.AutoConnect && enabled)
             {
                 gotoRealm = true;
