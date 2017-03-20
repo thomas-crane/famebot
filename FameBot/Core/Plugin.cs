@@ -83,6 +83,7 @@ namespace FameBot.Core
 #if Experimental
         public List<EnemyShootPacket> BulletList = new List<EnemyShootPacket>();
         private Location BagLocation = Location.Empty;
+        private Location LastPlayerLocation = Location.Empty;
 #endif
         #region WINAPI
         // Get the focused window
@@ -320,12 +321,14 @@ namespace FameBot.Core
                         enemies.Add(obj.Status.ObjectId, obj.Status.Position);
                     enemies[obj.Status.ObjectId] = obj.Status.Position;
                 }
+#if Experimental
                 //Loot
                 string BagText = LootHelper.BagTypeToString(obj.ObjectType);
                 if (BagText == "Blue")
                 {
                     BagLocation = obj.Status.Position;
                 }
+#endif
             }
             
             // Remove old info
@@ -587,6 +590,15 @@ namespace FameBot.Core
 
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
         {
+#if Experimental
+            if (LastPlayerLocation != Location.Empty)
+            {
+                if (LastPlayerLocation == client.PlayerData.Pos && targetPosition != LastPlayerLocation)
+                {
+                    
+                }
+            }
+#endif
             // Left or right
             if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
             {
@@ -678,6 +690,9 @@ namespace FameBot.Core
                     W_PRESSED = false;
                 }
             }
+#if Experimental
+            LastPlayerLocation = client.PlayerData.Pos;
+#endif
         }
     }
 }
