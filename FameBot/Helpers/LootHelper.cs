@@ -1,25 +1,8 @@
-﻿using System.Collections.Generic;
-using Lib_K_Relay.Networking.Packets.DataObjects;
-
-namespace FameBot.Helpers
+﻿namespace FameBot.Helpers
 {
     internal class LootHelper
     {
-        public Dictionary<int, int> BagLastNotif = new Dictionary<int, int>();
-
-        public int CustomQuest = -1;
-
-        public int LastLoot;
-        public Dictionary<int, int[]> LootBagItems = new Dictionary<int, int[]>();
-
-        public Dictionary<int, Location> LootBagLocations = new Dictionary<int, Location>();
-
-        public Dictionary<int, string> LootBagTypes = new Dictionary<int, string>();
-
-        public int OriginalQuest = -1;
-
-        public static string BagTypeToString(short ObjectType)
-        {
+        public static string BagTypeToString(short ObjectType) {
             switch (ObjectType)
             {
                 case 1280:
@@ -44,6 +27,5 @@ namespace FameBot.Helpers
             }
             return null;
         }
-
     }
 }
