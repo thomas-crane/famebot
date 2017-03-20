@@ -147,7 +147,7 @@ namespace FameBot.Core
             if (config.AutoConnect)
                 Start();
 
-            Process[] processes = Process.GetProcessesByName("flash"); //TODO: make this a config value
+            Process[] processes = Process.GetProcessesByName(config.FlashProcessName);
             if (processes.Length == 1)
             {
                 Console.WriteLine("[FameBot]      Flash process handle aquired automatically.");
@@ -171,6 +171,9 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
+#if Experimental
+            proxy.HookPacket(PacketType.ENEMYSHOOT, OnEnemyShoot);
+#endif
 
             proxy.ClientConnected += (client) =>
             {
@@ -324,7 +327,7 @@ namespace FameBot.Core
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
-                            Log(string.Format("Dropping \"{0}\" from targets", playerPosisions[dropId].Name));
+                            Log($"Dropping \"{playerPosisions[dropId].Name}\" from targets");
                         } else
                         {
                             Log("No targets left in target list.");
@@ -380,7 +383,7 @@ namespace FameBot.Core
         {
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
-
+            
             // Health changed event
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth * 100f;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage));
@@ -403,13 +406,12 @@ namespace FameBot.Core
                     } else
                     {
                         if (targets.Count != newTargets.Count)
-                            Log(string.Format("Now targeting {0} players", newTargets.Count));
+                            Log($"Now targeting {newTargets.Count} players");
                         targets = newTargets;
                     }
                 }
                 tickCount = 0;
             }
-
             // Updates
             foreach(Status status in packet.Statuses)
             {
@@ -477,6 +479,14 @@ namespace FameBot.Core
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
             }
         }
+
+#if Experimental
+        private void OnEnemyShoot(Client client, Packet p) {
+            EnemyShootPacket enemyShootPacket = p as EnemyShootPacket;
+            Location CharacterPosition = client.PlayerData.Pos;
+            
+        }
+#endif
         #endregion
 
         private async void MoveToRealms(Client client)

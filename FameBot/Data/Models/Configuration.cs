@@ -19,6 +19,8 @@ namespace FameBot.Data.Models
         public float Epsilon { get; set; }
         public int MinPoints { get; set; }
 
+        public string FlashProcessName { get; set; };
+
         public Configuration()
         {
         }

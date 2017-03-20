@@ -28,7 +28,8 @@ namespace FameBot.Services
                     FindClustersNearCenter = true,
                     Epsilon = 8f,
                     MinPoints = 5,
-                    EscapeIfNoTargets = true
+                    EscapeIfNoTargets = true,
+                    FlashProcessName = "flash"
                 };
                 WriteXML(cfg);
                 return cfg;
