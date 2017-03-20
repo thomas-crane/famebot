@@ -82,8 +82,6 @@ namespace FameBot.Core
 
 #if Experimental
         public List<EnemyShootPacket> BulletList = new List<EnemyShootPacket>();
-        private readonly Dictionary<Client, LootHelper> lootDictionary = new Dictionary<Client, LootHelper>();
-        private Location bagLocation = Location.Empty;
 #endif
         #region WINAPI
         // Get the focused window
@@ -321,6 +319,9 @@ namespace FameBot.Core
                         enemies.Add(obj.Status.ObjectId, obj.Status.Position);
                     enemies[obj.Status.ObjectId] = obj.Status.Position;
                 }
+
+                string text = LootHelper.BagTypeToString(obj.ObjectType);
+                Console.WriteLine(text);
             }
             
             // Remove old info
@@ -348,94 +349,6 @@ namespace FameBot.Core
 
                 if(portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
-            }
-            LootHelper lootState = lootDictionary[client];
-            Entity[] newObjs = packet.NewObjs;
-            for (int i = 0; i < newObjs.Length; i++)
-            {
-                Entity entity = newObjs[i];
-                string BagName = LootHelper.BagTypeToString(entity.ObjectType);
-                if (BagName != null)
-                {
-                    lootState.CustomQuest = entity.Status.ObjectId;
-                    bagLocation = entity.Status.Position;
-                    QuestObjIdPacket questObjIdPacket = (QuestObjIdPacket)Packet.Create(PacketType.QUESTOBJID);
-                    questObjIdPacket.ObjectId = entity.Status.ObjectId;
-                    client.SendToClient(questObjIdPacket);
-                    int objectId = entity.Status.ObjectId;
-                    if (!lootState.LootBagTypes.ContainsKey(objectId))
-                    {
-                        lootState.LootBagTypes.Add(objectId, BagName);
-                    }
-                    else
-                    {
-                        lootState.LootBagTypes[objectId] = BagName;
-                    }
-                    if (!lootState.LootBagItems.ContainsKey(objectId))
-                    {
-                        lootState.LootBagItems.Add(objectId, new int[]
-                        {
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1
-                        });
-                    }
-                    else
-                    {
-                        lootState.LootBagItems[objectId] = new int[]
-                        {
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            -1
-                        };
-                    }
-                    if (!lootState.LootBagLocations.ContainsKey(objectId))
-                    {
-                        lootState.LootBagLocations.Add(objectId, entity.Status.Position);
-                    }
-                    else
-                    {
-                        lootState.LootBagLocations[objectId] = entity.Status.Position;
-                    }
-                    StatData[] data = entity.Status.Data;
-                    for (int j = 0; j < data.Length; j++)
-                    {
-                        StatData statData = data[j];
-                        if (statData.Id >= 8 && statData.Id <= 15)
-                        {
-                            lootState.LootBagItems[objectId][statData.Id - 8] = statData.IntValue;
-                        }
-                    }
-                }
-            }
-            int[] drops = packet.Drops;
-            for (int i = 0; i < drops.Length; i++)
-            {
-                int num = drops[i];
-                if (num == lootState.CustomQuest && lootState.OriginalQuest != -1)
-                {
-                    QuestObjIdPacket questObjIdPacket2 = (QuestObjIdPacket)Packet.Create(PacketType.QUESTOBJID);
-                    questObjIdPacket2.ObjectId = lootState.OriginalQuest;
-                    client.SendToClient(questObjIdPacket2);
-                    lootState.OriginalQuest = -1;
-                    lootState.CustomQuest = -1;
-                }
-                if (lootState.LootBagItems.ContainsKey(num))
-                {
-                    bagLocation = Location.Empty;
-                    lootState.LootBagItems.Remove(num);
-                    lootState.LootBagLocations.Remove(num);
-                }
             }
         }
 
@@ -570,43 +483,17 @@ namespace FameBot.Core
                     }
                 }
 #if Experimental
-                //foreach (EnemyShootPacket Bullet in BulletList)
-                //{
-                //    if (Bullet.Location.IntersectsRadius(client.PlayerData.Pos, 7))
-                //    {
+                foreach (EnemyShootPacket Bullet in BulletList)
+                {
+                    if (Bullet.Location.IntersectsRadius(client.PlayerData.Pos, 7))
+                    {
                         
-                //    }
-                //}
-                //ToTest: everything concerning the looting thing has to be test
-                if (bagLocation != Location.Empty)
-                {
-                    CalculateMovement(client, bagLocation, 0f);
+                    }
                 }
-                else
-                {
-                    CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
-                }
+                CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
 #else
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
 #endif
-            }
-            LootHelper lootState = lootDictionary[client];
-            Status[] statuses = packet.Statuses;
-            for (int i = 0; i < statuses.Length; i++)
-            {
-                Status status = statuses[i];
-                if (lootState.LootBagItems.ContainsKey(status.ObjectId))
-                {
-                    StatData[] data = status.Data;
-                    for (int j = 0; j < data.Length; j++)
-                    {
-                        StatData statData = data[j];
-                        if (statData.Id >= 8 && statData.Id <= 15)
-                        {
-                            lootState.LootBagItems[status.ObjectId][statData.Id - 8] = statData.IntValue;
-                        }
-                    }
-                }
             }
         }
 
