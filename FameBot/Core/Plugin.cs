@@ -56,7 +56,7 @@ namespace FameBot.Core
         private List<Target> targets;
         private List<Portal> portals;
         private Dictionary<int, Target> playerPositions;
-        private Dictionary<int, Location> enemies;
+        private List<Enemy> enemies;
         private Client connectedClient;
         private int tickCount;
         private Configuration config;
@@ -135,7 +135,7 @@ namespace FameBot.Core
             targets = new List<Target>();
             playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
-            enemies = new Dictionary<int, Location>();
+            enemies = new List<Enemy>();
 
             gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
@@ -307,11 +307,11 @@ namespace FameBot.Core
                         }
                     }
                 }
-                if(Enum.IsDefined(typeof(Enemy), (int)obj.ObjectType))
+                if(Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
-                    if (!enemies.ContainsKey(obj.Status.ObjectId))
-                        enemies.Add(obj.Status.ObjectId, obj.Status.Position);
-                    enemies[obj.Status.ObjectId] = obj.Status.Position;
+                    if (!enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
+                        enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
+                    enemies.Find(en => en.ObjectId == obj.Status.ObjectId).Location = obj.Status.Position;
                 }
             }
             
@@ -335,8 +335,8 @@ namespace FameBot.Core
                     }
                     playerPositions.Remove(dropId);
                 }
-                if (enemies.ContainsKey(dropId))
-                    enemies.Remove(dropId);
+
+                enemies.RemoveAll(en => en.ObjectId == dropId);
 
                 if(portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
@@ -419,8 +419,8 @@ namespace FameBot.Core
                     playerPositions[status.ObjectId].UpdatePosition(status.Position);
 
                 // Update enemy positions
-                if (enemies.ContainsKey(status.ObjectId))
-                    enemies[status.ObjectId] = status.Position;
+                if (enemies.Exists(en => en.ObjectId == status.ObjectId))
+                    enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
 
                 // Update portal player counts when in nexus.
                 if(portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (currentMapName?.Equals("Nexus") ?? false))
@@ -500,7 +500,7 @@ namespace FameBot.Core
             if (healthPercentage < 0.95f)
                 target = new Location(134, 134);
 
-            if(client.PlayerData.Pos.Y <= 115 && client.PlayerData.Pos.Y != 0)
+            if (client.PlayerData.Pos.Y <= 115 && client.PlayerData.Pos.Y != 0)
             {
                 if (portals.Count != 0)
                     target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
