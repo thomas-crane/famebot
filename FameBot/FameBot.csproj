@@ -71,6 +71,7 @@
     <Compile Include="Helpers\ClientExtensions.cs" />
     <Compile Include="Helpers\LocationExtensions.cs" />
     <Compile Include="Helpers\LootHelper.cs" />
+    <Compile Include="Helpers\ReconnectHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

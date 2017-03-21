@@ -21,6 +21,7 @@ using Lib_K_Relay.Networking.Packets.Client;
 using FameBot.Services;
 using FameBot.UserInterface;
 using FameBot.Data.Events;
+using ReconnectHandler = FameBot.Helpers.ReconnectHandler;
 
 namespace FameBot.Core
 {
@@ -79,6 +80,8 @@ namespace FameBot.Core
 
         public static event LogEventHandler logEvent;
         public delegate void LogEventHandler(object sender, LogEventArgs args);
+
+        public ReconnectHandler ReconnectHandler;
 
 #if Experimental
         public List<EnemyShootPacket> BulletList = new List<EnemyShootPacket>();
@@ -194,7 +197,8 @@ namespace FameBot.Core
             };
 
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
-
+            ReconnectHandler = new ReconnectHandler();
+            ReconnectHandler.Attach(proxy);
             guiEvent += (evt) =>
             {
                 switch (evt)
@@ -323,8 +327,7 @@ namespace FameBot.Core
                 }
 #if Experimental
                 //Loot
-                string BagText = LootHelper.BagTypeToString(obj.ObjectType);
-                if (BagText == "Blue")
+                if (obj.ObjectType == 1291) //blue bag
                 {
                     BagLocation = obj.Status.Position;
                 }
@@ -494,15 +497,21 @@ namespace FameBot.Core
                 //{
                 //    if (Bullet.Location.IntersectsRadius(client.PlayerData.Pos, 7))
                 //    {
-                        
+
                 //    }
                 //}
 
                 //ToTest: test this in game
                 if (BagLocation != Location.Empty)
                 {
-                    CalculateMovement(client, BagLocation, 0f);
-                    BagLocation = Location.Empty;
+                    if (Math.Abs(BagLocation.X - client.PlayerData.Pos.X) < 75 && Math.Abs(BagLocation.Y - client.PlayerData.Pos.Y) < 75)
+                    {
+                        CalculateMovement(client, BagLocation, 0.2f);
+                        BagLocation = Location.Empty;
+                    } else
+                    {
+                        CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
+                    }
                 }
                 else
                 {
@@ -549,10 +558,27 @@ namespace FameBot.Core
                     target = new Location(134, 109);
             }
 
-            CalculateMovement(client, target, 0.5f);
+            //Changed from .5 because that would often move besides the portal
+            CalculateMovement(client, target, 0.3f);
 
             if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
+                if (client.State.LastRealm != null)
+                {
+                    Portal LastRealm = portals.Where(Portal => Portal.Name == client.State.LastRealm.Name).GetEnumerator().Current;
+                    foreach (Portal Portal in portals)
+                    {
+                        if (Portal.PlayerCount > LastRealm.PlayerCount && Portal.Name != LastRealm.Name)
+                        {
+                            CalculateMovement(client, Portal.Location, 0.3f);
+                            AttemptConnection(client, Portal.ObjectId);
+                        }
+                        else
+                        {
+                            Lib_K_Relay.Networking.ReconnectHandler.SendReconnect(client, client.State.LastRealm);
+                        }
+                    }
+                }
                 Log("Finished moving to realm. Attempting connection");
                 gotoRealm = false;
                 AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First().ObjectId);
