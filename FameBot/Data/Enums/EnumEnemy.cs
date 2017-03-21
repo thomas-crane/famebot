@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FameBot.Data.Enums
 {
-    public enum Enemy
+    public enum EnemyId
     {
         WhiteDemon = 1617,
         SpriteGod = 1618,
