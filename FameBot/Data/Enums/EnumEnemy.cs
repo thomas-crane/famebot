@@ -15,6 +15,8 @@ namespace FameBot.Data.Enums
         Beholder = 1622,
         FlyingBrain = 1623,
         SlimeGod = 1624,
-        GhostGod = 1625
+        GhostGod = 1625,
+        Leviathan = 1752,
+        Djin = 2330
     }
 }
