@@ -461,7 +461,7 @@ namespace FameBot.Core
                 }
             }
 
-            if(followTarget && targets.Count > 0)
+            if (followTarget && targets.Count > 0)
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
@@ -474,6 +474,20 @@ namespace FameBot.Core
                         tpPacket.Text = "/teleport " + name;
                         client.SendToServer(tpPacket);
                     }
+                }
+
+                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) < 64))
+                {
+                    Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+
+                    double angle = Math.Atan2(client.PlayerData.Pos.Y - closestEnemy.Y, client.PlayerData.Pos.X - closestEnemy.X);
+
+                    float newX = closestEnemy.X + 8f * (float)Math.Cos(angle);
+                    float newY = closestEnemy.Y + 8f * (float)Math.Sin(angle);
+
+                    var avoidPos = new Location(newX, newY);
+                    CalculateMovement(client, avoidPos, config.FollowDistanceThreshold);
+                    return;
                 }
 
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
