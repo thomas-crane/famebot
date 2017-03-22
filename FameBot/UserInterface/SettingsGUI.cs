@@ -37,8 +37,7 @@ namespace FameBot.UserInterface
                 AutoConnect = autoConnect.Checked,
                 FindClustersNearCenter = findNearCenter.Checked,
                 Epsilon = (float)epsilon.Value,
-                MinPoints = (int)minPoints.Value,
-                FlashProcessName = txbxFlashProcessName.Text
+                MinPoints = (int)minPoints.Value
             };
             ConfigManager.WriteXML(newConfig);
             MessageBox.Show("Settings have been saved", "[FameBot]");
@@ -66,7 +65,6 @@ namespace FameBot.UserInterface
             findNearCenter.Checked = cfg.FindClustersNearCenter;
             epsilon.Value = (decimal)cfg.Epsilon;
             minPoints.Value = cfg.MinPoints;
-            txbxFlashProcessName.Text = cfg.FlashProcessName;
         }
     }
 }
