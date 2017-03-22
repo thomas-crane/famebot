@@ -147,7 +147,7 @@ namespace FameBot.Core
             if (config.AutoConnect)
                 Start();
 
-            Process[] processes = Process.GetProcessesByName("flash");
+            Process[] processes = Process.GetProcessesByName(config.ProjectorName);
             if (processes.Length == 1)
             {
                 Console.WriteLine("[FameBot] Flash process handle aquired automatically.");
