@@ -55,6 +55,7 @@
     <Compile Include="Data\Events\LogEventArgs.cs" />
     <Compile Include="Data\Models\Cluster.cs" />
     <Compile Include="Data\Models\Configuration.cs" />
+    <Compile Include="Data\Models\Enemy.cs" />
     <Compile Include="Data\Models\Point.cs" />
     <Compile Include="Data\Models\Portal.cs" />
     <Compile Include="Data\Models\Target.cs" />

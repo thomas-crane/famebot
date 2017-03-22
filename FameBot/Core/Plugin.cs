@@ -19,6 +19,7 @@ using Lib_K_Relay.Networking.Packets.Client;
 using FameBot.Services;
 using FameBot.UserInterface;
 using FameBot.Data.Events;
+using Lib_K_Relay.GameData;
 
 namespace FameBot.Core
 {
@@ -315,6 +316,10 @@ namespace FameBot.Core
                     if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
                         enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
+                }
+                if (GameData.Objects.ByID((ushort) obj.ObjectType).Name == "Rock" || GameData.Tiles.ByID((ushort)obj.ObjectType).Name == "Rock")
+                {
+                    obj.ObjectType = 0x1676;
                 }
             }
 
