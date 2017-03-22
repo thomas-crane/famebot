@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FameBot.Data.Enums
+﻿namespace FameBot.Data.Enums
 {
-    public enum Enemy
+    public enum EnemyId
     {
         WhiteDemon = 1617,
         SpriteGod = 1618,
@@ -15,6 +9,8 @@ namespace FameBot.Data.Enums
         Beholder = 1622,
         FlyingBrain = 1623,
         SlimeGod = 1624,
-        GhostGod = 1625
+        GhostGod = 1625,
+        Leviathan = 1752,
+        Djin = 2330
     }
 }
