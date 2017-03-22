@@ -321,9 +321,9 @@ namespace FameBot.Core
                 }
                 if(Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
-                    if (!enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
-                        enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
-                    enemies.Find(en => en.ObjectId == obj.Status.ObjectId).Location = obj.Status.Position;
+                    if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
+                        enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
+                    enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 #if Experimental
                 //Loot
@@ -355,7 +355,8 @@ namespace FameBot.Core
                     playerPositions.Remove(dropId);
                 }
 
-                enemies.RemoveAll(en => en.ObjectId == dropId);
+                if(enemies.Exists(en => en.ObjectId == dropId))
+                    enemies.RemoveAll(en => en.ObjectId == dropId);
 
                 if(portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
