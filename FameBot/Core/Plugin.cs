@@ -78,6 +78,8 @@ namespace FameBot.Core
         public static event LogEventHandler logEvent;
         public delegate void LogEventHandler(object sender, LogEventArgs args);
 
+        private List<Rock> RocksOnMap = new List<Rock>();
+
         #region WINAPI
         // Get the focused window
         [DllImport("user32.dll", SetLastError = true)]
@@ -319,7 +321,7 @@ namespace FameBot.Core
                 }
                 if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
-                    obj.ObjectType = 0x1676;
+                    RocksOnMap.Add(new Rock(obj.ObjectType, obj.Status.Position));
                 }
             }
 
@@ -474,6 +476,20 @@ namespace FameBot.Core
             if (followTarget && targets.Count > 0)
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
+
+                if (RocksOnMap.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) < 6))
+                {
+                    Location closestRock = RocksOnMap.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+
+                    double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
+
+                    float newX = closestRock.X + 6f * (float)Math.Cos(angle);
+                    float newY = closestRock.Y + 6f * (float)Math.Sin(angle);
+
+                    var avoidPos = new Location(newX, newY);
+                    CalculateMovement(client, avoidPos, config.FollowDistanceThreshold);
+                    return;
+                }
 
                 if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {
