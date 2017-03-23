@@ -317,7 +317,7 @@ namespace FameBot.Core
                         enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
-                if (GameData.Objects.ByID((ushort) obj.ObjectType).Name == "Rock" || GameData.Tiles.ByID((ushort)obj.ObjectType).Name == "Rock")
+                if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
                     obj.ObjectType = 0x1676;
                 }
