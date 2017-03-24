@@ -170,6 +170,7 @@ namespace FameBot.Core
             proxy.HookCommand("bind", ReceiveCommand);
             proxy.HookCommand("start", ReceiveCommand);
             proxy.HookCommand("gui", ReceiveCommand);
+            proxy.HookCommand("pos", ReceiveCommand);
 
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
@@ -225,6 +226,9 @@ namespace FameBot.Core
                         gui = new FameBotGUI();
                     gui.Show();
                     gui.SetHandle(flashPtr);
+                    break;
+                case "pos":
+                    Console.WriteLine($"X: {client.PlayerData.Pos.X} Y: {client.PlayerData.Pos.Y}");
                     break;
             }
         }
@@ -515,7 +519,7 @@ namespace FameBot.Core
                 Log("No client passed to MoveToRealms");
                 return;
             }
-            Location target = new Location(134, 109);
+            Location target = new Location(158, 101);
 
             if (client.PlayerData == null)
             {
@@ -533,7 +537,7 @@ namespace FameBot.Core
                 if (portals.Count != 0)
                     target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
                 else
-                    target = new Location(134, 109);
+                    target = new Location(158, 101);
             }
 
             CalculateMovement(client, target, 0.5f);
