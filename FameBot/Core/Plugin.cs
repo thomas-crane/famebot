@@ -482,14 +482,14 @@ namespace FameBot.Core
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
-                if (RocksOnMap.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) < 4))
+                if (RocksOnMap.Exists(rock => rock.Location.DistanceTo(client.PlayerData.Pos) < 1))
                 {
-                    Location closestRock = RocksOnMap.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+                    Location closestRock = RocksOnMap.OrderBy(rock => rock.Location.DistanceTo(client.PlayerData.Pos)).First().Location;
 
                     double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
 
-                    float newX = closestRock.X + 2f * (float)Math.Cos(angle);
-                    float newY = closestRock.Y + 2f * (float)Math.Sin(angle);
+                    float newX = closestRock.X + 5f * (float)Math.Cos(angle);
+                    float newY = closestRock.Y + 5f * (float)Math.Sin(angle);
 
                     var avoidPos = new Location(newX, newY);
                     CalculateMovement(client, avoidPos, config.FollowDistanceThreshold);
