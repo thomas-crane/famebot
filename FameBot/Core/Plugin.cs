@@ -179,6 +179,7 @@ namespace FameBot.Core
             {
                 connectedClient = client;
                 targets.Clear();
+                RocksOnMap.Clear();
                 playerPositions.Clear();
                 followTarget = false;
                 A_PRESSED = false;
@@ -321,7 +322,7 @@ namespace FameBot.Core
                 }
                 if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
-                    RocksOnMap.Add(new Rock(obj.ObjectType, obj.Status.Position));
+                    RocksOnMap.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
                 }
             }
 
@@ -477,7 +478,7 @@ namespace FameBot.Core
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
-                if (RocksOnMap.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) < 6))
+                if (RocksOnMap.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) < 36))
                 {
                     Location closestRock = RocksOnMap.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
 
