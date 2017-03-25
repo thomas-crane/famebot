@@ -2,9 +2,9 @@
 
 namespace FameBot.Data.Models
 {
-    public class Enemy
+    public class Rock
     {
-        public Enemy(int objectId, Location location)
+        public Rock(int objectId, Location location)
         {
             ObjectId = objectId;
             Location = location;
