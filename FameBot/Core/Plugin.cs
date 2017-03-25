@@ -476,7 +476,7 @@ namespace FameBot.Core
                     }
                 }
 
-                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) < 64))
+                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) < 49))
                 {
                     Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
 
