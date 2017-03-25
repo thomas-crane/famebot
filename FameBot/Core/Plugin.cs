@@ -502,9 +502,9 @@ namespace FameBot.Core
                 Log("No client passed to MoveToRealms");
                 return;
             }
-            Location target = new Location(134, 109);
+            Location target = new Location(158, 101);
 
-            if(client.PlayerData == null)
+            if (client.PlayerData == null)
             {
                 await Task.Delay(5);
                 MoveToRealms(client);
@@ -513,14 +513,14 @@ namespace FameBot.Core
 
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < 0.95f)
-                target = new Location(134, 134);
+                target = new Location(158, 134);
 
             if (client.PlayerData.Pos.Y <= 115 && client.PlayerData.Pos.Y != 0)
             {
                 if (portals.Count != 0)
                     target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
                 else
-                    target = new Location(134, 109);
+                    target = new Location(158, 101);
             }
 
             CalculateMovement(client, target, 0.5f);
