@@ -382,7 +382,7 @@ namespace FameBot.Core
         {
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
-            client.SendToClient(PluginUtils.CreateNotification(client.ObjectId, string.Format("{0}, {1}", client.PlayerData.Pos.X, client.PlayerData.Pos.Y)));
+
             // Health changed event
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth * 100f;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage));
