@@ -16,6 +16,7 @@ using Lib_K_Relay.Networking.Packets.Server;
 using Lib_K_Relay.Networking.Packets.DataObjects;
 using Lib_K_Relay.Utilities;
 using Lib_K_Relay.Networking.Packets.Client;
+using Lib_K_Relay.GameData;
 using FameBot.Services;
 using FameBot.UserInterface;
 using FameBot.Data.Events;
@@ -57,6 +58,7 @@ namespace FameBot.Core
         private List<Portal> portals;
         private Dictionary<int, Target> playerPositions;
         private List<Enemy> enemies;
+        private List<Rock> rocks;
         private Client connectedClient;
         private int tickCount;
         private Configuration config;
@@ -136,6 +138,7 @@ namespace FameBot.Core
             playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
             enemies = new List<Enemy>();
+            rocks = new List<Rock>();
 
             gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
@@ -154,7 +157,7 @@ namespace FameBot.Core
                 gui?.SetHandle(flashPtr);
             } else if(processes.Length > 1)
             {
-                Log("Multiple clients running. Use the /bind command on the client you want to use");
+                Log("Multiple clients running. Use the /bind command on the client you want to use.");
                 Console.WriteLine("[FameBot]      Multiple instances of flash are open. Please use the /bind command on the instance you want to use the bot with.");
             } else
             {
@@ -175,6 +178,8 @@ namespace FameBot.Core
                 connectedClient = client;
                 targets.Clear();
                 playerPositions.Clear();
+                enemies.Clear();
+                rocks.Clear();
                 followTarget = false;
                 A_PRESSED = false;
                 D_PRESSED = false;
@@ -230,7 +235,7 @@ namespace FameBot.Core
 
         private void Stop()
         {
-            Log("Stopping bot");
+            Log("Stopping bot.");
             followTarget = false;
             gotoRealm = false;
             targets.Clear();
@@ -239,7 +244,7 @@ namespace FameBot.Core
 
         private void Start()
         {
-            Log("Starting bot");
+            Log("Starting bot.");
             targets.Clear();
             enabled = true;
             if (currentMapName == null)
@@ -258,7 +263,7 @@ namespace FameBot.Core
 
         private void Escape(Client client)
         {
-            Log("Escaping to nexus");
+            Log("Escaping to nexus.");
             client.SendToServer(Packet.Create(PacketType.ESCAPE));
         }
 
@@ -313,6 +318,11 @@ namespace FameBot.Core
                         enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
+
+                if(GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
+                {
+                    rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
+                }
             }
             
             // Remove old info
@@ -325,7 +335,7 @@ namespace FameBot.Core
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if(targets.Count > 0)
                         {
-                            Log(string.Format("Dropping \"{0}\" from targets", playerPositions[dropId].Name));
+                            Log(string.Format("Dropping \"{0}\" from targets.", playerPositions[dropId].Name));
                         } else
                         {
                             Log("No targets left in target list.");
@@ -354,7 +364,7 @@ namespace FameBot.Core
 
             if (packet.Name == "Oryx's Castle" && enabled)
             {
-                Log("Escaping from oryx's castle");
+                Log("Escaping from oryx's castle.");
                 Escape(client);
                 return;
             }
@@ -401,11 +411,11 @@ namespace FameBot.Core
                         if (targets.Count != 0 && config.EscapeIfNoTargets)
                             Escape(client); 
                         targets.Clear();
-                        Log("No valid clusters found");
+                        Log("No valid clusters found.");
                     } else
                     {
                         if (targets.Count != newTargets.Count)
-                            Log(string.Format("Now targeting {0} players", newTargets.Count));
+                            Log(string.Format("Now targeting {0} players.", newTargets.Count));
                         targets = newTargets;
                     }
                 }
@@ -436,8 +446,8 @@ namespace FameBot.Core
                     }
                 }
             }
-            
-            if(!followTarget && !gotoRealm)
+
+            if (!followTarget && !gotoRealm)
             {
                 if (W_PRESSED)
                 {
@@ -476,7 +486,7 @@ namespace FameBot.Core
                     }
                 }
 
-                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) < 49))
+                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 49))
                 {
                     Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
 
@@ -490,6 +500,25 @@ namespace FameBot.Core
                     return;
                 }
 
+                if(rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
+                {
+                    Location closestRock = rocks.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+
+                    if (client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock) < 70.0)
+                    {
+                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X) + 1.5708; // add 90 degrees to the angle to go around the rock.
+                        if (angle > 6.28319)
+                            angle -= 6.28319;
+
+                        float newX = closestRock.X + 2f * (float)Math.Cos(angle);
+                        float newY = closestRock.Y + 2f * (float)Math.Sin(angle);
+
+                        var avoidRockPos = new Location(newX, newY);
+                        CalculateMovement(client, avoidRockPos, 0.5f);
+                        return;
+                    }
+                }
+
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
             }
         }
@@ -499,10 +528,10 @@ namespace FameBot.Core
         {
             if(client == null)
             {
-                Log("No client passed to MoveToRealms");
+                Log("No client passed to MoveToRealms.");
                 return;
             }
-            Location target = new Location(158, 101);
+            Location target = new Location(159, 101);
 
             if (client.PlayerData == null)
             {
@@ -513,21 +542,21 @@ namespace FameBot.Core
 
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < 0.95f)
-                target = new Location(158, 134);
+                target = new Location(159, 127);
 
-            if (client.PlayerData.Pos.Y <= 115 && client.PlayerData.Pos.Y != 0)
+            if (client.PlayerData.Pos.Y <= 110 && client.PlayerData.Pos.Y != 0)
             {
                 if (portals.Count != 0)
                     target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
                 else
-                    target = new Location(158, 101);
+                    target = new Location(159, 101);
             }
 
             CalculateMovement(client, target, 0.5f);
 
             if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
-                Log("Finished moving to realm. Attempting connection");
+                Log("Attempting connection.");
                 gotoRealm = false;
                 AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First().ObjectId);
             }
@@ -559,9 +588,9 @@ namespace FameBot.Core
             if (client.Connected && enabled)
                 AttemptConnection(client, portalId);
             else if (enabled)
-                Log("Connection successful");
+                Log("Connection successful.");
             else
-                Log("Bot disabled, cancelling connection attempt");
+                Log("Bot disabled, cancelling connection attempt.");
         }
 
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
