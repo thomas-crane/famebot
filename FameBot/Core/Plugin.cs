@@ -253,7 +253,8 @@ namespace FameBot.Core
             {
                 gotoRealm = true;
                 followTarget = false;
-                MoveToRealms(connectedClient);
+                if (connectedClient != null)
+                    MoveToRealms(connectedClient);
             } else
             {
                 gotoRealm = false;
@@ -314,14 +315,18 @@ namespace FameBot.Core
                 }
                 if(Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
-                    if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
-                        enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
-                    enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
+                    lock(enemies)
+                    {
+                        if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
+                            enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
+                        enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
+                    }
                 }
 
                 if(GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
-                    rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
+                    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
+                        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
                 }
             }
             
@@ -346,8 +351,11 @@ namespace FameBot.Core
                     playerPositions.Remove(dropId);
                 }
 
-                if(enemies.Exists(en => en.ObjectId == dropId))
-                    enemies.RemoveAll(en => en.ObjectId == dropId);
+                lock (enemies)
+                {
+                    if (enemies.Exists(en => en.ObjectId == dropId))
+                        enemies.RemoveAll(en => en.ObjectId == dropId);
+                }
 
                 if(portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
@@ -430,8 +438,11 @@ namespace FameBot.Core
                     playerPositions[status.ObjectId].UpdatePosition(status.Position);
 
                 // Update enemy positions
-                if (enemies.Exists(en => en.ObjectId == status.ObjectId))
-                    enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
+                lock(enemies)
+                {
+                    if (enemies.Exists(en => en.ObjectId == status.ObjectId))
+                        enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
+                }
 
                 // Update portal player counts when in nexus.
                 if(portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (currentMapName?.Equals("Nexus") ?? false))
@@ -503,12 +514,15 @@ namespace FameBot.Core
                 if(rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
                 {
                     Location closestRock = rocks.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+                    double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock);
 
-                    if (client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock) < 70.0)
+                    if (Math.Abs(angleDifference) < 70.0)
                     {
-                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X) + 1.5708; // add 90 degrees to the angle to go around the rock.
-                        if (angle > 6.28319)
-                            angle -= 6.28319;
+                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
+                        if(angleDifference <= 0)
+                            angle += 1.5708; // add 90 degrees to the angle to go clockwise around the rock.
+                        if (angleDifference > 0)
+                            angle -= 1.5708; // remove 90 degrees from the angle to go anti-clockwise around the rock.
 
                         float newX = closestRock.X + 2f * (float)Math.Cos(angle);
                         float newY = closestRock.Y + 2f * (float)Math.Sin(angle);

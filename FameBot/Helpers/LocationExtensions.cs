@@ -29,10 +29,23 @@ namespace FameBot.Helpers
         }
 
         /// <summary>
-        /// Returns the absolute difference in degrees between the angle between
-        /// location and locationA and the angle between location and locationB.
+        /// Returns the difference in degrees between the angle from
+        /// location to locationA and the angle from location to locationB.
         /// </summary>
         public static double GetAngleDifferenceDegrees(this Location location, Location locationA, Location locationB)
+        {
+            var angleA = Math.Atan2(locationA.Y - location.Y, locationA.X - location.X);
+            var angleB = Math.Atan2(locationB.Y - location.Y, locationB.X - location.X);
+
+            var diffRadians = angleA - angleB;
+            return diffRadians * (180 / Math.PI);
+        }
+
+        /// <summary>
+        /// Returns the absolute difference in degrees between the angle from
+        /// location to locationA and the angle from location to locationB.
+        /// </summary>
+        public static double GetAngleDifferenceDegreesAbsolute(this Location location, Location locationA, Location locationB)
         {
             var angleA = Math.Atan2(locationA.Y - location.Y, locationA.X - location.X);
             var angleB = Math.Atan2(locationB.Y - location.Y, locationB.X - location.X);
