@@ -86,7 +86,11 @@ namespace FameBot.Core
         private static extern IntPtr GetForegroundWindow();
         // Send a message to a specific process via the handle.
         [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam);
+        
+        //[DllImport("user32.dll")]
+        //public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+
         // Gets the positions of the corners of a window via the MainWindowHandle.
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -325,8 +329,8 @@ namespace FameBot.Core
             ScreenToClient(flashPtr, ref relativePoint);
 
             // Press the buttons.
-            PostMessage(flashPtr, (uint)MouseButton.LeftButtonDown, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
-            PostMessage(flashPtr, (uint)MouseButton.LeftButtonUp, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            SendMessage(flashPtr, (uint)MouseButton.LeftButtonDown, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            SendMessage(flashPtr, (uint)MouseButton.LeftButtonUp, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
 
             PressPlay();
         }
@@ -521,22 +525,22 @@ namespace FameBot.Core
                 if (W_PRESSED)
                 {
                     W_PRESSED = false;
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                 }
                 if (A_PRESSED)
                 {
                     A_PRESSED = false;
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                 }
                 if (S_PRESSED)
                 {
                     S_PRESSED = false;
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                 }
                 if (D_PRESSED)
                 {
                     D_PRESSED = false;
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                 }
             }
 
@@ -673,12 +677,12 @@ namespace FameBot.Core
                 // Move right
                 if (!D_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
                     D_PRESSED = true;
                 }
                 if (A_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                     A_PRESSED = false;
                 }
             }
@@ -686,7 +690,7 @@ namespace FameBot.Core
             {
                 if (D_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                     D_PRESSED = false;
                 }
             }
@@ -695,12 +699,12 @@ namespace FameBot.Core
                 // Move left
                 if (!A_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
                     A_PRESSED = true;
                 }
                 if (D_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
                     D_PRESSED = false;
                 }
             }
@@ -708,7 +712,7 @@ namespace FameBot.Core
             {
                 if (A_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
                     A_PRESSED = false;
                 }
             }
@@ -719,12 +723,12 @@ namespace FameBot.Core
                 // Move down
                 if (!S_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
                     S_PRESSED = true;
                 }
                 if (W_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                     W_PRESSED = false;
                 }
             }
@@ -732,7 +736,7 @@ namespace FameBot.Core
             {
                 if (S_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                     S_PRESSED = false;
                 }
             }
@@ -741,12 +745,12 @@ namespace FameBot.Core
                 // Move up
                 if (!W_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
                     W_PRESSED = true;
                 }
                 if (S_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
                     S_PRESSED = false;
                 }
             }
@@ -754,7 +758,7 @@ namespace FameBot.Core
             {
                 if (W_PRESSED)
                 {
-                    PostMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
+                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
                     W_PRESSED = false;
                 }
             }
