@@ -13,10 +13,10 @@ namespace FameBot.Services
         public static List<Target> Invoke(List<Target> data, float epsilon = 8, int minPoints = 4, bool findNearCenter = true)
         {
             var C = 0;
-            var points = new List<Point>();
+            var points = new List<ClusterPoint>();
             foreach (Target t in data)
             {
-                points.Add(new Point(t));
+                points.Add(new ClusterPoint(t));
             }
 
             var pCount = points.Count;
@@ -26,7 +26,7 @@ namespace FameBot.Services
                 if (p.Visited)
                     continue;
                 p.Visited = true;
-                var neighborPts = new List<Point>();
+                var neighborPts = new List<ClusterPoint>();
                 RegionQuery(points, p, epsilon, out neighborPts);
                 if (neighborPts.Count < minPoints)
                 {
@@ -51,7 +51,7 @@ namespace FameBot.Services
             return clusters.Where(c => c.Count == clusters.Max(x => x.Count)).FirstOrDefault();
         }
 
-        public static void ExpandCluster(List<Point> data, Point p, List<Point> neighborPts, int cId, float epsilon, int minPts)
+        public static void ExpandCluster(List<ClusterPoint> data, ClusterPoint p, List<ClusterPoint> neighborPts, int cId, float epsilon, int minPts)
         {
             p.ClusterId = cId;
             var nCount = neighborPts.Count;
@@ -61,7 +61,7 @@ namespace FameBot.Services
                 if (!p2.Visited)
                 {
                     p2.Visited = true;
-                    var n2 = new List<Point>();
+                    var n2 = new List<ClusterPoint>();
                     RegionQuery(data, p2, epsilon, out n2);
                     if (n2.Count >= minPts)
                     {
@@ -75,7 +75,7 @@ namespace FameBot.Services
             }
         }
 
-        private static void RegionQuery(List<Point> data, Point p, float epsilon, out List<Point> neighborPts)
+        private static void RegionQuery(List<ClusterPoint> data, ClusterPoint p, float epsilon, out List<ClusterPoint> neighborPts)
         {
             neighborPts = data.Where(t => t.Data.DistanceTo(p.Data) <= epsilon).ToList();
         }

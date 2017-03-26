@@ -9,7 +9,7 @@ namespace FameBot.Data.Models
     public class Cluster
     {
         public int Id { get; set; }
-        public List<Point> Points { get; set; }
+        public List<ClusterPoint> Points { get; set; }
         public float Epsilon { get; set; }
         public int Count
         {
@@ -18,16 +18,16 @@ namespace FameBot.Data.Models
 
         public Cluster()
         {
-            Points = new List<Point>();
+            Points = new List<ClusterPoint>();
             Epsilon = 8f;
         }
 
-        public void Add(Point p)
+        public void Add(ClusterPoint p)
         {
             Points.Add(p);
         }
 
-        public void AddRange(List<Point> p)
+        public void AddRange(List<ClusterPoint> p)
         {
             Points.AddRange(p);
         }
@@ -37,7 +37,7 @@ namespace FameBot.Data.Models
             Points.AddRange(c.Points);
         }
 
-        public bool Contains(Point p)
+        public bool Contains(ClusterPoint p)
         {
             return Points.Contains(p);
         }
