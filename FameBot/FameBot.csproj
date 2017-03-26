@@ -50,18 +50,22 @@
     <Compile Include="Data\Enums\EnumEnemy.cs" />
     <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Enums\EnumKey.cs" />
+    <Compile Include="Data\Enums\EnumMouseButton.cs" />
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
     <Compile Include="Data\Events\KeyEventArgs.cs" />
     <Compile Include="Data\Events\LogEventArgs.cs" />
     <Compile Include="Data\Models\Cluster.cs" />
     <Compile Include="Data\Models\Configuration.cs" />
     <Compile Include="Data\Models\Enemy.cs" />
+    <Compile Include="Data\Models\ClusterPoint.cs" />
     <Compile Include="Data\Models\Point.cs" />
     <Compile Include="Data\Models\Portal.cs" />
+    <Compile Include="Data\Models\Rect.cs" />
     <Compile Include="Data\Models\Rock.cs" />
     <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Helpers\ClientExtensions.cs" />
     <Compile Include="Helpers\LocationExtensions.cs" />
+    <Compile Include="Helpers\RectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

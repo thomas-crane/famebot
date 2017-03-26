@@ -3,31 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace FameBot.Data.Models
 {
-    public class Point
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
     {
-        public int ClusterId { get; set; }
-        public bool Noisy { get; set; }
-        public bool Visited { get; set; }
-        public Target Data { get; set; }
+        public int X;
+        public int Y;
 
-        public Point(Target t)
+        public POINT(int x, int y)
         {
-            this.Noisy = false;
-            this.Visited = false;
-            this.Data = t;
+            this.X = x;
+            this.Y = y;
         }
 
-        public static List<Point> FromListOfTargets(List<Target> targets)
+        public POINT(System.Drawing.Point pt) : this(pt.X, pt.Y) { }
+
+        public static implicit operator System.Drawing.Point(POINT p)
         {
-            List<Point> pointList = new List<Point>();
-            foreach(Target t in targets)
-            {
-                pointList.Add(new Point(t));
-            }
-            return pointList;
+            return new System.Drawing.Point(p.X, p.Y);
+        }
+
+        public static implicit operator POINT(System.Drawing.Point p)
+        {
+            return new POINT(p.X, p.Y);
         }
     }
 }
