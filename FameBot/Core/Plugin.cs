@@ -520,9 +520,9 @@ namespace FameBot.Core
                     {
                         double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
                         if(angleDifference <= 0)
-                            angle += 1.5708; // add 90 degrees to the angle to go clockwise around the rock.
+                            angle += (Math.PI / 2); // add 90 degrees to the angle to go clockwise around the rock.
                         if (angleDifference > 0)
-                            angle -= 1.5708; // remove 90 degrees from the angle to go anti-clockwise around the rock.
+                            angle -= (Math.PI / 2); // remove 90 degrees from the angle to go anti-clockwise around the rock.
 
                         float newX = closestRock.X + 2f * (float)Math.Cos(angle);
                         float newY = closestRock.Y + 2f * (float)Math.Sin(angle);
