@@ -25,5 +25,6 @@ namespace FameBot.Data.Enums
         CubeGod = 3417,
         AvatarOfTheForgottenKing = 29517,
         RockDragonHead = 24184,
+        HeadlessHorseman = 24223
     }
 }
