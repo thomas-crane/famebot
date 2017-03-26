@@ -17,6 +17,13 @@ namespace FameBot.Data.Enums
         SlimeGod = 1624,
         GhostGod = 1625,
         Leviathan = 1752,
-        Djin = 2330
+        Djin = 2330,
+
+        LordOfTheLostLands = 3411,
+        GrandSphinx = 3412,
+        SkullShrine = 3414,
+        CubeGod = 3417,
+        AvatarOfTheForgottenKing = 29517,
+        RockDragonHead = 24184,
     }
 }
