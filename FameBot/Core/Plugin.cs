@@ -20,6 +20,7 @@ using Lib_K_Relay.GameData;
 using FameBot.Services;
 using FameBot.UserInterface;
 using FameBot.Data.Events;
+using System.Drawing;
 
 namespace FameBot.Core
 {
@@ -80,12 +81,24 @@ namespace FameBot.Core
         public delegate void LogEventHandler(object sender, LogEventArgs args);
 
         #region WINAPI
-        // Get the focused window
+        // Get the focused window.
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr GetForegroundWindow();
-        // Send a message to a specific process via the handle
+        // Send a message to a specific process via the handle.
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+        // Gets the positions of the corners of a window via the MainWindowHandle.
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+
+        // Sets the mouse position
+        [DllImport("user32.dll")]
+        static extern bool SetCursorPos(int x, int y);
+
+        // Converts a point in screen space to a point relative to hWnd's window.
+        [DllImport("user32.dll")]
+        static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
         #endregion
 
         #region Keys
@@ -187,6 +200,12 @@ namespace FameBot.Core
                 S_PRESSED = false;
             };
 
+            proxy.ClientDisconnected += (client) =>
+            {
+                Log("Client disconnected. Waiting a few seconds before trying to press play...");
+                PressPlay();
+            };
+
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
 
             guiEvent += (evt) =>
@@ -271,6 +290,45 @@ namespace FameBot.Core
         private void Log(string message)
         {
             logEvent?.Invoke(this, new LogEventArgs(message));
+        }
+
+        private async void PressPlay()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            if (!config.AutoConnect)
+                return;
+            if (!enabled)
+                return;
+
+            if ((connectedClient?.Connected ?? false))
+            {
+                Log("Client is connected. No need to press play.");
+                return;
+            }
+            else
+                Log("Client still not connected. Pressing play button...");
+
+            // Get the window details before pressing the button in case
+            // it has changed size or position on the desktop.
+            RECT windowRect = new RECT();
+            GetWindowRect(flashPtr, ref windowRect);
+            var size = windowRect.GetSize();
+
+            // The play button is located half way across the
+            // window and roughly 92% of the way to the bottom.
+            int playButtonX = size.Width / 2 + windowRect.Left;
+            int playButtonY = (int)((double)size.Height * 0.92) + windowRect.Top;
+
+            // Convert the screen point to a window point
+            POINT relativePoint = new POINT(playButtonX, playButtonY);
+            ScreenToClient(flashPtr, ref relativePoint);
+
+            // Press the buttons.
+            PostMessage(flashPtr, (uint)MouseButton.LeftButtonDown, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            PostMessage(flashPtr, (uint)MouseButton.LeftButtonUp, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+
+            PressPlay();
         }
 
         #region PacketHookMethods
