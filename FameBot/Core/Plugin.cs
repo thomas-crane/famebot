@@ -293,7 +293,7 @@ namespace FameBot.Core
 
         private void Log(string message)
         {
-            logEvent?.Invoke(this, new LogEventArgs(message));
+            //logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
         private async void PressPlay()
