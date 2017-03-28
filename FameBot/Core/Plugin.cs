@@ -87,19 +87,11 @@ namespace FameBot.Core
         // Send a message to a specific process via the handle.
         [DllImport("user32.dll")]
         static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam);
-        
-        //[DllImport("user32.dll")]
-        //public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
         // Gets the positions of the corners of a window via the MainWindowHandle.
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
-
-        // Sets the mouse position
-        [DllImport("user32.dll")]
-        static extern bool SetCursorPos(int x, int y);
-
         // Converts a point in screen space to a point relative to hWnd's window.
         [DllImport("user32.dll")]
         static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
@@ -293,7 +285,7 @@ namespace FameBot.Core
 
         private void Log(string message)
         {
-            //logEvent?.Invoke(this, new LogEventArgs(message));
+            logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
         private async void PressPlay()

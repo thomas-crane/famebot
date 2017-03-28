@@ -17,7 +17,6 @@ namespace FameBot.UserInterface
     {
         private IntPtr flashPtr;
 
-        private delegate void UpdateEventLogInvoker(object sender, LogEventArgs args);
         public FameBotGUI()
         {
             InitializeComponent();
@@ -36,8 +35,10 @@ namespace FameBot.UserInterface
         {
             if (this.eventLog.InvokeRequired)
             {
-                var inv = new UpdateEventLogInvoker(UpdateEventLog);
-                this.eventLog.Invoke(inv, sender, args);
+                this.eventLog.Invoke(new MethodInvoker(() =>
+                {
+                    UpdateEventLog(sender, args);
+                }));
             } else
             {
                 eventLog.Text += (args.MessageWithTimestamp + "\n");
