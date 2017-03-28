@@ -42,6 +42,8 @@
             this.eventLog = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.clearButton = new System.Windows.Forms.Button();
+            this.utilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inGameChatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,7 +84,8 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.infoToolStripMenuItem,
-            this.settingsToolStripMenuItem});
+            this.settingsToolStripMenuItem,
+            this.utilitiesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(578, 33);
@@ -168,6 +171,21 @@
             this.clearButton.UseVisualStyleBackColor = true;
             this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
+            // utilitiesToolStripMenuItem
+            // 
+            this.utilitiesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.inGameChatToolStripMenuItem});
+            this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
+            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(81, 29);
+            this.utilitiesToolStripMenuItem.Text = "Utilities";
+            // 
+            // inGameChatToolStripMenuItem
+            // 
+            this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
+            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
+            this.inGameChatToolStripMenuItem.Click += new System.EventHandler(this.inGameChatToolStripMenuItem_Click);
+            // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -207,5 +225,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.ToolStripMenuItem showGraphicsOverlayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem utilitiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem inGameChatToolStripMenuItem;
     }
 }

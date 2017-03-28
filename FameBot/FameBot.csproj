@@ -54,6 +54,7 @@
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
     <Compile Include="Data\Events\KeyEventArgs.cs" />
     <Compile Include="Data\Events\LogEventArgs.cs" />
+    <Compile Include="Data\Events\MessageEventArgs.cs" />
     <Compile Include="Data\Models\Cluster.cs" />
     <Compile Include="Data\Models\Configuration.cs" />
     <Compile Include="Data\Models\Enemy.cs" />
@@ -91,6 +92,12 @@
     </Compile>
     <Compile Include="UserInterface\KeyPressGUI.Designer.cs">
       <DependentUpon>KeyPressGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\MessageBoxGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\MessageBoxGUI.Designer.cs">
+      <DependentUpon>MessageBoxGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\OverlayGUI.cs">
       <SubType>Form</SubType>
@@ -131,6 +138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\KeyPressGUI.resx">
       <DependentUpon>KeyPressGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\MessageBoxGUI.resx">
+      <DependentUpon>MessageBoxGUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SettingsGUI.resx">
       <DependentUpon>SettingsGUI.cs</DependentUpon>

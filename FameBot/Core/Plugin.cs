@@ -80,6 +80,12 @@ namespace FameBot.Core
         public static event LogEventHandler logEvent;
         public delegate void LogEventHandler(object sender, LogEventArgs args);
 
+        private static event SendMessageEventHandler sendMessage;
+        private delegate void SendMessageEventHandler(string message);
+
+        public static event ReceiveMEssageEventHandler receiveMesssage;
+        public delegate void ReceiveMEssageEventHandler(object sender, MessageEventArgs args);
+
         #region WINAPI
         // Get the focused window.
         [DllImport("user32.dll", SetLastError = true)]
@@ -181,6 +187,8 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
+            proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
+            proxy.HookPacket(PacketType.TEXT, OnText);
 
             proxy.ClientConnected += (client) =>
             {
@@ -202,8 +210,6 @@ namespace FameBot.Core
                 PressPlay();
             };
 
-            proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
-
             guiEvent += (evt) =>
             {
                 switch (evt)
@@ -218,6 +224,15 @@ namespace FameBot.Core
                         config = ConfigManager.GetConfiguration();
                         break;
                 }
+            };
+
+            sendMessage += (message) =>
+            {
+                if (!(connectedClient?.Connected ?? false))
+                    return;
+                PlayerTextPacket packet = (PlayerTextPacket)Packet.Create(PacketType.PLAYERTEXT);
+                packet.Text = message;
+                connectedClient.SendToServer(packet);
             };
         }
 
@@ -246,6 +261,11 @@ namespace FameBot.Core
         public static void InvokeGuiEvent(GuiEvent evt)
         {
             guiEvent?.Invoke(evt);
+        }
+
+        public static void InvokeSendMessageEvent(string message)
+        {
+            sendMessage?.Invoke(message);
         }
 
         private void Stop()
@@ -589,6 +609,14 @@ namespace FameBot.Core
 
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
             }
+        }
+
+        private void OnText(Client client, Packet p)
+        {
+            TextPacket packet = p as TextPacket;
+            if (packet.Name == client.PlayerData.Name || packet.NumStars < 1)
+                return;
+            receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
         }
         #endregion
 

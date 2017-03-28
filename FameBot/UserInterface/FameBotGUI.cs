@@ -16,6 +16,7 @@ namespace FameBot.UserInterface
     public partial class FameBotGUI : Form
     {
         private IntPtr flashPtr;
+        private Plugin plugin;
 
         public FameBotGUI()
         {
@@ -94,6 +95,12 @@ namespace FameBot.UserInterface
         {
             OverlayGUI overlayGUI = new OverlayGUI(flashPtr);
             overlayGUI.Show();
+        }
+
+        private void inGameChatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBoxGUI messageBoxGui = new MessageBoxGUI();
+            messageBoxGui.Show();
         }
     }
 }
