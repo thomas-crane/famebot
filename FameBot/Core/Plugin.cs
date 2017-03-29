@@ -172,24 +172,20 @@ namespace FameBot.Core
 
             config = ConfigManager.GetConfiguration();
 
-            if (config.AutoConnect)
-                Start();
-
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
             {
-                Console.WriteLine("[FameBot]      Flash process handle aquired automatically.");
                 Log("Automatically bound to client.");
                 flashPtr = processes[0].MainWindowHandle;
                 gui?.SetHandle(flashPtr);
+                if (config.AutoConnect)
+                    Start();
             } else if(processes.Length > 1)
             {
-                Log("Multiple clients running. Use the /bind command on the client you want to use.");
-                Console.WriteLine("[FameBot]      Multiple instances of flash are open. Please use the /bind command on the instance you want to use the bot with.");
+                Log("Multiple flash players running. Use the /bind command on the client you want to use.");
             } else
             {
-                Log("Couldn't find flash player. Use the /bind command in game then restart the bot.");
-                Console.WriteLine("[FameBot]      Couldn't find any instances of flash player. Use the /bind command when you have opened flash.  FameBot will only detect instances of flash player which are called \"flash.exe\"");
+                Log("Couldn't find flash player. Use the /bind command in game, then start the bot.");
             }
 
             proxy.HookCommand("bind", ReceiveCommand);
@@ -282,6 +278,8 @@ namespace FameBot.Core
 
         private void Stop()
         {
+            if (!enabled)
+                return;
             Log("Stopping bot.");
             followTarget = false;
             gotoRealm = false;
@@ -291,6 +289,8 @@ namespace FameBot.Core
 
         private void Start()
         {
+            if (enabled)
+                return;
             Log("Starting bot.");
             targets.Clear();
             enabled = true;
