@@ -39,11 +39,12 @@
             this.showGraphicsOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.utilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inGameChatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eventLog = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.clearButton = new System.Windows.Forms.Button();
-            this.utilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.inGameChatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentProcessLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,6 +140,21 @@
             this.openConfigManagerToolStripMenuItem.Text = "Open Config Manager";
             this.openConfigManagerToolStripMenuItem.Click += new System.EventHandler(this.openConfigManagerToolStripMenuItem_Click);
             // 
+            // utilitiesToolStripMenuItem
+            // 
+            this.utilitiesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.inGameChatToolStripMenuItem});
+            this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
+            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(81, 29);
+            this.utilitiesToolStripMenuItem.Text = "Utilities";
+            // 
+            // inGameChatToolStripMenuItem
+            // 
+            this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
+            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
+            this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
+            this.inGameChatToolStripMenuItem.Click += new System.EventHandler(this.inGameChatToolStripMenuItem_Click);
+            // 
             // eventLog
             // 
             this.eventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -171,26 +187,22 @@
             this.clearButton.UseVisualStyleBackColor = true;
             this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
-            // utilitiesToolStripMenuItem
+            // currentProcessLabel
             // 
-            this.utilitiesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.inGameChatToolStripMenuItem});
-            this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
-            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(81, 29);
-            this.utilitiesToolStripMenuItem.Text = "Utilities";
-            // 
-            // inGameChatToolStripMenuItem
-            // 
-            this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
-            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
-            this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
-            this.inGameChatToolStripMenuItem.Click += new System.EventHandler(this.inGameChatToolStripMenuItem_Click);
+            this.currentProcessLabel.AutoSize = true;
+            this.currentProcessLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.currentProcessLabel.Location = new System.Drawing.Point(13, 145);
+            this.currentProcessLabel.Name = "currentProcessLabel";
+            this.currentProcessLabel.Size = new System.Drawing.Size(192, 40);
+            this.currentProcessLabel.TabIndex = 7;
+            this.currentProcessLabel.Text = "Bot not bound to process.\r\nUse /bind in-game.";
             // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(578, 244);
+            this.Controls.Add(this.currentProcessLabel);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.eventLog);
@@ -227,5 +239,6 @@
         private System.Windows.Forms.ToolStripMenuItem showGraphicsOverlayToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem utilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inGameChatToolStripMenuItem;
+        private System.Windows.Forms.Label currentProcessLabel;
     }
 }

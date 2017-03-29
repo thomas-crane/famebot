@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
 using FameBot.Data.Events;
 
@@ -16,7 +17,7 @@ namespace FameBot.UserInterface
     public partial class FameBotGUI : Form
     {
         private IntPtr flashPtr;
-        private Plugin plugin;
+        private string processName;
 
         public FameBotGUI()
         {
@@ -51,6 +52,15 @@ namespace FameBot.UserInterface
         public void SetHandle(IntPtr handle)
         {
             flashPtr = handle;
+            try
+            {
+                processName = Process.GetProcesses().Single(p => p.MainWindowHandle == handle).ProcessName;
+            }
+            catch
+            {
+                processName = "Unknown process.";
+            }
+            currentProcessLabel.Text = "Bot bound to process:\n" + processName;
         }
 
         private void onButton_Click(object sender, EventArgs e)
