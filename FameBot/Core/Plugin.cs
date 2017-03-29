@@ -114,7 +114,10 @@ namespace FameBot.Core
             get { return wPressed; }
             set
             {
+                if (wPressed == value)
+                    return;
                 wPressed = value;
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.W, 0);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.W, value));
             }
         }
@@ -123,7 +126,10 @@ namespace FameBot.Core
             get { return aPressed; }
             set
             {
+                if (aPressed == value)
+                    return;
                 aPressed = value;
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.A, 0);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.A, value));
             }
         }
@@ -132,7 +138,10 @@ namespace FameBot.Core
             get { return sPressed; }
             set
             {
+                if (sPressed == value)
+                    return;
                 sPressed = value;
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.S, 0);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.S, value));
             }
         }
@@ -141,7 +150,10 @@ namespace FameBot.Core
             get { return dPressed; }
             set
             {
+                if (dPressed == value)
+                    return;
                 dPressed = value;
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.D, 0);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.D, value));
             }
         }
@@ -389,12 +401,9 @@ namespace FameBot.Core
                 }
                 if(Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
-                    lock(enemies)
-                    {
-                        if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
-                            enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
-                        enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
-                    }
+                    if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
+                        enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
+                    enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
                 if(GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
@@ -425,13 +434,10 @@ namespace FameBot.Core
                     playerPositions.Remove(dropId);
                 }
 
-                lock (enemies)
-                {
-                    if (enemies.Exists(en => en.ObjectId == dropId))
-                        enemies.RemoveAll(en => en.ObjectId == dropId);
-                }
+                if (enemies.Exists(en => en.ObjectId == dropId))
+                    enemies.RemoveAll(en => en.ObjectId == dropId);
 
-                if(portals.Exists(ptl => ptl.ObjectId == dropId))
+                if (portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
             }
         }
@@ -512,14 +518,11 @@ namespace FameBot.Core
                     playerPositions[status.ObjectId].UpdatePosition(status.Position);
 
                 // Update enemy positions
-                lock(enemies)
-                {
-                    if (enemies.Exists(en => en.ObjectId == status.ObjectId))
-                        enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
-                }
+                if (enemies.Exists(en => en.ObjectId == status.ObjectId))
+                    enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
 
                 // Update portal player counts when in nexus.
-                if(portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (currentMapName?.Equals("Nexus") ?? false))
+                if (portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (currentMapName?.Equals("Nexus") ?? false))
                 {
                     foreach(var data in status.Data)
                     {
@@ -534,26 +537,10 @@ namespace FameBot.Core
 
             if (!followTarget && !gotoRealm)
             {
-                if (W_PRESSED)
-                {
-                    W_PRESSED = false;
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
-                }
-                if (A_PRESSED)
-                {
-                    A_PRESSED = false;
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
-                }
-                if (S_PRESSED)
-                {
-                    S_PRESSED = false;
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
-                }
-                if (D_PRESSED)
-                {
-                    D_PRESSED = false;
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
-                }
+                W_PRESSED = false;
+                A_PRESSED = false;
+                S_PRESSED = false;
+                D_PRESSED = false;
             }
 
             if (followTarget && targets.Count > 0)
@@ -614,7 +601,7 @@ namespace FameBot.Core
         private void OnText(Client client, Packet p)
         {
             TextPacket packet = p as TextPacket;
-            if (packet.Name == client.PlayerData.Name || packet.NumStars < 1)
+            if (packet.Name == client.PlayerData?.Name || packet.NumStars < 1)
                 return;
             receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
         }
@@ -695,92 +682,48 @@ namespace FameBot.Core
             if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
             {
                 // Move right
-                if (!D_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.D, 0);
-                    D_PRESSED = true;
-                }
-                if (A_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
-                    A_PRESSED = false;
-                }
+                D_PRESSED = true;
+                A_PRESSED = false;
             }
             else if (client.PlayerData.Pos.X <= targetPosition.X + tolerance)
             {
-                if (D_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
-                    D_PRESSED = false;
-                }
+                // Stop moving
+                D_PRESSED = false;
             }
             if (client.PlayerData.Pos.X > targetPosition.X + tolerance)
             {
                 // Move left
-                if (!A_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.A, 0);
-                    A_PRESSED = true;
-                }
-                if (D_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.D, 0);
-                    D_PRESSED = false;
-                }
+                A_PRESSED = true;
+                D_PRESSED = false;
             }
             else if (client.PlayerData.Pos.X >= targetPosition.X - tolerance)
             {
-                if (A_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.A, 0);
-                    A_PRESSED = false;
-                }
+                // Stop moving
+                A_PRESSED = false;
             }
 
             // Up or down
             if (client.PlayerData.Pos.Y < targetPosition.Y - tolerance)
             {
                 // Move down
-                if (!S_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.S, 0);
-                    S_PRESSED = true;
-                }
-                if (W_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
-                    W_PRESSED = false;
-                }
+                S_PRESSED = true;
+                W_PRESSED = false;
             }
             else if (client.PlayerData.Pos.Y <= targetPosition.Y + tolerance)
             {
-                if (S_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
-                    S_PRESSED = false;
-                }
+                // Stop moving
+                S_PRESSED = false;
             }
             if (client.PlayerData.Pos.Y > targetPosition.Y + tolerance)
             {
                 // Move up
-                if (!W_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyDown, (int)Key.W, 0);
-                    W_PRESSED = true;
-                }
-                if (S_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.S, 0);
-                    S_PRESSED = false;
-                }
+                W_PRESSED = true;
+                S_PRESSED = false;
             }
             else if (client.PlayerData.Pos.Y >= targetPosition.Y - tolerance)
             {
-                if (W_PRESSED)
-                {
-                    SendMessage(flashPtr, (uint)Key.KeyUp, (int)Key.W, 0);
-                    W_PRESSED = false;
-                }
+                // Stop moving
+                W_PRESSED = false;
             }
         }
     }
