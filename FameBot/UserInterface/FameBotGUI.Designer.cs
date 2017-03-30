@@ -150,8 +150,9 @@
             // 
             // inGameChatToolStripMenuItem
             // 
+            this.inGameChatToolStripMenuItem.Enabled = false;
             this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
-            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
+            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
             this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
             this.inGameChatToolStripMenuItem.Click += new System.EventHandler(this.inGameChatToolStripMenuItem_Click);
             // 

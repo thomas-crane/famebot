@@ -603,7 +603,7 @@ namespace FameBot.Core
             TextPacket packet = p as TextPacket;
             if (packet.Name == client.PlayerData?.Name || packet.NumStars < 1)
                 return;
-            receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
+            //receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
         }
         #endregion
 
