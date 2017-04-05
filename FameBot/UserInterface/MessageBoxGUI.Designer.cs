@@ -28,18 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageBoxGUI));
             this.messageBox = new System.Windows.Forms.TextBox();
             this.onTopBox = new System.Windows.Forms.CheckBox();
             this.sendButton = new System.Windows.Forms.Button();
             this.incomingMessagesBox = new System.Windows.Forms.RichTextBox();
             this.charCountLabel = new System.Windows.Forms.Label();
+            this.clearButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // messageBox
             // 
             this.messageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.messageBox.Location = new System.Drawing.Point(12, 265);
+            this.messageBox.Location = new System.Drawing.Point(12, 322);
             this.messageBox.MaxLength = 128;
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(554, 26);
@@ -49,7 +51,7 @@
             // 
             this.onTopBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.onTopBox.AutoSize = true;
-            this.onTopBox.Location = new System.Drawing.Point(12, 308);
+            this.onTopBox.Location = new System.Drawing.Point(12, 365);
             this.onTopBox.Name = "onTopBox";
             this.onTopBox.Size = new System.Drawing.Size(191, 24);
             this.onTopBox.TabIndex = 1;
@@ -60,7 +62,7 @@
             // 
             this.sendButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.sendButton.Enabled = false;
-            this.sendButton.Location = new System.Drawing.Point(454, 302);
+            this.sendButton.Location = new System.Drawing.Point(454, 359);
             this.sendButton.Name = "sendButton";
             this.sendButton.Size = new System.Drawing.Size(112, 34);
             this.sendButton.TabIndex = 2;
@@ -73,9 +75,9 @@
             this.incomingMessagesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.incomingMessagesBox.Location = new System.Drawing.Point(12, 13);
+            this.incomingMessagesBox.Location = new System.Drawing.Point(12, 52);
             this.incomingMessagesBox.Name = "incomingMessagesBox";
-            this.incomingMessagesBox.Size = new System.Drawing.Size(554, 246);
+            this.incomingMessagesBox.Size = new System.Drawing.Size(554, 264);
             this.incomingMessagesBox.TabIndex = 3;
             this.incomingMessagesBox.Text = "";
             // 
@@ -83,26 +85,39 @@
             // 
             this.charCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.charCountLabel.AutoSize = true;
-            this.charCountLabel.Location = new System.Drawing.Point(391, 308);
+            this.charCountLabel.Location = new System.Drawing.Point(391, 365);
             this.charCountLabel.Name = "charCountLabel";
             this.charCountLabel.Size = new System.Drawing.Size(57, 20);
             this.charCountLabel.TabIndex = 4;
             this.charCountLabel.Text = "0 / 128";
             this.charCountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // clearButton
+            // 
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Location = new System.Drawing.Point(454, 12);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(112, 33);
+            this.clearButton.TabIndex = 5;
+            this.clearButton.Text = "Clear chat";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
+            // 
             // MessageBoxGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 344);
+            this.ClientSize = new System.Drawing.Size(578, 401);
+            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.charCountLabel);
             this.Controls.Add(this.incomingMessagesBox);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.onTopBox);
             this.Controls.Add(this.messageBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "MessageBoxGUI";
-            this.Text = "MessageBoxGUI";
+            this.Text = "[FameBot] Chat";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -115,5 +130,6 @@
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.RichTextBox incomingMessagesBox;
         private System.Windows.Forms.Label charCountLabel;
+        private System.Windows.Forms.Button clearButton;
     }
 }

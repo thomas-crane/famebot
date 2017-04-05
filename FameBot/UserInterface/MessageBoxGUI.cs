@@ -14,13 +14,16 @@ namespace FameBot.UserInterface
 {
     public partial class MessageBoxGUI : Form
     {
+        private Plugin.ReceiveMessageEventHandler receiveEvent;
         public MessageBoxGUI()
         {
             InitializeComponent();
-            Plugin.receiveMesssage += (s, e) =>
+            receiveEvent = new Plugin.ReceiveMessageEventHandler((s, e) =>
             {
                 UpdateTextBox(e);
-            };
+            });
+
+            Plugin.receiveMesssage += receiveEvent;
             messageBox.KeyUp += (s, e) =>
             {
                 if(e.KeyCode == Keys.Enter)
@@ -38,6 +41,10 @@ namespace FameBot.UserInterface
                 else
                     sendButton.Enabled = true;
             };
+            this.FormClosing += (s, e) =>
+            {
+                Plugin.receiveMesssage -= receiveEvent;
+            };
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -49,9 +56,11 @@ namespace FameBot.UserInterface
         {
             if (this.incomingMessagesBox.InvokeRequired)
             {
-                this.incomingMessagesBox.Invoke(new MethodInvoker(() =>
+                this.incomingMessagesBox.BeginInvoke(new MethodInvoker(() =>
                 {
-                    UpdateTextBox(args);
+                    incomingMessagesBox.Text += (args.FullMessage + "\n");
+                    incomingMessagesBox.SelectionStart = incomingMessagesBox.Text.Length;
+                    incomingMessagesBox.ScrollToCaret();
                 }));
             }
             else
@@ -65,8 +74,13 @@ namespace FameBot.UserInterface
         private void SendMessage()
         {
             Plugin.InvokeSendMessageEvent(messageBox.Text);
-            UpdateTextBox(new MessageEventArgs(messageBox.Text, "You"));
+            UpdateTextBox(new MessageEventArgs(messageBox.Text, "You", false));
             messageBox.Text = "";
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            incomingMessagesBox.Text = "";
         }
     }
 }
