@@ -32,21 +32,23 @@ namespace FameBot.UserInterface
                 UpdateEventLog(s, e);
             };
         }
-        
+
         private void UpdateEventLog(object sender, LogEventArgs args)
         {
             if (this.eventLog.InvokeRequired)
             {
-                this.eventLog.Invoke(new MethodInvoker(() =>
+                this.eventLog.BeginInvoke(new MethodInvoker(() =>
                 {
-                    UpdateEventLog(sender, args);
+                    eventLog.Text += (args.MessageWithTimestamp + "\n");
+                    eventLog.SelectionStart = eventLog.Text.Length;
+                    eventLog.ScrollToCaret();
                 }));
-            } else
-            {
-                eventLog.Text += (args.MessageWithTimestamp + "\n");
-                eventLog.SelectionStart = eventLog.Text.Length;
-                eventLog.ScrollToCaret();
+                return;
             }
+
+            eventLog.Text += (args.MessageWithTimestamp + "\n");
+            eventLog.SelectionStart = eventLog.Text.Length;
+            eventLog.ScrollToCaret();
         }
 
         public void SetHandle(IntPtr handle)
@@ -62,7 +64,7 @@ namespace FameBot.UserInterface
             }
             if(currentProcessLabel.InvokeRequired)
             {
-                currentProcessLabel.Invoke(new MethodInvoker(() =>
+                currentProcessLabel.BeginInvoke(new MethodInvoker(() =>
                 {
                     currentProcessLabel.Text = "Bot bound to process:\n" + processName;
                 }));

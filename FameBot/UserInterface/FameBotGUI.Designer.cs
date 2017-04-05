@@ -150,7 +150,6 @@
             // 
             // inGameChatToolStripMenuItem
             // 
-            this.inGameChatToolStripMenuItem.Enabled = false;
             this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
             this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
             this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
