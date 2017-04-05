@@ -83,8 +83,8 @@ namespace FameBot.Core
         private static event SendMessageEventHandler sendMessage;
         private delegate void SendMessageEventHandler(string message);
 
-        public static event ReceiveMEssageEventHandler receiveMesssage;
-        public delegate void ReceiveMEssageEventHandler(object sender, MessageEventArgs args);
+        public static event ReceiveMessageEventHandler receiveMesssage;
+        public delegate void ReceiveMessageEventHandler(object sender, MessageEventArgs args);
 
         #region WINAPI
         // Get the focused window.
@@ -196,7 +196,7 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
-            //proxy.HookPacket(PacketType.TEXT, OnText);
+            proxy.HookPacket(PacketType.TEXT, OnText);
 
             proxy.ClientConnected += (client) =>
             {
@@ -317,7 +317,7 @@ namespace FameBot.Core
 
         private void Log(string message)
         {
-            //logEvent?.Invoke(this, new LogEventArgs(message));
+            logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
         private async void PressPlay()
@@ -603,7 +603,7 @@ namespace FameBot.Core
             TextPacket packet = p as TextPacket;
             if (packet.Name == client.PlayerData?.Name || packet.NumStars < 1)
                 return;
-            receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
+            receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name, packet.Recipient == client.PlayerData?.Name ? true : false));
         }
         #endregion
 
