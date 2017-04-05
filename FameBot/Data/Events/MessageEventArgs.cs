@@ -10,6 +10,7 @@ namespace FameBot.Data.Events
     {
         private string message;
         private string author;
+        private bool isPrivateMessage;
         private DateTime timestamp;
 
         public string Message
@@ -29,15 +30,21 @@ namespace FameBot.Data.Events
             get { return ("[" + timestamp.ToString("HH:mm:ss") + "]"); }
         }
 
-        public string FullMessage
+        public bool IsPrivateMessage
         {
-            get { return (TimestampString + " " + author + ": " + message); }
+            get { return isPrivateMessage; }
         }
 
-        public MessageEventArgs(string message, string author)
+        public string FullMessage
+        {
+            get { return (TimestampString + (isPrivateMessage ? " [Private] " : " ") + author + ": " + message); }
+        }
+
+        public MessageEventArgs(string message, string author, bool isPrivateMessage)
         {
             this.message = message;
             this.author = author;
+            this.isPrivateMessage = isPrivateMessage;
             timestamp = DateTime.Now;
         }
     }
