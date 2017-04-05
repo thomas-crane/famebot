@@ -92,7 +92,7 @@ namespace FameBot.Core
         private static extern IntPtr GetForegroundWindow();
         // Send a message to a specific process via the handle.
         [DllImport("user32.dll")]
-        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 
         // Gets the positions of the corners of a window via the MainWindowHandle.
         [DllImport("user32.dll", SetLastError = true)]
@@ -117,7 +117,7 @@ namespace FameBot.Core
                 if (wPressed == value)
                     return;
                 wPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.W, 0);
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.W), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.W, value));
             }
         }
@@ -129,7 +129,7 @@ namespace FameBot.Core
                 if (aPressed == value)
                     return;
                 aPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.A, 0);
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.A), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.A, value));
             }
         }
@@ -141,7 +141,7 @@ namespace FameBot.Core
                 if (sPressed == value)
                     return;
                 sPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.S, 0);
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.S), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.S, value));
             }
         }
@@ -153,7 +153,7 @@ namespace FameBot.Core
                 if (dPressed == value)
                     return;
                 dPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, (int)Key.D, 0);
+                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.D), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.D, value));
             }
         }
@@ -196,7 +196,7 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
-            proxy.HookPacket(PacketType.TEXT, OnText);
+            //proxy.HookPacket(PacketType.TEXT, OnText);
 
             proxy.ClientConnected += (client) =>
             {
@@ -317,7 +317,7 @@ namespace FameBot.Core
 
         private void Log(string message)
         {
-            logEvent?.Invoke(this, new LogEventArgs(message));
+            //logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
         private async void PressPlay()
@@ -353,8 +353,8 @@ namespace FameBot.Core
             ScreenToClient(flashPtr, ref relativePoint);
 
             // Press the buttons.
-            SendMessage(flashPtr, (uint)MouseButton.LeftButtonDown, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
-            SendMessage(flashPtr, (uint)MouseButton.LeftButtonUp, 0x1, ((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            SendMessage(flashPtr, (uint)MouseButton.LeftButtonDown, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            SendMessage(flashPtr, (uint)MouseButton.LeftButtonUp, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
 
             PressPlay();
         }
@@ -603,7 +603,7 @@ namespace FameBot.Core
             TextPacket packet = p as TextPacket;
             if (packet.Name == client.PlayerData?.Name || packet.NumStars < 1)
                 return;
-            //receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
+            receiveMesssage?.Invoke(this, new MessageEventArgs(packet.Text, packet.Name));
         }
         #endregion
 
