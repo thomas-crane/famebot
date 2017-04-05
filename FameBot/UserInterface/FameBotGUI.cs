@@ -60,7 +60,17 @@ namespace FameBot.UserInterface
             {
                 processName = "Unknown process.";
             }
-            currentProcessLabel.Text = "Bot bound to process:\n" + processName;
+            if(currentProcessLabel.InvokeRequired)
+            {
+                currentProcessLabel.Invoke(new MethodInvoker(() =>
+                {
+                    currentProcessLabel.Text = "Bot bound to process:\n" + processName;
+                }));
+            }
+            else
+            {
+                currentProcessLabel.Text = "Bot bound to process:\n" + processName;
+            }
         }
 
         private void onButton_Click(object sender, EventArgs e)
