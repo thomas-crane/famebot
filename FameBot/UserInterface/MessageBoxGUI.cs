@@ -15,6 +15,9 @@ namespace FameBot.UserInterface
     public partial class MessageBoxGUI : Form
     {
         private Plugin.ReceiveMessageEventHandler receiveEvent;
+        private const uint WM_VSCROLL = 277;
+        private const int SB_PAGEBOTTOM = 7;
+
         public MessageBoxGUI()
         {
             InitializeComponent();
@@ -59,15 +62,13 @@ namespace FameBot.UserInterface
                 this.incomingMessagesBox.BeginInvoke(new MethodInvoker(() =>
                 {
                     incomingMessagesBox.Text += (args.FullMessage + "\n");
-                    incomingMessagesBox.SelectionStart = incomingMessagesBox.Text.Length;
-                    incomingMessagesBox.ScrollToCaret();
+                    Plugin.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
                 }));
             }
             else
             {
                 incomingMessagesBox.Text += (args.FullMessage + "\n");
-                incomingMessagesBox.SelectionStart = incomingMessagesBox.Text.Length;
-                incomingMessagesBox.ScrollToCaret();
+                Plugin.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
             }
         }
 

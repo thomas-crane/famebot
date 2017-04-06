@@ -18,6 +18,8 @@ namespace FameBot.UserInterface
     {
         private IntPtr flashPtr;
         private string processName;
+        private const uint WM_VSCROLL = 277;
+        private const int SB_PAGEBOTTOM = 7;
 
         public FameBotGUI()
         {
@@ -40,15 +42,13 @@ namespace FameBot.UserInterface
                 this.eventLog.BeginInvoke(new MethodInvoker(() =>
                 {
                     eventLog.Text += (args.MessageWithTimestamp + "\n");
-                    eventLog.SelectionStart = eventLog.Text.Length;
-                    eventLog.ScrollToCaret();
+                    Plugin.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
                 }));
                 return;
             }
 
             eventLog.Text += (args.MessageWithTimestamp + "\n");
-            eventLog.SelectionStart = eventLog.Text.Length;
-            eventLog.ScrollToCaret();
+            Plugin.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
         }
 
         public void SetHandle(IntPtr handle)
