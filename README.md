@@ -23,9 +23,9 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 3. Right click on the FameBot project and select build.
 
-4. Right click on the FameBot project and select Open Folder in File Explorer.
+4. Right click on the Solution and select Open Folder in File Explorer.
 
-5. Depending on the build configuration (default is Debug) open either the Debug or the Release folder.
+5. Open the 'Release' folder.
 
 6. Copy FameBot.dll to the Plugins folder of your KRelay.
 
