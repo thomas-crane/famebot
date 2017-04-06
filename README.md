@@ -86,4 +86,17 @@ The minimum players required per cluster for the bot to target them.
 The number of ticks (NewTickPacket) which pass before the bot will evaluate player clusters again. *If your CPU isn't very good or KRelay is using a lot of memory with the bot enabled, try turning this up.*
 
 ## Contributing
-// TODO
+#### Guidlines for contributing:
+When you make a pull request, try to add only one feature in each pull request. If you have two features you wan't to add, make two pull requests.
+
+Try to make your commits more granular. This means that instead of saying something like:
+```
+Commit A: Added enemy avoidance
+```
+Say something like:
+```
+Commit A: Added math class for enemy avoidance
+Commit B: Added enemy detection to Plugin.cs
+Commit C: Added list and custom data type to keep track of enemies
+Commit D: Finished enemy avoidance feature
+```
