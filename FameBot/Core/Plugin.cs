@@ -630,7 +630,24 @@ namespace FameBot.Core
             if (client.PlayerData.Pos.Y <= 110 && client.PlayerData.Pos.Y != 0)
             {
                 if (portals.Count != 0)
-                    target = portals.OrderByDescending(p => p.PlayerCount).First().Location;
+                {
+                    int bestCount = 0;
+                    if(portals.Where(ptl => ptl.PlayerCount == 85).Count() > 1)
+                    {
+                        foreach(Portal ptl in portals.Where(ptl => ptl.PlayerCount == 85))
+                        {
+                            int count = playerPositions.Values.Where(plr => plr.Position.DistanceSquaredTo(ptl.Location) <= 4).Count();
+                            if(count > bestCount)
+                            {
+                                bestCount = count;
+                                target = ptl.Location;
+                            }
+                        }
+                    } else
+                    {
+                        target = portals.OrderByDescending(ptl => ptl.PlayerCount).First().Location;
+                    }
+                }
                 else
                     target = new Location(159, 101);
             }
@@ -641,7 +658,7 @@ namespace FameBot.Core
             {
                 Log("Attempting connection.");
                 gotoRealm = false;
-                AttemptConnection(client, portals.OrderByDescending(p => p.PlayerCount).First().ObjectId);
+                AttemptConnection(client, portals.OrderBy(ptl => ptl.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().ObjectId);
             }
             await Task.Delay(5);
             if (gotoRealm)
