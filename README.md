@@ -43,47 +43,47 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 ### UI overview
 #### Start Bot
-Starts the bot.
+ + Starts the bot.
 
 #### Stop Bot
-Stops the bot.
+ + Stops the bot.
 
 #### Info > Show health bar
-Opens a new window which shows the health of the player. Useful for keeping an eye on health while having the game minimized.
+ + Opens a new window which shows the health of the player. Useful for keeping an eye on health while having the game minimised.
 
 #### Info > Show key presses
-Opens a new window which shows the keys which are being 'pressed' by the bot.
+ + Opens a new window which shows the keys which are being 'pressed' by the bot.
 
 #### Settings > Open Config Manager
-Opens a new window which allows settings to be changed and saved.
+ + Opens a new window which allows settings to be changed and saved.
 
 ### Settings overview
 #### Autonexus
-Self-explanatory. If you want to disable it and use a better one, set it to 0%.
+ + Self-explanatory. If you want to disable it and use a better one, set it to 0%.
 
 #### Escape if no targets
-If the bot is following a cluster of targets, but that cluster disperses and it can't find another it will go back to the nexus. *I highly recommend you leave this option enabled.*
+ + If the bot is following a cluster of targets, but that cluster disperses and it can't find another it will go back to the nexus. *I highly recommend you leave this option enabled.*
 
 #### Teleport distance
-The max distance in game tiles away from the target the player can be before attempting to teleport.
+ + The max distance in game tiles away from the target the player can be before attempting to teleport.
 
 #### Follow distance
-The max distance in game tiles away from the target the player can be before moving towards it. *I recommend watching how the bot behaves before tweaking this.*
+ + The max distance in game tiles away from the target the player can be before moving towards it. *I recommend watching how the bot behaves before tweaking this.*
 
 #### AutoConnect
-If enabled, when the bot enters the nexus it will immediately try to connect to the fullest realm.
+ + If enabled, when the bot enters the nexus it will immediately try to connect to the fullest realm.
 
-#### Find clusters near center
-If enabled, the bot will prioritize clusters of players which are closer to the center of the map. *There is a known bug which causes unusual behavior when this is disabled. Unless you are just curious, always leave this enabled.*
+#### Find clusters near centre
+ + If enabled, the bot will prioritise clusters of players which are closer to the center of the map. *There is a known bug which causes unusual behaviour when this is disabled. Unless you are just curious, always leave this enabled.*
 
 #### Max distance between points
-The max distance in game tiles two players can be from each other before they are no longer part of the same cluster.
+ + The max distance in game tiles two players can be from each other before they are no longer part of the same cluster.
 
 #### Minimum players per cluster
-The minimum players required per cluster for the bot to target them.
+ + The minimum players required per cluster for the bot to target them.
 
 #### Ticks between cluster scans
-The number of ticks (NewTickPacket) which pass before the bot will evaluate player clusters again. *If your CPU isn't very good or KRelay is using a lot of memory with the bot enabled, try turning this up.*
+ + The number of ticks (NewTickPacket) which pass before the bot will evaluate player clusters again. *If your CPU isn't very good or KRelay is using a lot of memory with the bot enabled, try turning this up.*
 
 ## Contributing
 #### Guidlines for contributing:
