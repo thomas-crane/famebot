@@ -15,10 +15,12 @@ namespace FameBot.UserInterface
 {
     public partial class KeyPressGUI : Form
     {
+        private Plugin.KeyEventHandler keyEventHandler;
         public KeyPressGUI()
         {
             InitializeComponent();
-            Plugin.keyChanged += (s, e) =>
+
+            keyEventHandler = new Plugin.KeyEventHandler((s, e) =>
             {
                 switch (e.Key)
                 {
@@ -47,6 +49,13 @@ namespace FameBot.UserInterface
                             dBox.Image = Resources.d_off;
                         break;
                 }
+            });
+
+            Plugin.keyChanged += keyEventHandler;
+
+            this.FormClosing += (s, e) =>
+            {
+                Plugin.keyChanged -= keyEventHandler;
             };
         }
 
