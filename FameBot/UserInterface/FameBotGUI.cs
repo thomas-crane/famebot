@@ -124,5 +124,11 @@ namespace FameBot.UserInterface
             MessageBoxGUI messageBoxGui = new MessageBoxGUI();
             messageBoxGui.Show();
         }
+
+        private void showFameBarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FameBarGUI fameBarGui = new FameBarGUI();
+            fameBarGui.Show();
+        }
     }
 }

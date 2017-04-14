@@ -51,6 +51,7 @@
     <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Enums\EnumKey.cs" />
     <Compile Include="Data\Enums\EnumMouseButton.cs" />
+    <Compile Include="Data\Events\FameUpdateEventArgs.cs" />
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
     <Compile Include="Data\Events\KeyEventArgs.cs" />
     <Compile Include="Data\Events\LogEventArgs.cs" />
@@ -75,6 +76,12 @@
     </Compile>
     <Compile Include="Services\ConfigManager.cs" />
     <Compile Include="Services\D36n4.cs" />
+    <Compile Include="UserInterface\FameBarGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FameBarGUI.Designer.cs">
+      <DependentUpon>FameBarGUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FameBotGUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +136,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FameBarGUI.resx">
+      <DependentUpon>FameBarGUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FameBotGUI.resx">
       <DependentUpon>FameBotGUI.cs</DependentUpon>
