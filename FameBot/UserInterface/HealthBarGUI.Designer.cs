@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HealthBarGUI));
             this.healthBar = new System.Windows.Forms.ProgressBar();
             this.onTopCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
@@ -66,6 +67,7 @@
             this.Controls.Add(this.onTopCheckBox);
             this.Controls.Add(this.healthBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(255, 145);
             this.Name = "HealthBarGUI";
             this.Text = "[FameBot] Health";

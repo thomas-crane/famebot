@@ -45,6 +45,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.clearButton = new System.Windows.Forms.Button();
             this.currentProcessLabel = new System.Windows.Forms.Label();
+            this.showFameBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,6 +99,7 @@
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showHealthBarToolStripMenuItem,
             this.showKeyPressesToolStripMenuItem,
+            this.showFameBarToolStripMenuItem,
             this.showGraphicsOverlayToolStripMenuItem});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
@@ -151,7 +153,7 @@
             // inGameChatToolStripMenuItem
             // 
             this.inGameChatToolStripMenuItem.Name = "inGameChatToolStripMenuItem";
-            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.inGameChatToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.inGameChatToolStripMenuItem.Text = "In-Game Chat";
             this.inGameChatToolStripMenuItem.Click += new System.EventHandler(this.inGameChatToolStripMenuItem_Click);
             // 
@@ -197,6 +199,13 @@
             this.currentProcessLabel.TabIndex = 7;
             this.currentProcessLabel.Text = "Bot not bound to process.\r\nUse /bind in-game.";
             // 
+            // showFameBarToolStripMenuItem
+            // 
+            this.showFameBarToolStripMenuItem.Name = "showFameBarToolStripMenuItem";
+            this.showFameBarToolStripMenuItem.Size = new System.Drawing.Size(275, 30);
+            this.showFameBarToolStripMenuItem.Text = "Show fame bar";
+            this.showFameBarToolStripMenuItem.Click += new System.EventHandler(this.showFameBarToolStripMenuItem_Click);
+            // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -240,5 +249,6 @@
         private System.Windows.Forms.ToolStripMenuItem utilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inGameChatToolStripMenuItem;
         private System.Windows.Forms.Label currentProcessLabel;
+        private System.Windows.Forms.ToolStripMenuItem showFameBarToolStripMenuItem;
     }
 }

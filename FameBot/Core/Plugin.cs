@@ -86,6 +86,9 @@ namespace FameBot.Core
         public static event ReceiveMessageEventHandler receiveMesssage;
         public delegate void ReceiveMessageEventHandler(object sender, MessageEventArgs args);
 
+        public static event FameUpdateEventHandler fameUpdate;
+        public delegate void FameUpdateEventHandler(object sender, FameUpdateEventArgs args);
+
         #region WINAPI
         // Get the focused window.
         [DllImport("user32.dll", SetLastError = true)]
@@ -488,6 +491,9 @@ namespace FameBot.Core
             // Autonexus
             if (healthPercentage < config.AutonexusThreshold && !(currentMapName?.Equals("Nexus") ?? false) && enabled)
                 Escape(client);
+
+            // Fame event
+            fameUpdate?.Invoke(this, new FameUpdateEventArgs(client.PlayerData?.CharacterFame ?? -1, client.PlayerData?.CharacterFameGoal ?? -1));
 
             if (tickCount % config.TickCountThreshold == 0)
             {

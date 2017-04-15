@@ -13,13 +13,22 @@ namespace FameBot.UserInterface
 {
     public partial class HealthBarGUI : Form
     {
+        private Plugin.HealthEventHandler healthChangedHandler;
         public HealthBarGUI()
         {
             InitializeComponent();
-            Plugin.healthChanged += (s, e) =>
+
+            healthChangedHandler = new Plugin.HealthEventHandler((s, e) =>
             {
                 int hP = (int)Math.Floor(e.Health);
                 healthBar.Value = hP;
+            });
+
+            Plugin.healthChanged += healthChangedHandler;
+
+            this.FormClosing += (s, e) =>
+            {
+                Plugin.healthChanged -= healthChangedHandler;
             };
         }
 
