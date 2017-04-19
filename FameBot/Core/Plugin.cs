@@ -683,6 +683,7 @@ namespace FameBot.Core
 
             if(!portals.Exists(ptl => ptl.ObjectId == portalId))
             {
+                gotoRealm = true;
                 MoveToRealms(client);
                 return;
             }
