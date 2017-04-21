@@ -653,7 +653,9 @@ namespace FameBot.Core
                         }
                     } else
                     {
-                        target = portals.OrderByDescending(ptl => ptl.PlayerCount).First().Location;
+                        Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
+                        target = ptl.Location;
+                        bestName = ptl.Name;
                     }
                 }
                 else
