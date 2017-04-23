@@ -66,6 +66,7 @@ namespace FameBot.Core
         private FameBotGUI gui;
         private bool gotoRealm;
         private bool enabled;
+        private bool isInNexus;
         private string currentMapName;
 
         public static event HealthEventHandler healthChanged;
@@ -209,6 +210,7 @@ namespace FameBot.Core
                 enemies.Clear();
                 rocks.Clear();
                 followTarget = false;
+                isInNexus = false;
                 A_PRESSED = false;
                 D_PRESSED = false;
                 W_PRESSED = false;
@@ -288,6 +290,7 @@ namespace FameBot.Core
             gotoRealm = false;
             targets.Clear();
             enabled = false;
+            isInNexus = false;
         }
 
         private void Start()
@@ -461,6 +464,7 @@ namespace FameBot.Core
             }
             if (packet.Name == "Nexus" && config.AutoConnect && enabled)
             {
+                isInNexus = true;
                 gotoRealm = true;
                 MoveToRealms(client);
             }
@@ -538,6 +542,16 @@ namespace FameBot.Core
                             portals[portals.FindIndex(ptl => ptl.ObjectId == status.ObjectId)].PlayerCount = int.Parse(strCount);
                         }
                     }
+                }
+
+                // Change the speed if in Nexus
+                if (isInNexus && status.ObjectId == client.ObjectId) {
+                    List<StatData> list = new List<StatData>(status.Data) {
+                        new StatData {
+                            Id = StatsType.Speed, IntValue = 45
+                        }
+                    };
+                    status.Data = list.ToArray();
                 }
             }
 
