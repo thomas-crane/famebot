@@ -87,7 +87,7 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 ## Contributing
 #### Guidlines for contributing:
-When you make a pull request, try to add only one feature in each pull request. If you have two features you wan't to add, make two pull requests.
+When you make a pull request, try to add only one feature in each pull request. If you have two features you want to add, make two pull requests.
 
 Try to make your commits more granular. This means that instead of saying something like:
 ```

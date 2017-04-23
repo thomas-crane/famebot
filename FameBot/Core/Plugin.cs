@@ -633,6 +633,7 @@ namespace FameBot.Core
             if (healthPercentage < 0.95f)
                 target = new Location(159, 127);
 
+            string bestName = "";
             if (client.PlayerData.Pos.Y <= 110 && client.PlayerData.Pos.Y != 0)
             {
                 if (portals.Count != 0)
@@ -646,12 +647,15 @@ namespace FameBot.Core
                             if(count > bestCount)
                             {
                                 bestCount = count;
+                                bestName = ptl.Name;
                                 target = ptl.Location;
                             }
                         }
                     } else
                     {
-                        target = portals.OrderByDescending(ptl => ptl.PlayerCount).First().Location;
+                        Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
+                        target = ptl.Location;
+                        bestName = ptl.Name;
                     }
                 }
                 else
@@ -662,6 +666,16 @@ namespace FameBot.Core
 
             if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
+                if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
+                {
+                    Log("Last realm is still the best realm. Sending reconnect.");
+                    if (client.ConnectTo(client.State.LastRealm))
+                    {
+                        gotoRealm = false;
+                        return;
+                    }
+                }
+
                 Log("Attempting connection.");
                 gotoRealm = false;
                 AttemptConnection(client, portals.OrderBy(ptl => ptl.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().ObjectId);
@@ -683,6 +697,7 @@ namespace FameBot.Core
 
             if(!portals.Exists(ptl => ptl.ObjectId == portalId))
             {
+                gotoRealm = true;
                 MoveToRealms(client);
                 return;
             }
