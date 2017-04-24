@@ -1,6 +1,8 @@
 # FameBot
 A bot for Realm of the Mad God designed to automate the process of collecting fame. This bot works by finding clusters of players on the map and following them. The bot moves the player using a WINAPI method which simulates keypresses, so it will still work when the game window is minimized. The bot has customizable settings which allow the user to change the behaviour of the bot as well as the settings of the clustering algorithm.
 
+[This project also has a Wiki.](https://github.com/thomas-crane/famebot/wiki)
+
 ## Installation
 This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf client which can connect to the proxy server.
 
@@ -41,6 +43,7 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 4. Start using the bot.
 
+For a more in-depth look at some of the settings and how to use them, look at the wiki page [Usage guide.](https://github.com/thomas-crane/famebot/wiki/Usage-guide)
 ### UI overview
 #### Start Bot
  + Starts the bot.
@@ -87,6 +90,7 @@ This is a plugin for KRelay. Make sure you have the latest version of KRelay ins
 
 ## Contributing
 #### Guidlines for contributing:
+Read through the wiki page [How the software works](https://github.com/thomas-crane/famebot/wiki/How-the-software-works) to get a better understanding of what each piece of code does.
 When you make a pull request, try to add only one feature in each pull request. If you have two features you want to add, make two pull requests.
 
 Try to make your commits more granular. This means that instead of saying something like:
