@@ -184,10 +184,12 @@ namespace FameBot.Core
                 gui?.SetHandle(flashPtr);
                 if (config.AutoConnect)
                     Start();
-            } else if(processes.Length > 1)
+            }
+            else if (processes.Length > 1)
             {
                 Log("Multiple flash players running. Use the /bind command on the client you want to use.");
-            } else
+            }
+            else
             {
                 Log("Couldn't find flash player. Use the /bind command in game, then start the bot.");
             }
@@ -251,7 +253,7 @@ namespace FameBot.Core
 
         private void ReceiveCommand(Client client, string cmd, string[] args)
         {
-            switch(cmd)
+            switch (cmd)
             {
                 case "bind":
                     flashPtr = GetForegroundWindow();
@@ -308,7 +310,8 @@ namespace FameBot.Core
                 followTarget = false;
                 if (connectedClient != null)
                     MoveToRealms(connectedClient);
-            } else
+            }
+            else
             {
                 gotoRealm = false;
                 followTarget = true;
@@ -371,14 +374,14 @@ namespace FameBot.Core
             UpdatePacket packet = p as UpdatePacket;
 
             // Get new info
-            foreach(Entity obj in packet.NewObjs)
+            foreach (Entity obj in packet.NewObjs)
             {
-                if(Enum.IsDefined(typeof(Classes), obj.ObjectType))
+                if (Enum.IsDefined(typeof(Classes), obj.ObjectType))
                 {
                     PlayerData playerData = new PlayerData(obj.Status.ObjectId);
                     playerData.Class = (Classes)obj.ObjectType;
                     playerData.Pos = obj.Status.Position;
-                    foreach(var data in obj.Status.Data)
+                    foreach (var data in obj.Status.Data)
                     {
                         playerData.Parse(data.Id, data.IntValue, data.StringValue);
                     }
@@ -387,11 +390,11 @@ namespace FameBot.Core
                         playerPositions.Remove(obj.Status.ObjectId);
                     playerPositions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
                 }
-                if(obj.ObjectType == 1810)
+                if (obj.ObjectType == 1810)
                 {
-                    foreach(var data in obj.Status.Data)
+                    foreach (var data in obj.Status.Data)
                     {
-                        if(data.StringValue != null)
+                        if (data.StringValue != null)
                         {
                             // TODO: replace with regex
                             var strArray = data.StringValue.Split(' ');
@@ -405,32 +408,33 @@ namespace FameBot.Core
                         }
                     }
                 }
-                if(Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
+                if (Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
                     if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
                         enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
-                if(GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
+                if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
                     if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
                         rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
                 }
             }
-            
+
             // Remove old info
             foreach (int dropId in packet.Drops)
             {
                 if (playerPositions.ContainsKey(dropId))
                 {
-                    if(followTarget && targets.Exists(t => t.ObjectId == dropId))
+                    if (followTarget && targets.Exists(t => t.ObjectId == dropId))
                     {
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
-                        if(targets.Count > 0)
+                        if (targets.Count > 0)
                         {
                             Log(string.Format("Dropping \"{0}\" from targets.", playerPositions[dropId].Name));
-                        } else
+                        }
+                        else
                         {
                             Log("No targets left in target list.");
                             if (config.EscapeIfNoTargets)
@@ -504,13 +508,14 @@ namespace FameBot.Core
                 if (followTarget && playerPositions.Count > 0 && !gotoRealm)
                 {
                     List<Target> newTargets = D36n4.Invoke(playerPositions.Values.ToList(), config.Epsilon, config.MinPoints, config.FindClustersNearCenter);
-                    if(newTargets == null)
+                    if (newTargets == null)
                     {
                         if (targets.Count != 0 && config.EscapeIfNoTargets)
-                            Escape(client); 
+                            Escape(client);
                         targets.Clear();
                         Log("No valid clusters found.");
-                    } else
+                    }
+                    else
                     {
                         if (targets.Count != newTargets.Count)
                             Log(string.Format("Now targeting {0} players.", newTargets.Count));
@@ -521,7 +526,7 @@ namespace FameBot.Core
             }
 
             // Updates
-            foreach(Status status in packet.Statuses)
+            foreach (Status status in packet.Statuses)
             {
                 // Update player positions
                 if (playerPositions.ContainsKey(status.ObjectId))
@@ -532,11 +537,11 @@ namespace FameBot.Core
                     enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
 
                 // Update portal player counts when in nexus.
-                if (portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (currentMapName?.Equals("Nexus") ?? false))
+                if (portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (isInNexus))
                 {
-                    foreach(var data in status.Data)
+                    foreach (var data in status.Data)
                     {
-                        if(data.StringValue != null)
+                        if (data.StringValue != null)
                         {
                             var strCount = data.StringValue.Split(' ')[1].Split('/')[0].Remove(0, 1);
                             portals[portals.FindIndex(ptl => ptl.ObjectId == status.ObjectId)].PlayerCount = int.Parse(strCount);
@@ -550,7 +555,7 @@ namespace FameBot.Core
                     foreach (var data in status.Data)
                     {
                         if (data.Id == StatsType.Speed)
-                        { 
+                        {
                             if (data.IntValue > 45)
                             {
                                 List<StatData> list = new List<StatData>(status.Data) {
@@ -602,7 +607,7 @@ namespace FameBot.Core
                     return;
                 }
 
-                if(rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
+                if (rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
                 {
                     Location closestRock = rocks.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
                     double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock);
@@ -610,7 +615,7 @@ namespace FameBot.Core
                     if (Math.Abs(angleDifference) < 70.0)
                     {
                         double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
-                        if(angleDifference <= 0)
+                        if (angleDifference <= 0)
                             angle += (Math.PI / 2); // add 90 degrees to the angle to go clockwise around the rock.
                         if (angleDifference > 0)
                             angle -= (Math.PI / 2); // remove 90 degrees from the angle to go anti-clockwise around the rock.
@@ -639,7 +644,7 @@ namespace FameBot.Core
 
         private async void MoveToRealms(Client client)
         {
-            if(client == null)
+            if (client == null)
             {
                 Log("No client passed to MoveToRealms.");
                 return;
@@ -663,19 +668,20 @@ namespace FameBot.Core
                 if (portals.Count != 0)
                 {
                     int bestCount = 0;
-                    if(portals.Where(ptl => ptl.PlayerCount == 85).Count() > 1)
+                    if (portals.Where(ptl => ptl.PlayerCount == 85).Count() > 1)
                     {
-                        foreach(Portal ptl in portals.Where(ptl => ptl.PlayerCount == 85))
+                        foreach (Portal ptl in portals.Where(ptl => ptl.PlayerCount == 85))
                         {
                             int count = playerPositions.Values.Where(plr => plr.Position.DistanceSquaredTo(ptl.Location) <= 4).Count();
-                            if(count > bestCount)
+                            if (count > bestCount)
                             {
                                 bestCount = count;
                                 bestName = ptl.Name;
                                 target = ptl.Location;
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
                         target = ptl.Location;
@@ -688,7 +694,7 @@ namespace FameBot.Core
 
             CalculateMovement(client, target, 0.5f);
 
-            if(client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
+            if (client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
                 if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
                 {
@@ -708,7 +714,8 @@ namespace FameBot.Core
             if (gotoRealm)
             {
                 MoveToRealms(client);
-            } else
+            }
+            else
             {
                 Log("Stopped moving to realm.");
             }
@@ -719,7 +726,7 @@ namespace FameBot.Core
             UsePortalPacket packet = (UsePortalPacket)Packet.Create(PacketType.USEPORTAL);
             packet.ObjectId = portalId;
 
-            if(!portals.Exists(ptl => ptl.ObjectId == portalId))
+            if (!portals.Exists(ptl => ptl.ObjectId == portalId))
             {
                 gotoRealm = true;
                 MoveToRealms(client);
