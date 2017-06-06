@@ -60,6 +60,7 @@
     <Compile Include="Data\Models\Configuration.cs" />
     <Compile Include="Data\Models\Enemy.cs" />
     <Compile Include="Data\Models\ClusterPoint.cs" />
+    <Compile Include="Data\Models\Player.cs" />
     <Compile Include="Data\Models\Point.cs" />
     <Compile Include="Data\Models\Portal.cs" />
     <Compile Include="Data\Models\Rect.cs" />
@@ -157,6 +158,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Users\Tom\Documents\dev\rotmg\krelay\Plugins"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -49,7 +49,7 @@ namespace FameBot.UserInterface
             Task.Factory.StartNew(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(0.5));
-                Plugin.InvokeGuiEvent(GuiEvent.SettingsChanged);
+                Plugin.InvokeGuiEvent(GuiEvent.SettingsChanged, null);
             });
         }
 

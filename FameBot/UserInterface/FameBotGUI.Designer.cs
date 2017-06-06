@@ -46,6 +46,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.clearButton = new System.Windows.Forms.Button();
             this.currentProcessLabel = new System.Windows.Forms.Label();
+            this.clientBox = new System.Windows.Forms.ListBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,7 +92,7 @@
             this.utilitiesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(584, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1176, 33);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -166,20 +168,20 @@
             // 
             // eventLog
             // 
-            this.eventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.eventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.eventLog.Location = new System.Drawing.Point(276, 89);
+            this.eventLog.Location = new System.Drawing.Point(667, 89);
             this.eventLog.Name = "eventLog";
             this.eventLog.ReadOnly = true;
-            this.eventLog.Size = new System.Drawing.Size(290, 161);
+            this.eventLog.Size = new System.Drawing.Size(491, 161);
             this.eventLog.TabIndex = 4;
             this.eventLog.Text = "---- Start of Log ----";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(272, 48);
+            this.label1.Location = new System.Drawing.Point(663, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(81, 20);
             this.label1.TabIndex = 5;
@@ -189,7 +191,7 @@
             // 
             this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearButton.Location = new System.Drawing.Point(456, 40);
+            this.clearButton.Location = new System.Drawing.Point(1048, 40);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(110, 43);
             this.clearButton.TabIndex = 6;
@@ -207,11 +209,34 @@
             this.currentProcessLabel.TabIndex = 7;
             this.currentProcessLabel.Text = "Bot not bound to process.\r\nUse /bind in-game.";
             // 
+            // clientBox
+            // 
+            this.clientBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.clientBox.FormattingEnabled = true;
+            this.clientBox.ItemHeight = 20;
+            this.clientBox.Location = new System.Drawing.Point(274, 88);
+            this.clientBox.Name = "clientBox";
+            this.clientBox.Size = new System.Drawing.Size(387, 164);
+            this.clientBox.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(274, 62);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 20);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Bot Clients:";
+            // 
             // FameBotGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 262);
+            this.ClientSize = new System.Drawing.Size(1176, 262);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.clientBox);
             this.Controls.Add(this.currentProcessLabel);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.label1);
@@ -251,5 +276,7 @@
         private System.Windows.Forms.ToolStripMenuItem inGameChatToolStripMenuItem;
         private System.Windows.Forms.Label currentProcessLabel;
         private System.Windows.Forms.ToolStripMenuItem showFameBarToolStripMenuItem;
+        private System.Windows.Forms.ListBox clientBox;
+        private System.Windows.Forms.Label label2;
     }
 }

@@ -11,28 +11,39 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
 using FameBot.Data.Events;
+using FameBot.Data.Models;
+using Lib_K_Relay.Networking;
 
 namespace FameBot.UserInterface
 {
     public partial class FameBotGUI : Form
     {
-        private IntPtr flashPtr;
-        private string processName;
+        public List<Player> managedClients;
         private const uint WM_VSCROLL = 277;
         private const int SB_PAGEBOTTOM = 7;
 
         public FameBotGUI()
         {
             InitializeComponent();
+            managedClients = new List<Player>();
             eventLog.Text += "\n";
             FormClosed += (s, e) =>
             {
-                Plugin.InvokeGuiEvent(GuiEvent.GuiClosed);
+                Plugin.InvokeGuiEvent(GuiEvent.GuiClosed, null);
             };
             Plugin.logEvent += (s, e) =>
             {
                 UpdateEventLog(s, e);
             };
+        }
+
+        public void AddClient(Player player)
+        {
+            if (!managedClients.Contains(player))
+            {
+                managedClients.Add(player);
+            }
+            clientBox.DataSource = managedClients.Select(p => p.Client.PlayerData.Name).ToList();
         }
 
         private void UpdateEventLog(object sender, LogEventArgs args)
@@ -51,38 +62,18 @@ namespace FameBot.UserInterface
             Plugin.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
         }
 
-        public void SetHandle(IntPtr handle)
-        {
-            flashPtr = handle;
-            try
-            {
-                processName = Process.GetProcesses().Single(p => p.MainWindowHandle == handle).ProcessName;
-            }
-            catch
-            {
-                processName = "Unknown process.";
-            }
-            if(currentProcessLabel.InvokeRequired)
-            {
-                currentProcessLabel.BeginInvoke(new MethodInvoker(() =>
-                {
-                    currentProcessLabel.Text = "Bot bound to process:\n" + processName;
-                }));
-            }
-            else
-            {
-                currentProcessLabel.Text = "Bot bound to process:\n" + processName;
-            }
-        }
-
         private void onButton_Click(object sender, EventArgs e)
         {
-            Plugin.InvokeGuiEvent(GuiEvent.StartBot);
+            var name = clientBox.SelectedItem as string;
+            var player = managedClients.Single(c => c.Client.PlayerData.Name == name);
+            Plugin.InvokeGuiEvent(GuiEvent.StartBot, player);
         }
 
         private void offButton_Click(object sender, EventArgs e)
         {
-            Plugin.InvokeGuiEvent(GuiEvent.StopBot);
+            var name = clientBox.SelectedItem as string;
+            var player = managedClients.Single(c => c.Client.PlayerData.Name == name);
+            Plugin.InvokeGuiEvent(GuiEvent.StopBot, player);
         }
 
         private void windowOnTopBox_CheckedChanged(object sender, EventArgs e)
@@ -115,8 +106,8 @@ namespace FameBot.UserInterface
 
         private void showGraphicsOverlayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OverlayGUI overlayGUI = new OverlayGUI(flashPtr);
-            overlayGUI.Show();
+            //OverlayGUI overlayGUI = new OverlayGUI(flashPtr);
+            //overlayGUI.Show();
         }
 
         private void inGameChatToolStripMenuItem_Click(object sender, EventArgs e)
