@@ -56,6 +56,12 @@ namespace FameBot.Core
         private IntPtr flashPtr;
         private bool followTarget;
         private List<Target> targets;
+        private List<Target> targetsPrevious;
+        private List<Location> targetHistory;
+
+        private float maxPredictionLength = 15f;
+        private float sqr_maxPredictionLength;
+
         private List<Portal> portals;
         private Dictionary<int, Target> playerPositions;
         private List<Enemy> enemies;
@@ -165,7 +171,10 @@ namespace FameBot.Core
 
         public void Initialize(Proxy proxy)
         {
+            sqr_maxPredictionLength = maxPredictionLength * maxPredictionLength;
             targets = new List<Target>();
+            targetsPrevious = new List<Target>();
+            targetHistory = new List<Location>();
             playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
             enemies = new List<Enemy>();
@@ -208,6 +217,7 @@ namespace FameBot.Core
             {
                 connectedClient = client;
                 targets.Clear();
+                targetsPrevious.Clear();
                 playerPositions.Clear();
                 enemies.Clear();
                 rocks.Clear();
@@ -291,6 +301,7 @@ namespace FameBot.Core
             followTarget = false;
             gotoRealm = false;
             targets.Clear();
+            targetsPrevious.Clear();
             enabled = false;
             isInNexus = false;
         }
@@ -301,6 +312,7 @@ namespace FameBot.Core
                 return;
             Log("Starting bot.");
             targets.Clear();
+            targetsPrevious.Clear();
             enabled = true;
             if (currentMapName == null)
                 return;
@@ -429,6 +441,7 @@ namespace FameBot.Core
                 {
                     if (followTarget && targets.Exists(t => t.ObjectId == dropId))
                     {
+                        targetsPrevious = targets;
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
                         if (targets.Count > 0)
                         {
@@ -519,6 +532,7 @@ namespace FameBot.Core
                     {
                         if (targets.Count != newTargets.Count)
                             Log(string.Format("Now targeting {0} players.", newTargets.Count));
+                        targetsPrevious = targets;
                         targets = newTargets;
                     }
                 }
@@ -581,6 +595,27 @@ namespace FameBot.Core
             if (followTarget && targets.Count > 0)
             {
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
+
+
+                if (targetsPrevious != null && targetsPrevious.Count > 0)
+                {
+                    Location previousTarget = new Location(targetsPrevious.Average(t => t.Position.X), targetsPrevious.Average(t => t.Position.Y));
+
+                    // If the previous target is more than maxPredictionLength tiles away
+                    // (i.e. the bot found a new cluster) just use the current target.
+                    if (previousTarget.DistanceSquaredTo(targetPosition) < sqr_maxPredictionLength)
+                    {
+                        // Get the magnitude of each axis of the Location vector.
+                        float magX = targetPosition.X - previousTarget.X;
+                        float magY = targetPosition.Y - previousTarget.Y;
+
+                        // Add that to the target position.
+                        targetPosition.X += magX * 1.5f;
+                        targetPosition.Y += magY * 1.5f;
+                    }
+                }
+
+
 
                 if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {
