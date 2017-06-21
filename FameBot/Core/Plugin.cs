@@ -457,12 +457,12 @@ namespace FameBot.Core
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
-                // Rocks. This has been temporarily removed while a fix for issue #22 is found.
-                //if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
-                //{
-                //    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
-                //        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
-                //}
+                // Rocks.
+                if (obj.ObjectType == 263)
+                {
+                    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
+                        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
+                }
             }
 
             // Remove old info
