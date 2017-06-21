@@ -21,6 +21,7 @@ using FameBot.Services;
 using FameBot.UserInterface;
 using FameBot.Data.Events;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace FameBot.Core
 {
@@ -53,6 +54,7 @@ namespace FameBot.Core
         }
         #endregion
 
+        #region Client properties.
         private IntPtr flashPtr;
         private bool followTarget;
         private List<Target> targets;
@@ -61,6 +63,9 @@ namespace FameBot.Core
         private List<Enemy> enemies;
         private List<Rock> rocks;
         private Client connectedClient;
+        #endregion
+
+        #region Config/other properties.
         private int tickCount;
         private Configuration config;
         private FameBotGUI gui;
@@ -68,27 +73,37 @@ namespace FameBot.Core
         private bool enabled;
         private bool isInNexus;
         private string currentMapName;
+        #endregion
 
+        #region Events
+        // The event which updates the health gui.
         public static event HealthEventHandler healthChanged;
         public delegate void HealthEventHandler(object sender, HealthChangedEventArgs args);
 
+        // The event which updates the keypress gui.
         public static event KeyEventHandler keyChanged;
         public delegate void KeyEventHandler(object sender, KeyEventArgs args);
 
+        // The event which relays gui events (like button presses) to the bot.
         private static event GuiEventHandler guiEvent;
         private delegate void GuiEventHandler(GuiEvent evt);
 
+        // The event which sends messages to the event log.
         public static event LogEventHandler logEvent;
         public delegate void LogEventHandler(object sender, LogEventArgs args);
 
+        // The event which triggers an in game chat message to be sent.
         private static event SendMessageEventHandler sendMessage;
         private delegate void SendMessageEventHandler(string message);
 
+        // The event which relays in game messages to the chat gui.
         public static event ReceiveMessageEventHandler receiveMesssage;
         public delegate void ReceiveMessageEventHandler(object sender, MessageEventArgs args);
 
+        // The event which updates the fame bar gui.
         public static event FameUpdateEventHandler fameUpdate;
         public delegate void FameUpdateEventHandler(object sender, FameUpdateEventArgs args);
+        #endregion
 
         #region WINAPI
         // Get the focused window.
@@ -165,26 +180,32 @@ namespace FameBot.Core
 
         public void Initialize(Proxy proxy)
         {
+            // Initialize lists so they are empty instead of null.
             targets = new List<Target>();
             playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
             enemies = new List<Enemy>();
             rocks = new List<Rock>();
 
+            // Initialize and display gui.
             gui = new FameBotGUI();
             PluginUtils.ShowGUI(gui);
 
+            // Get the config.
             config = ConfigManager.GetConfiguration();
 
+            // Look for all processes with the name "flash.exe".
             Process[] processes = Process.GetProcessesByName("flash");
             if (processes.Length == 1)
             {
+                // If there is one client open, bind to it.
                 Log("Automatically bound to client.");
                 flashPtr = processes[0].MainWindowHandle;
                 gui?.SetHandle(flashPtr);
                 if (config.AutoConnect)
                     Start();
             }
+            // If there are multiple or no clients running, log a message.
             else if (processes.Length > 1)
             {
                 Log("Multiple flash players running. Use the /bind command on the client you want to use.");
@@ -194,6 +215,7 @@ namespace FameBot.Core
                 Log("Couldn't find flash player. Use the /bind command in game, then start the bot.");
             }
 
+            #region Proxy Hooks
             proxy.HookCommand("bind", ReceiveCommand);
             proxy.HookCommand("start", ReceiveCommand);
             proxy.HookCommand("gui", ReceiveCommand);
@@ -203,9 +225,12 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
             proxy.HookPacket(PacketType.TEXT, OnText);
+            #endregion
 
+            // Runs every time a client connects.
             proxy.ClientConnected += (client) =>
             {
+                // Clear all lists and reset keys.
                 connectedClient = client;
                 targets.Clear();
                 playerPositions.Clear();
@@ -219,6 +244,7 @@ namespace FameBot.Core
                 S_PRESSED = false;
             };
 
+            // Runs every time a client disconnects.
             proxy.ClientDisconnected += (client) =>
             {
                 Log("Client disconnected. Waiting a few seconds before trying to press play...");
@@ -241,6 +267,7 @@ namespace FameBot.Core
                 }
             };
 
+            // Send an in game message when the gui fires the event.
             sendMessage += (message) =>
             {
                 if (!(connectedClient?.Connected ?? false))
@@ -306,6 +333,7 @@ namespace FameBot.Core
                 return;
             if (currentMapName.Equals("Nexus") && config.AutoConnect)
             {
+                // If the client is in the nexus, start moving towards the realms.
                 gotoRealm = true;
                 followTarget = false;
                 if (connectedClient != null)
@@ -318,17 +346,28 @@ namespace FameBot.Core
             }
         }
 
+        /// <summary>
+        /// Call this function to send an Escape packet.
+        /// </summary>
+        /// <param name="client">The client which will send the packet.</param>
         private void Escape(Client client)
         {
             Log("Escaping to nexus.");
             client.SendToServer(Packet.Create(PacketType.ESCAPE));
         }
 
+        /// <summary>
+        /// Print a message to the event log.
+        /// </summary>
+        /// <param name="message">The string to log.</param>
         private void Log(string message)
         {
             logEvent?.Invoke(this, new LogEventArgs(message));
         }
 
+        /// <summary>
+        /// Attempt to press the play button until the client connects.
+        /// </summary>
         private async void PressPlay()
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
@@ -357,7 +396,7 @@ namespace FameBot.Core
             int playButtonX = size.Width / 2 + windowRect.Left;
             int playButtonY = (int)((double)size.Height * 0.92) + windowRect.Top;
 
-            // Convert the screen point to a window point
+            // Convert the screen point to a window point.
             POINT relativePoint = new POINT(playButtonX, playButtonY);
             ScreenToClient(flashPtr, ref relativePoint);
 
@@ -373,9 +412,10 @@ namespace FameBot.Core
         {
             UpdatePacket packet = p as UpdatePacket;
 
-            // Get new info
+            // Get new info.
             foreach (Entity obj in packet.NewObjs)
             {
+                // Player info.
                 if (Enum.IsDefined(typeof(Classes), obj.ObjectType))
                 {
                     PlayerData playerData = new PlayerData(obj.Status.ObjectId);
@@ -390,17 +430,19 @@ namespace FameBot.Core
                         playerPositions.Remove(obj.Status.ObjectId);
                     playerPositions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
                 }
+                // Portals.
                 if (obj.ObjectType == 1810)
                 {
                     foreach (var data in obj.Status.Data)
                     {
                         if (data.StringValue != null)
                         {
-                            // TODO: replace with regex
-                            var strArray = data.StringValue.Split(' ');
-                            var strCount = strArray[1].Split('/')[0].Remove(0, 1);
-                            var name = strArray[0].Split('.')[1];
-                            var portal = new Portal(obj.Status.ObjectId, int.Parse(strCount), name, obj.Status.Position);
+                            // Get the portal info.
+                            // This regex matches the name and the player count of the portal.
+                            string pattern = @"\.(\w+) \((\d+)";
+                            var match = Regex.Match(data.StringValue, pattern);
+
+                            var portal = new Portal(obj.Status.ObjectId, int.Parse(match.Groups[2].Value), match.Groups[1].Value, obj.Status.Position);
                             if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
                                 portals.RemoveAll(ptl => ptl.ObjectId == obj.Status.ObjectId);
 
@@ -408,6 +450,7 @@ namespace FameBot.Core
                         }
                     }
                 }
+                // Enemies.
                 if (Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
                 {
                     if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
@@ -415,6 +458,7 @@ namespace FameBot.Core
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
+                // Rocks.
                 if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
                 {
                     if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
@@ -425,16 +469,15 @@ namespace FameBot.Core
             // Remove old info
             foreach (int dropId in packet.Drops)
             {
+                // Remove from players list.
                 if (playerPositions.ContainsKey(dropId))
                 {
                     if (followTarget && targets.Exists(t => t.ObjectId == dropId))
                     {
+                        // If one of the players who left was also a target, remove them from the targets list.
                         targets.Remove(targets.Find(t => t.ObjectId == dropId));
-                        if (targets.Count > 0)
-                        {
-                            Log(string.Format("Dropping \"{0}\" from targets.", playerPositions[dropId].Name));
-                        }
-                        else
+                        Log(string.Format("Dropping \"{0}\" from targets.", playerPositions[dropId].Name));
+                        if (targets.Count == 0)
                         {
                             Log("No targets left in target list.");
                             if (config.EscapeIfNoTargets)
@@ -444,6 +487,7 @@ namespace FameBot.Core
                     playerPositions.Remove(dropId);
                 }
 
+                // Remove from enemies list.
                 if (enemies.Exists(en => en.ObjectId == dropId))
                     enemies.RemoveAll(en => en.ObjectId == dropId);
 
@@ -462,12 +506,14 @@ namespace FameBot.Core
 
             if (packet.Name == "Oryx's Castle" && enabled)
             {
+                // If the new map is oryx, go back to the nexus.
                 Log("Escaping from oryx's castle.");
                 Escape(client);
                 return;
             }
             if (packet.Name == "Nexus" && config.AutoConnect && enabled)
             {
+                // If the new map is the nexus, start moving towards the realms again.
                 isInNexus = true;
                 gotoRealm = true;
                 MoveToRealms(client);
@@ -482,6 +528,7 @@ namespace FameBot.Core
 
         private void OnHit(Client client, Packet p)
         {
+            // Check health percentage for autonexus.
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth * 100f;
             if (healthPercentage < config.AutonexusThreshold * 1.25f)
                 Log(string.Format("Health at {0}%", (int)(healthPercentage)));
@@ -492,15 +539,15 @@ namespace FameBot.Core
             NewTickPacket packet = p as NewTickPacket;
             tickCount++;
 
-            // Health changed event
+            // Health changed event.
             float healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth * 100f;
             healthChanged?.Invoke(this, new HealthChangedEventArgs(healthPercentage));
 
-            // Autonexus
+            // Autonexus.
             if (healthPercentage < config.AutonexusThreshold && !(currentMapName?.Equals("Nexus") ?? false) && enabled)
                 Escape(client);
 
-            // Fame event
+            // Fame event.
             fameUpdate?.Invoke(this, new FameUpdateEventArgs(client.PlayerData?.CharacterFame ?? -1, client.PlayerData?.CharacterFameGoal ?? -1));
 
             if (tickCount % config.TickCountThreshold == 0)
@@ -525,14 +572,14 @@ namespace FameBot.Core
                 tickCount = 0;
             }
 
-            // Updates
+            // Updates.
             foreach (Status status in packet.Statuses)
             {
-                // Update player positions
+                // Update player positions.
                 if (playerPositions.ContainsKey(status.ObjectId))
                     playerPositions[status.ObjectId].UpdatePosition(status.Position);
 
-                // Update enemy positions
+                // Update enemy positions.
                 if (enemies.Exists(en => en.ObjectId == status.ObjectId))
                     enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
 
@@ -549,7 +596,7 @@ namespace FameBot.Core
                     }
                 }
 
-                // Change the speed if in Nexus
+                // Change the speed if in Nexus.
                 if (isInNexus && status.ObjectId == client.ObjectId)
                 {
                     foreach (var data in status.Data)
@@ -570,6 +617,7 @@ namespace FameBot.Core
                 }
             }
 
+            // Reset keys if the bot is not active.
             if (!followTarget && !gotoRealm)
             {
                 W_PRESSED = false;
@@ -580,10 +628,12 @@ namespace FameBot.Core
 
             if (followTarget && targets.Count > 0)
             {
+                // Get the target position: the average of all current targets.
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
 
                 if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {
+                    // If the distance exceeds the teleport threshold, send a text packet to teleport.
                     var name = targets.OrderBy(t => t.Position.DistanceTo(targetPosition)).First().Name;
                     if (name != client.PlayerData.Name)
                     {
@@ -595,10 +645,13 @@ namespace FameBot.Core
 
                 if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 49))
                 {
+                    // If there is an enemy within 7 tiles, actively attempt to avoid it.
                     Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
 
+                    // Get the angle between the enemy and the player.
                     double angle = Math.Atan2(client.PlayerData.Pos.Y - closestEnemy.Y, client.PlayerData.Pos.X - closestEnemy.X);
 
+                    // Calculate a point on a 'circle' around the enemy with a radius 8 at the angle specified.
                     float newX = closestEnemy.X + 8f * (float)Math.Cos(angle);
                     float newY = closestEnemy.Y + 8f * (float)Math.Sin(angle);
 
@@ -609,6 +662,7 @@ namespace FameBot.Core
 
                 if (rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
                 {
+                    // If there is a rock within 2 tiles, actively attempt to move around it.
                     Location closestRock = rocks.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
                     double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock);
 
@@ -642,6 +696,10 @@ namespace FameBot.Core
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         private async void MoveToRealms(Client client)
         {
             if (client == null)
@@ -649,7 +707,7 @@ namespace FameBot.Core
                 Log("No client passed to MoveToRealms.");
                 return;
             }
-            Location target = new Location(159, 101);
+            Location target = NexusPositions.Realms;
 
             if (client.PlayerData == null)
             {
@@ -660,11 +718,12 @@ namespace FameBot.Core
 
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < 0.95f)
-                target = new Location(159, 127);
+                target = NexusPositions.Fountains;
 
             string bestName = "";
             if (client.PlayerData.Pos.Y <= 110 && client.PlayerData.Pos.Y != 0)
             {
+                // When the client reaches the portals, evaluate the best option.
                 if (portals.Count != 0)
                 {
                     int bestCount = 0;
@@ -689,7 +748,7 @@ namespace FameBot.Core
                     }
                 }
                 else
-                    target = new Location(159, 101);
+                    target = NexusPositions.Realms;
             }
 
             CalculateMovement(client, target, 0.5f);
@@ -698,6 +757,7 @@ namespace FameBot.Core
             {
                 if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
                 {
+                    // If the best realm is the last realm the client is connected to, send a reconnect.
                     Log("Last realm is still the best realm. Sending reconnect.");
                     if (client.ConnectTo(client.State.LastRealm))
                     {
