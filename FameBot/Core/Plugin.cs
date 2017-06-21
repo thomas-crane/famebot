@@ -445,7 +445,6 @@ namespace FameBot.Core
                             var portal = new Portal(obj.Status.ObjectId, int.Parse(match.Groups[2].Value), match.Groups[1].Value, obj.Status.Position);
                             if (portals.Exists(ptl => ptl.ObjectId == obj.Status.ObjectId))
                                 portals.RemoveAll(ptl => ptl.ObjectId == obj.Status.ObjectId);
-
                             portals.Add(portal);
                         }
                     }
@@ -458,12 +457,12 @@ namespace FameBot.Core
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
-                // Rocks.
-                if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
-                {
-                    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
-                        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
-                }
+                // Rocks. This has been temporarily removed while a fix for issue #22 is found.
+                //if (GameData.Objects.ByID((ushort)obj.ObjectType).Name == "Rock Grey")
+                //{
+                //    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
+                //        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
+                //}
             }
 
             // Remove old info
@@ -721,7 +720,7 @@ namespace FameBot.Core
                 target = NexusPositions.Fountains;
 
             string bestName = "";
-            if (client.PlayerData.Pos.Y <= 110 && client.PlayerData.Pos.Y != 0)
+            if (client.PlayerData.Pos.Y <= NexusPositions.Realms.Y + 1f && client.PlayerData.Pos.Y != 0)
             {
                 // When the client reaches the portals, evaluate the best option.
                 if (portals.Count != 0)
@@ -793,6 +792,8 @@ namespace FameBot.Core
                 return;
             }
 
+            // Get the player count of the current portal. The packet should
+            // only be sent if there is space for the player to enter.
             var pCount = portals.Find(p => p.ObjectId == portalId).PlayerCount;
             if (client.Connected && pCount < 85)
                 client.SendToServer(packet);
@@ -805,6 +806,12 @@ namespace FameBot.Core
                 Log("Bot disabled, cancelling connection attempt.");
         }
 
+        /// <summary>
+        /// Calculate which keys need to be pressed in order to move the client closer to targetPosition.
+        /// </summary>
+        /// <param name="client">The client who will be moved.</param>
+        /// <param name="targetPosition">The target position to move towards.</param>
+        /// <param name="tolerance">The distance (in game tiles) </param>
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
         {
             // Left or right
