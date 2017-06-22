@@ -1,4 +1,4 @@
-﻿using Lib_K_Relay.Interface;
+using Lib_K_Relay.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +22,7 @@ using FameBot.UserInterface;
 using FameBot.Data.Events;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace FameBot.Core
 {
@@ -324,6 +325,31 @@ namespace FameBot.Core
 
         private void Start()
         {
+            //Focus checker
+            new Thread(() => 
+            {
+                IntPtr latestWindow = GetForegroundWindow();
+                do
+                {
+                    if (GetForegroundWindow() != latestWindow) //If focus changed
+                    {
+                        if (latestWindow == flashPtr) //If older focus was the flash player
+                        {
+                            W_PRESSED = false;
+                            S_PRESSED = false;
+                            D_PRESSED = false;
+                            A_PRESSED = false;
+                            latestWindow = GetForegroundWindow();
+                            CalculateMovement(connectedClient, latestLocation, latestTolerance); //Recalculate movement to get back on track
+                        }else
+                        {
+                            latestWindow = GetForegroundWindow();
+                        }
+                    }
+                    Thread.Sleep(200);
+                } while (enabled);
+            }).Start();
+
             if (enabled)
                 return;
             Log("Starting bot.");
@@ -806,6 +832,9 @@ namespace FameBot.Core
                 Log("Bot disabled, cancelling connection attempt.");
         }
 
+        Location latestLocation;
+        float latestTolerance;
+
         /// <summary>
         /// Calculate which keys need to be pressed in order to move the client closer to targetPosition.
         /// </summary>
@@ -814,12 +843,9 @@ namespace FameBot.Core
         /// <param name="tolerance">The distance (in game tiles) </param>
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
         {
-
-                A_PRESSED = false;
-                D_PRESSED = false;
-                W_PRESSED = false;
-                S_PRESSED = false;
-            
+            latestLocation = targetPosition;
+            latestTolerance = tolerance;
+            // Left or right
             if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
             {
                 // Move right
