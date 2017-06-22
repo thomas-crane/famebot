@@ -821,7 +821,6 @@ namespace FameBot.Core
                 D_PRESSED = false;
                 W_PRESSED = false;
                 S_PRESSED = false;
-                return;
             }
             // Left or right
             if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
