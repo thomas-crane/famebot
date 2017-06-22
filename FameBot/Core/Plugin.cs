@@ -328,26 +328,33 @@ namespace FameBot.Core
             //Focus checker
             new Thread(() => 
             {
-                IntPtr latestWindow = GetForegroundWindow();
-                do
+                Thread.CurrentThread.IsBackground = true;
+                try
                 {
-                    if (GetForegroundWindow() != latestWindow) //If focus changed
+                    IntPtr latestWindow = GetForegroundWindow();
+                    do
                     {
-                        if (latestWindow == flashPtr) //If older focus was the flash player
+                        if (GetForegroundWindow() != latestWindow) //If focus changed
                         {
-                            W_PRESSED = false;
-                            S_PRESSED = false;
-                            D_PRESSED = false;
-                            A_PRESSED = false;
-                            latestWindow = GetForegroundWindow();
-                            CalculateMovement(connectedClient, latestLocation, latestTolerance); //Recalculate movement to get back on track
-                        }else
-                        {
-                            latestWindow = GetForegroundWindow();
+                            if (latestWindow == flashPtr) //If older focus was the flash player
+                            {
+                                W_PRESSED = false;
+                                S_PRESSED = false;
+                                D_PRESSED = false;
+                                A_PRESSED = false;
+                                latestWindow = GetForegroundWindow();
+                                CalculateMovement(connectedClient, latestLocation, latestTolerance); //Recalculate movement to get back on track
+                            }
+                            else
+                            {
+                                latestWindow = GetForegroundWindow();
+                            }
                         }
-                    }
-                    Thread.Sleep(200);
-                } while (enabled);
+                        Thread.Sleep(200);
+                    } while (enabled);
+                    Console.WriteLine("Thread closed");
+                }
+                catch(Exception ex) { Console.WriteLine(ex.ToString()); }
             }).Start();
 
             if (enabled)
