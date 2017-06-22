@@ -814,15 +814,12 @@ namespace FameBot.Core
         /// <param name="tolerance">The distance (in game tiles) </param>
         private void CalculateMovement(Client client, Location targetPosition, float tolerance)
         {
-            if (flashPtr != GetForegroundWindow()) //Check if the flashplayer has focus
-            {
-                //If not set all keys to false
+
                 A_PRESSED = false;
                 D_PRESSED = false;
                 W_PRESSED = false;
                 S_PRESSED = false;
-            }
-            // Left or right
+            
             if (client.PlayerData.Pos.X < targetPosition.X - tolerance)
             {
                 // Move right
