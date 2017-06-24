@@ -1,7 +1,7 @@
 # FameBot
 A bot for Realm of the Mad God designed to automate the process of collecting fame. This bot works by finding clusters of players on the map and following them. The bot moves the player using a WINAPI method which simulates keypresses, so it will still work when the game window is minimized. The bot has customizable settings which allow the user to change the behaviour of the bot as well as the settings of the clustering algorithm.
 
-[This project also has a Wiki.](https://github.com/thomas-crane/famebot/wiki)
+For more info read the [FAQ](#frequently-asked-questions-and-common-problems), or have a look at the [project's Wiki.](https://github.com/thomas-crane/famebot/wiki)
 
 ## Installation
 This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf client which can connect to the proxy server.
@@ -87,6 +87,19 @@ For a more in-depth look at some of the settings and how to use them, look at th
 
 #### Ticks between cluster scans
  + The number of ticks (NewTickPacket) which pass before the bot will evaluate player clusters again. *If your CPU isn't very good or KRelay is using a lot of memory with the bot enabled, try turning this up.*
+
+## Frequently Asked Questions and Common Problems
+Read through these questions before creating a new issue to see if there is already a solution to a problem.
+
+#### _The bot doesn't do anything when I press start_
+Make sure the bot is bound to the flash player. You can do this by typing `/bind` in game. The GUI will also display the current process which the bot is bound to. If this process is 'flash' or 'Adobe Flash Player' or something similar, it is probably correct.
+
+#### _The bot just spams 'No valid clusters', what do I do?_
+'No valid clusters' simply means the bot cannot find a suitable cluster of players to follow. Try turning the minimum players per cluster down, or the max distance between points up.
+
+#### _The bot just walks to the top left corner of the nexus_
+Make sure the camera angle is set to 0 degrees. If the camera is already on 0 degrees it is likely that the nexus has updated and the bot is using old location values. Submit an issue along the lines of 'Nexus positions need updating' for a fast response.
+
 
 ## Contributing
 #### Guidlines for contributing:
