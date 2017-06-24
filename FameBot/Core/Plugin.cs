@@ -63,6 +63,7 @@ namespace FameBot.Core
         private List<Enemy> enemies;
         private List<Rock> rocks;
         private Client connectedClient;
+        private Location lastLocation = null;
         #endregion
 
         #region Config/other properties.
@@ -616,6 +617,22 @@ namespace FameBot.Core
                 }
             }
 
+            // If the client has stopped moving for whatever reason, reset the keys.
+            if(enabled)
+            {
+                if(lastLocation != null)
+                {
+                    if(client.PlayerData.Pos.X == lastLocation.X && client.PlayerData.Pos.Y == lastLocation.Y)
+                    {
+                        W_PRESSED = false;
+                        A_PRESSED = false;
+                        S_PRESSED = false;
+                        D_PRESSED = false;
+                    }
+                }
+                lastLocation = client.PlayerData.Pos;
+            }
+
             // Reset keys if the bot is not active.
             if (!followTarget && !gotoRealm)
             {
@@ -750,6 +767,7 @@ namespace FameBot.Core
                     target = NexusPositions.Realms;
             }
 
+
             CalculateMovement(client, target, 0.5f);
 
             if (client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
@@ -853,8 +871,8 @@ namespace FameBot.Core
             if (client.PlayerData.Pos.Y > targetPosition.Y + tolerance)
             {
                 // Move up
-                W_PRESSED = true;
                 S_PRESSED = false;
+                W_PRESSED = true;
             }
             else if (client.PlayerData.Pos.Y >= targetPosition.Y - tolerance)
             {
