@@ -8,9 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{778AC94F-AEF2-4915-ABAF-B9BBB5D07D4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FA32F9AD-DB5E-4BF9-A165-D566467DBE8B}"
-	ProjectSection(SolutionItems) = preProject
-		ver.txt = ver.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
