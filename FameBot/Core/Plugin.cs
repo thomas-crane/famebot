@@ -181,6 +181,19 @@ namespace FameBot.Core
 
         public void Initialize(Proxy proxy)
         {
+            // Check for updates
+            Console.WriteLine("About to check updates");
+            UpdateChecker.NeedsUpdateAsync((result, errorMessage) =>
+            {
+                if (result)
+                {
+                    PluginUtils.Log("FameBot", errorMessage);
+                } else
+                {
+                    PluginUtils.Log("FameBot", "Your FameBot is up to date!");
+                }
+            });
+
             // Initialize lists so they are empty instead of null.
             targets = new List<Target>();
             playerPositions = new Dictionary<int, Target>();
