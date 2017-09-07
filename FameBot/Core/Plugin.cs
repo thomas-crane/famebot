@@ -220,6 +220,7 @@ namespace FameBot.Core
             proxy.HookCommand("bind", ReceiveCommand);
             proxy.HookCommand("start", ReceiveCommand);
             proxy.HookCommand("gui", ReceiveCommand);
+            proxy.HookCommand("famebot", ReceiveCommand);
 
             proxy.HookPacket(PacketType.UPDATE, OnUpdate);
             proxy.HookPacket(PacketType.NEWTICK, OnNewTick);
@@ -293,10 +294,40 @@ namespace FameBot.Core
                     client.Notify("FameBot is starting");
                     break;
                 case "gui":
-                    if (gui == null)
-                        gui = new FameBotGUI();
+                    gui?.Close();
+                    gui = new FameBotGUI();
                     gui.Show();
-                    gui.SetHandle(flashPtr);
+                    //gui.SetHandle(flashPtr);
+                    break;
+                case "famebot":
+                    if (args.Length >= 1)
+                    {
+                        if (string.Compare("set", args[0], true) == 0)
+                        {
+                            if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+                            {
+                                client.Notify("No argument to set was provided");
+                                return;
+                            }
+                            var setting = args[1].ToLower();
+                            switch(setting)
+                            {
+                                case "realmposition":
+                                    config.RealmLocation = client.PlayerData.Pos;
+                                    ConfigManager.WriteXML(config);
+                                    client.Notify("Successfully changed realm position!");
+                                    break;
+                                case "fountainposition":
+                                    config.FountainLocation = client.PlayerData.Pos;
+                                    ConfigManager.WriteXML(config);
+                                    client.Notify("Successfully changed fountain position!");
+                                    break;
+                                default:
+                                    client.Notify("Unrecognized setting.");
+                                    break;
+                            }
+                        }
+                    }
                     break;
             }
         }
@@ -723,7 +754,7 @@ namespace FameBot.Core
                 Log("No client passed to MoveToRealms.");
                 return;
             }
-            Location target = NexusPositions.Realms;
+            Location target = config.RealmLocation;
 
             if (client.PlayerData == null)
             {
@@ -734,10 +765,10 @@ namespace FameBot.Core
 
             var healthPercentage = (float)client.PlayerData.Health / (float)client.PlayerData.MaxHealth;
             if (healthPercentage < 0.95f)
-                target = NexusPositions.Fountains;
+                target = config.FountainLocation;
 
             string bestName = "";
-            if (client.PlayerData.Pos.Y <= NexusPositions.Realms.Y + 1f && client.PlayerData.Pos.Y != 0)
+            if (client.PlayerData.Pos.Y <= config.RealmLocation.Y + 1f && client.PlayerData.Pos.Y != 0)
             {
                 // When the client reaches the portals, evaluate the best option.
                 if (portals.Count != 0)
@@ -764,7 +795,7 @@ namespace FameBot.Core
                     }
                 }
                 else
-                    target = NexusPositions.Realms;
+                    target = config.RealmLocation;
             }
 
 
