@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FameBot.Data.Models;
 using System.Xml.Serialization;
 using System.Xml;
+using Lib_K_Relay.Networking.Packets.DataObjects;
 
 namespace FameBot.Services
 {
@@ -18,18 +19,7 @@ namespace FameBot.Services
 
             if (!File.Exists(path))
             {
-                Configuration cfg = new Configuration()
-                {
-                    AutonexusThreshold = 45f,
-                    TickCountThreshold = 10,
-                    TeleportDistanceThreshold = 15f,
-                    FollowDistanceThreshold = 1.5f,
-                    AutoConnect = true,
-                    FindClustersNearCenter = true,
-                    Epsilon = 8f,
-                    MinPoints = 5,
-                    EscapeIfNoTargets = true
-                };
+                Configuration cfg = new Configuration();
                 WriteXML(cfg);
                 return cfg;
             } else
