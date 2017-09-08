@@ -3,6 +3,10 @@ A bot for Realm of the Mad God designed to automate the process of collecting fa
 
 For more info read the [FAQ](#frequently-asked-questions-and-common-problems), or have a look at the [project's Wiki.](https://github.com/thomas-crane/famebot/wiki)
 
+#### Updates
+As of version `1.0.63` there is now the ability to change the fountains/realm positions which the bot will go to. This feature can be used anytime the nexus changes to avoid needing to download a new version of the bot.
+You can read about these new commands, and all other commands for the bot on [this Wiki page.](https://github.com/thomas-crane/famebot/wiki/Usage-guide#bot-commands)
+
 ## Installation
 This is a plugin for KRelay. Make sure you have the latest version of KRelay installed and an swf client which can connect to the proxy server.
 
