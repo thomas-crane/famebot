@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FameBot.Core;
 using FameBot.Data.Events;
+using FameBot.Services;
 
 namespace FameBot.UserInterface
 {
@@ -62,13 +63,13 @@ namespace FameBot.UserInterface
                 this.incomingMessagesBox.BeginInvoke(new MethodInvoker(() =>
                 {
                     incomingMessagesBox.Text += (args.FullMessage + "\n");
-                    Plugin.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
+                    WinApi.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
                 }));
             }
             else
             {
                 incomingMessagesBox.Text += (args.FullMessage + "\n");
-                Plugin.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
+                WinApi.SendMessage(incomingMessagesBox.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
             }
         }
 

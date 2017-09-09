@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Services\ConfigManager.cs" />
     <Compile Include="Services\D36n4.cs" />
+    <Compile Include="Services\WinApi.cs" />
     <Compile Include="UserInterface\FameBarGUI.cs">
       <SubType>Form</SubType>
     </Compile>

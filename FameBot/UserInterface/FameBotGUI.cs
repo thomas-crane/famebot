@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
 using FameBot.Data.Events;
+using FameBot.Services;
 
 namespace FameBot.UserInterface
 {
@@ -42,13 +43,13 @@ namespace FameBot.UserInterface
                 this.eventLog.BeginInvoke(new MethodInvoker(() =>
                 {
                     eventLog.Text += (args.MessageWithTimestamp + "\n");
-                    Plugin.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
+                    WinApi.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
                 }));
                 return;
             }
 
             eventLog.Text += (args.MessageWithTimestamp + "\n");
-            Plugin.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
+            WinApi.SendMessage(eventLog.Handle, WM_VSCROLL, new IntPtr(SB_PAGEBOTTOM), IntPtr.Zero);
         }
 
         public void SetHandle(IntPtr handle)

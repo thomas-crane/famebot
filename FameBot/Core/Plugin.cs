@@ -106,23 +106,6 @@ namespace FameBot.Core
         public delegate void FameUpdateEventHandler(object sender, FameUpdateEventArgs args);
         #endregion
 
-        #region WINAPI
-        // Get the focused window.
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr GetForegroundWindow();
-        // Send a message to a specific process via the handle.
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
-
-        // Gets the positions of the corners of a window via the MainWindowHandle.
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
-        // Converts a point in screen space to a point relative to hWnd's window.
-        [DllImport("user32.dll")]
-        private static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
-        #endregion
-
         #region Keys
         private bool wPressed;
         private bool aPressed;
@@ -137,7 +120,7 @@ namespace FameBot.Core
                 if (wPressed == value)
                     return;
                 wPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.W), IntPtr.Zero);
+                WinApi.SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.W), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.W, value));
             }
         }
@@ -149,7 +132,7 @@ namespace FameBot.Core
                 if (aPressed == value)
                     return;
                 aPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.A), IntPtr.Zero);
+                WinApi.SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.A), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.A, value));
             }
         }
@@ -161,7 +144,7 @@ namespace FameBot.Core
                 if (sPressed == value)
                     return;
                 sPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.S), IntPtr.Zero);
+                WinApi.SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.S), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.S, value));
             }
         }
@@ -173,7 +156,7 @@ namespace FameBot.Core
                 if (dPressed == value)
                     return;
                 dPressed = value;
-                SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.D), IntPtr.Zero);
+                WinApi.SendMessage(flashPtr, value ? (uint)Key.KeyDown : (uint)Key.KeyUp, new IntPtr((int)Key.D), IntPtr.Zero);
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.D, value));
             }
         }
@@ -285,7 +268,7 @@ namespace FameBot.Core
             switch (cmd)
             {
                 case "bind":
-                    flashPtr = GetForegroundWindow();
+                    flashPtr = WinApi.GetForegroundWindow();
                     gui?.SetHandle(flashPtr);
                     client.Notify("FameBot is now active");
                     break;
@@ -420,7 +403,7 @@ namespace FameBot.Core
             // Get the window details before pressing the button in case
             // it has changed size or position on the desktop.
             RECT windowRect = new RECT();
-            GetWindowRect(flashPtr, ref windowRect);
+            WinApi.GetWindowRect(flashPtr, ref windowRect);
             var size = windowRect.GetSize();
 
             // The play button is located half way across the
@@ -430,11 +413,11 @@ namespace FameBot.Core
 
             // Convert the screen point to a window point.
             POINT relativePoint = new POINT(playButtonX, playButtonY);
-            ScreenToClient(flashPtr, ref relativePoint);
+            WinApi.ScreenToClient(flashPtr, ref relativePoint);
 
             // Press the buttons.
-            SendMessage(flashPtr, (uint)MouseButton.LeftButtonDown, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
-            SendMessage(flashPtr, (uint)MouseButton.LeftButtonUp, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            WinApi.SendMessage(flashPtr, (uint)MouseButton.LeftButtonDown, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
+            WinApi.SendMessage(flashPtr, (uint)MouseButton.LeftButtonUp, new IntPtr(0x1), new IntPtr((relativePoint.Y << 16) | (relativePoint.X & 0xFFFF)));
 
             PressPlay();
         }
