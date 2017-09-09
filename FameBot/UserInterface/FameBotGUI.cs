@@ -76,6 +76,19 @@ namespace FameBot.UserInterface
             }
         }
 
+        public void ShowChangeFlashNameMessage(string found, string current, Action updateCallback)
+        {
+            // Do this on a new thread so Plugin isn't blocked.
+            new System.Threading.Thread(() =>
+            {
+                DialogResult result = MessageBox.Show(this, "FameBot is bound to \"" + found + "\" but is searching for \"" + current + "\" when it starts. Update the config to search for \"" + found + "\" instead?", "FameBot", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    updateCallback.Invoke();
+                }
+            }).Start();
+        }
+
         private void onButton_Click(object sender, EventArgs e)
         {
             Plugin.InvokeGuiEvent(GuiEvent.StartBot);

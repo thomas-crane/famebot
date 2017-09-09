@@ -178,8 +178,8 @@ namespace FameBot.Core
             // Get the config.
             config = ConfigManager.GetConfiguration();
 
-            // Look for all processes with the name "flash.exe".
-            Process[] processes = Process.GetProcessesByName("flash");
+            // Look for all processes with the configured flash player name.
+            Process[] processes = Process.GetProcessesByName(config.FlashPlayerName);
             if (processes.Length == 1)
             {
                 // If there is one client open, bind to it.
@@ -269,6 +269,24 @@ namespace FameBot.Core
             {
                 case "bind":
                     flashPtr = WinApi.GetForegroundWindow();
+
+                    try
+                    {
+                        var flashProcess = Process.GetProcesses().Single(p => p.Id != 0 && p.MainWindowHandle == flashPtr);
+                        if (flashProcess.ProcessName != config.FlashPlayerName)
+                        {
+                            gui?.ShowChangeFlashNameMessage(flashProcess.ProcessName, config.FlashPlayerName, () =>
+                            {
+                                config.FlashPlayerName = flashProcess.ProcessName;
+                                client.Notify("Updated config!");
+                                ConfigManager.WriteXML(config);
+                            });
+                        }
+                    } catch
+                    {
+
+                    }
+
                     gui?.SetHandle(flashPtr);
                     client.Notify("FameBot is now active");
                     break;
