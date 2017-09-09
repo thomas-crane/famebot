@@ -15,6 +15,7 @@ namespace FameBot.Data.Models
         public float TeleportDistanceThreshold { get; set; }
         public float FollowDistanceThreshold { get; set; }
         public bool AutoConnect { get; set; }
+        public bool EnableEnemyAvoidance { get; set; }
 
         public bool FindClustersNearCenter { get; set; }
         public float Epsilon { get; set; }
@@ -23,6 +24,8 @@ namespace FameBot.Data.Models
         public Location FountainLocation { get; set; }
         public Location RealmLocation { get; set; }
 
+        public string FlashPlayerName { get; set; }
+
         public Configuration()
         {
             AutonexusThreshold = 45f;
@@ -30,12 +33,14 @@ namespace FameBot.Data.Models
             TeleportDistanceThreshold = 15f;
             FollowDistanceThreshold = 1.5f;
             AutoConnect = true;
+            EnableEnemyAvoidance = true;
             FindClustersNearCenter = true;
             Epsilon = 8f;
             MinPoints = 5;
             EscapeIfNoTargets = true;
             RealmLocation = new Location(107, 137);
             FountainLocation = new Location(107, 158);
+            FlashPlayerName = "flash";
         }
     }
 }
