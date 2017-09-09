@@ -51,6 +51,7 @@
     <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Enums\EnumKey.cs" />
     <Compile Include="Data\Enums\EnumMouseButton.cs" />
+    <Compile Include="Data\Enums\EnumObstacle.cs" />
     <Compile Include="Data\Events\FameUpdateEventArgs.cs" />
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
     <Compile Include="Data\Events\KeyEventArgs.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Data\Models\Point.cs" />
     <Compile Include="Data\Models\Portal.cs" />
     <Compile Include="Data\Models\Rect.cs" />
-    <Compile Include="Data\Models\Rock.cs" />
+    <Compile Include="Data\Models\Obstacle.cs" />
     <Compile Include="Data\Models\Target.cs" />
     <Compile Include="Helpers\ClientExtensions.cs" />
     <Compile Include="Helpers\LocationExtensions.cs" />

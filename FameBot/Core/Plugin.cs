@@ -61,7 +61,7 @@ namespace FameBot.Core
         private List<Portal> portals;
         private Dictionary<int, Target> playerPositions;
         private List<Enemy> enemies;
-        private List<Rock> rocks;
+        private List<Obstacle> obstacles;
         private Client connectedClient;
         private Location lastLocation = null;
         #endregion
@@ -169,7 +169,7 @@ namespace FameBot.Core
             playerPositions = new Dictionary<int, Target>();
             portals = new List<Portal>();
             enemies = new List<Enemy>();
-            rocks = new List<Rock>();
+            obstacles = new List<Obstacle>();
 
             // Initialize and display gui.
             gui = new FameBotGUI();
@@ -220,7 +220,7 @@ namespace FameBot.Core
                 targets.Clear();
                 playerPositions.Clear();
                 enemies.Clear();
-                rocks.Clear();
+                obstacles.Clear();
                 followTarget = false;
                 isInNexus = false;
                 A_PRESSED = false;
@@ -472,11 +472,11 @@ namespace FameBot.Core
                     enemies.Add(new Enemy(obj.Status.ObjectId, obj.Status.Position));
                 }
 
-                // Rocks.
-                if (obj.ObjectType == 263)
+                // Obstacles.
+                if (Enum.IsDefined(typeof(ObstacleId), (int)obj.ObjectType))
                 {
-                    if (!rocks.Exists(rock => rock.ObjectId == obj.Status.ObjectId))
-                        rocks.Add(new Rock(obj.Status.ObjectId, obj.Status.Position));
+                    if (!obstacles.Exists(obstacle => obstacle.ObjectId == obj.Status.ObjectId))
+                        obstacles.Add(new Obstacle(obj.Status.ObjectId, obj.Status.Position));
                 }
             }
 
@@ -690,25 +690,25 @@ namespace FameBot.Core
                     return;
                 }
 
-                if (rocks.Exists(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
+                if (obstacles.Exists(obstacle => obstacle.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
                 {
-                    // If there is a rock within 2 tiles, actively attempt to move around it.
-                    Location closestRock = rocks.OrderBy(rock => rock.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
-                    double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestRock);
+                    // If there is an obstacle within 2 tiles, actively attempt to move around it.
+                    Location closestObstacle = obstacles.OrderBy(obstacle => obstacle.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+                    double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestObstacle);
 
                     if (Math.Abs(angleDifference) < 70.0)
                     {
-                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestRock.Y, client.PlayerData.Pos.X - closestRock.X);
+                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestObstacle.Y, client.PlayerData.Pos.X - closestObstacle.X);
                         if (angleDifference <= 0)
-                            angle += (Math.PI / 2); // add 90 degrees to the angle to go clockwise around the rock.
+                            angle += (Math.PI / 2); // add 90 degrees to the angle to go clockwise around the obstacle.
                         if (angleDifference > 0)
-                            angle -= (Math.PI / 2); // remove 90 degrees from the angle to go anti-clockwise around the rock.
+                            angle -= (Math.PI / 2); // remove 90 degrees from the angle to go anti-clockwise around the obstacle.
 
-                        float newX = closestRock.X + 2f * (float)Math.Cos(angle);
-                        float newY = closestRock.Y + 2f * (float)Math.Sin(angle);
+                        float newX = closestObstacle.X + 2f * (float)Math.Cos(angle);
+                        float newY = closestObstacle.Y + 2f * (float)Math.Sin(angle);
 
-                        var avoidRockPos = new Location(newX, newY);
-                        CalculateMovement(client, avoidRockPos, 0.5f);
+                        var avoidObstaclePos = new Location(newX, newY);
+                        CalculateMovement(client, avoidObstaclePos, 0.5f);
                         return;
                     }
                 }

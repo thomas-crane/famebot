@@ -7,12 +7,12 @@ using Lib_K_Relay.Networking.Packets.DataObjects;
 
 namespace FameBot.Data.Models
 {
-    public class Rock
+    public class Obstacle
     {
         public int ObjectId { get; set; }
         public Location Location { get; set; }
 
-        public Rock(int objectId, Location location)
+        public Obstacle(int objectId, Location location)
         {
             ObjectId = objectId;
             Location = location;
