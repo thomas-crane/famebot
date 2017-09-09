@@ -482,8 +482,8 @@ namespace FameBot.Core
                         }
                     }
                 }
-                // Enemies.
-                if (Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType))
+                // Enemies. Only look for enemies if EnableEnemyAvoidance is true.
+                if (Enum.IsDefined(typeof(EnemyId), (int)obj.ObjectType) && config.EnableEnemyAvoidance)
                 {
                     if (enemies.Exists(en => en.ObjectId == obj.Status.ObjectId))
                         enemies.RemoveAll(en => en.ObjectId == obj.Status.ObjectId);
@@ -691,7 +691,9 @@ namespace FameBot.Core
                     }
                 }
 
-                if (enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 49))
+                // There should never be anything in the enemies list if EnableEnemyAvoidance is false,
+                // but just in case, only perform this behaviour if EnableEnemyAvoidance is true.
+                if (config.EnableEnemyAvoidance && enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 49))
                 {
                     // If there is an enemy within 7 tiles, actively attempt to avoid it.
                     Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
