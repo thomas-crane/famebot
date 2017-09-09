@@ -37,7 +37,8 @@ namespace FameBot.UserInterface
                 AutoConnect = autoConnect.Checked,
                 FindClustersNearCenter = findNearCenter.Checked,
                 Epsilon = (float)epsilon.Value,
-                MinPoints = (int)minPoints.Value
+                MinPoints = (int)minPoints.Value,
+                EnableEnemyAvoidance = enableEnemyAvoidance.Checked
             };
             ConfigManager.WriteXML(newConfig);
             MessageBox.Show("Settings have been saved", "[FameBot]");
@@ -65,6 +66,7 @@ namespace FameBot.UserInterface
             findNearCenter.Checked = cfg.FindClustersNearCenter;
             epsilon.Value = (decimal)cfg.Epsilon;
             minPoints.Value = cfg.MinPoints;
+            enableEnemyAvoidance.Checked = cfg.EnableEnemyAvoidance;
         }
     }
 }

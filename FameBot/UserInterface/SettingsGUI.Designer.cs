@@ -55,6 +55,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.epsilon = new System.Windows.Forms.NumericUpDown();
             this.saveButton = new System.Windows.Forms.Button();
+            this.enableEnemyAvoidance = new System.Windows.Forms.CheckBox();
             this.generalSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.followDistanceThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teleportDistanceThreshold)).BeginInit();
@@ -67,6 +68,7 @@
             // 
             // generalSettings
             // 
+            this.generalSettings.Controls.Add(this.enableEnemyAvoidance);
             this.generalSettings.Controls.Add(this.autoConnect);
             this.generalSettings.Controls.Add(this.label8);
             this.generalSettings.Controls.Add(this.followDistanceThreshold);
@@ -407,6 +409,20 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // enableEnemyAvoidance
+            // 
+            this.enableEnemyAvoidance.AutoSize = true;
+            this.enableEnemyAvoidance.Checked = true;
+            this.enableEnemyAvoidance.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableEnemyAvoidance.Location = new System.Drawing.Point(216, 170);
+            this.enableEnemyAvoidance.Name = "enableEnemyAvoidance";
+            this.enableEnemyAvoidance.Size = new System.Drawing.Size(212, 24);
+            this.enableEnemyAvoidance.TabIndex = 10;
+            this.enableEnemyAvoidance.Text = "Enable enemy avoidance";
+            this.toolTip1.SetToolTip(this.enableEnemyAvoidance, "If this is checked, the bot will actively attempt to avoid gods by staying at lea" +
+        "st 7-8 game tiles away from them.");
+            this.enableEnemyAvoidance.UseVisualStyleBackColor = true;
+            // 
             // SettingsGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -463,5 +479,6 @@
         private System.Windows.Forms.NumericUpDown tickPerScan;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox autoConnect;
+        private System.Windows.Forms.CheckBox enableEnemyAvoidance;
     }
 }
