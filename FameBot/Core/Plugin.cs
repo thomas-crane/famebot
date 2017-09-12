@@ -64,6 +64,7 @@ namespace FameBot.Core
         private List<Obstacle> obstacles;
         private Client connectedClient;
         private Location lastLocation = null;
+        private string preferredRealmName = null;
         #endregion
 
         #region Config/other properties.
@@ -327,6 +328,16 @@ namespace FameBot.Core
                                     client.Notify("Unrecognized setting.");
                                     break;
                             }
+                        }
+                        if(string.Compare("prefer", args[0], true) == 0)
+                        {
+                            if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+                            {
+                                client.Notify("No realm name was provided");
+                                return;
+                            }
+                            preferredRealmName = args[1];
+                            client.Notify("Set preferred realm to " + args[1]);
                         }
                     }
                     break;
@@ -776,25 +787,47 @@ namespace FameBot.Core
                 // When the client reaches the portals, evaluate the best option.
                 if (portals.Count != 0)
                 {
-                    int bestCount = 0;
-                    if (portals.Where(ptl => ptl.PlayerCount == 85).Count() > 1)
+                    bool hasNoPreferredRealm = true;
+                    // Is there a preferred realm?
+                    if (!string.IsNullOrEmpty(preferredRealmName))
                     {
-                        foreach (Portal ptl in portals.Where(ptl => ptl.PlayerCount == 85))
+                        if (portals.Exists(ptl => string.Compare(ptl.Name, preferredRealmName, true) == 0))
                         {
-                            int count = playerPositions.Values.Where(plr => plr.Position.DistanceSquaredTo(ptl.Location) <= 4).Count();
-                            if (count > bestCount)
-                            {
-                                bestCount = count;
-                                bestName = ptl.Name;
-                                target = ptl.Location;
-                            }
+                            hasNoPreferredRealm = false;
+                            Portal preferred = portals.Single(ptl => string.Compare(ptl.Name, preferredRealmName, true) == 0);
+                            target = preferred.Location;
+                            bestName = preferred.Name;
+                        } else
+                        {
+                            // The preferred realm doesn't exist anymore.
+                            client.Notify(preferredRealmName + " not found. Choosing new realm");
+                            Log("The realm \"" + preferredRealmName + "\" was not found. Choosing the best realm instead...");
+                            preferredRealmName = null;
                         }
                     }
-                    else
+
+                    if (hasNoPreferredRealm)
                     {
-                        Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
-                        target = ptl.Location;
-                        bestName = ptl.Name;
+                        int bestCount = 0;
+                        if (portals.Where(ptl => ptl.PlayerCount == 85).Count() > 1)
+                        {
+                            foreach (Portal ptl in portals.Where(ptl => ptl.PlayerCount == 85))
+                            {
+                                int count = playerPositions.Values.Where(plr => plr.Position.DistanceSquaredTo(ptl.Location) <= 4).Count();
+                                if (count > bestCount)
+                                {
+                                    bestCount = count;
+                                    bestName = ptl.Name;
+                                    target = ptl.Location;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
+                            target = ptl.Location;
+                            bestName = ptl.Name;
+                        }
                     }
                 }
                 else
