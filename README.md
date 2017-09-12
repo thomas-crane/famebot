@@ -7,6 +7,14 @@ For more info read the [FAQ](#frequently-asked-questions-and-common-problems), o
 As of version `1.0.69` there is now the ability to force the bot to choose a specific realm instead of the fullest realm.
 This can be done using the command `/famebot prefer <realmname>` where `<realmname>` is the name of the realm you want the bot to choose. E.g. `/famebot prefer beholder`. The case of `<realmname>` doesn't matter, so `Beholder` will have the same effect as `BeHoLdEr`. If the bot cannot find the preferred realm, it will go back to choosing the fullest realm.
 
+__Note:__ If the preferred realm is not loaded when the bot chooses a realm it will clear the preferred realm. To make sure all realms are loaded before the bot chooses one, you should edit your `famebot_config.xml` so that the realm position is further towards the center of the realm portal area. This is a good position to use:
+```
+<RealmLocation>
+    <X>107</X>
+    <Y>134</Y>
+</RealmLocation
+```
+
 As of version `1.0.63` there is now the ability to change the fountains/realm positions which the bot will go to. This feature can be used anytime the nexus changes to avoid needing to download a new version of the bot.
 You can read about these new commands, and all other commands for the bot on [this Wiki page.](https://github.com/thomas-crane/famebot/wiki/Usage-guide#bot-commands)
 
