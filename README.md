@@ -4,6 +4,9 @@ A bot for Realm of the Mad God designed to automate the process of collecting fa
 For more info read the [FAQ](#frequently-asked-questions-and-common-problems), or have a look at the [project's Wiki.](https://github.com/thomas-crane/famebot/wiki)
 
 #### Updates
+As of version `1.0.69` there is now the ability to force the bot to choose a specific realm instead of the fullest realm.
+This can be done using the command `/famebot prefer <realmname>` where `<realmname>` is the name of the realm you want the bot to choose. E.g. `/famebot prefer beholder`. The case of `<realmname>` doesn't matter, so `Beholder` will have the same effect as `BeHoLdEr`. If the bot cannot find the preferred realm, it will go back to choosing the fullest realm.
+
 As of version `1.0.63` there is now the ability to change the fountains/realm positions which the bot will go to. This feature can be used anytime the nexus changes to avoid needing to download a new version of the bot.
 You can read about these new commands, and all other commands for the bot on [this Wiki page.](https://github.com/thomas-crane/famebot/wiki/Usage-guide#bot-commands)
 
