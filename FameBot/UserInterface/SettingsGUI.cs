@@ -27,20 +27,17 @@ namespace FameBot.UserInterface
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            Configuration newConfig = new Configuration()
-            {
-                AutonexusThreshold = (float)autoNexusPercent.Value,
-                TickCountThreshold = (int)tickPerScan.Value,
-                EscapeIfNoTargets = escapeIfNoTargets.Checked,
-                TeleportDistanceThreshold = (float)teleportDistanceThreshold.Value,
-                FollowDistanceThreshold = (float)followDistanceThreshold.Value,
-                AutoConnect = autoConnect.Checked,
-                FindClustersNearCenter = findNearCenter.Checked,
-                Epsilon = (float)epsilon.Value,
-                MinPoints = (int)minPoints.Value,
-                EnableEnemyAvoidance = enableEnemyAvoidance.Checked
-            };
-            ConfigManager.WriteXML(newConfig);
+            config.AutonexusThreshold = (float)autoNexusPercent.Value;
+            config.TickCountThreshold = (int)tickPerScan.Value;
+            config.EscapeIfNoTargets = escapeIfNoTargets.Checked;
+            config.TeleportDistanceThreshold = (float)teleportDistanceThreshold.Value;
+            config.FollowDistanceThreshold = (float)followDistanceThreshold.Value;
+            config.AutoConnect = autoConnect.Checked;
+            config.FindClustersNearCenter = findNearCenter.Checked;
+            config.Epsilon = (float)epsilon.Value;
+            config.MinPoints = (int)minPoints.Value;
+            config.EnableEnemyAvoidance = enableEnemyAvoidance.Checked;
+            ConfigManager.WriteXML(config);
             MessageBox.Show("Settings have been saved", "[FameBot]");
             
             // There is a 0.5 second delay between saving settings and telling Plugin
