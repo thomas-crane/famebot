@@ -460,7 +460,7 @@ namespace FameBot.Core
             foreach (Entity obj in packet.NewObjs)
             {
                 // Player info.
-                if (Enum.IsDefined(typeof(Classes), obj.ObjectType))
+                if (Enum.IsDefined(typeof(Classes), (short)obj.ObjectType))
                 {
                     PlayerData playerData = new PlayerData(obj.Status.ObjectId);
                     playerData.Class = (Classes)obj.ObjectType;
@@ -475,7 +475,7 @@ namespace FameBot.Core
                     playerPositions.Add(obj.Status.ObjectId, new Target(obj.Status.ObjectId, playerData.Name, playerData.Pos));
                 }
                 // Portals.
-                if (obj.ObjectType == 1810)
+                if ((short)obj.ObjectType == 1810)
                 {
                     foreach (var data in obj.Status.Data)
                     {
