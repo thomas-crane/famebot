@@ -460,7 +460,7 @@ namespace FameBot.Core
             foreach (Entity obj in packet.NewObjs)
             {
                 // Player info.
-                if (Enum.IsDefined(typeof(Classes), obj.ObjectType))
+                if (Enum.IsDefined(typeof(Classes), (int)obj.ObjectType))
                 {
                     PlayerData playerData = new PlayerData(obj.Status.ObjectId);
                     playerData.Class = (Classes)obj.ObjectType;
