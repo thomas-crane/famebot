@@ -25,6 +25,12 @@ namespace FameBot.Data.Enums
         CubeGod = 3417,
         AvatarOfTheForgottenKing = 29517,
         RockDragonHead = 24184,
-        HeadlessHorseman = 24223
+        HeadlessHorseman = 24223,
+        CrystalPrisoner = 2369,
+
+        JadeStatue = 28619,
+        GarnetStatue = 28618,
+        LHLostSentry = 45104,
+        LHSpectralSentryE = 45095
     }
 }
