@@ -26,6 +26,8 @@ namespace FameBot.Data.Models
 
         public string FlashPlayerName { get; set; }
 
+        public int[] AutoLootItems { get; set; }
+
         public Configuration()
         {
             AutonexusThreshold = 45f;
@@ -41,6 +43,10 @@ namespace FameBot.Data.Models
             RealmLocation = new Location(107, 137);
             FountainLocation = new Location(107, 158);
             FlashPlayerName = "flash";
+            AutoLootItems = new int[]
+            {
+                2592
+            };
         }
     }
 }

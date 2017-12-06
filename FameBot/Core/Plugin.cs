@@ -62,9 +62,13 @@ namespace FameBot.Core
         private Dictionary<int, Target> playerPositions;
         private List<Enemy> enemies;
         private List<Obstacle> obstacles;
+        private List<LootBag> bags;
+        private LootBag currentBag;
+        private int pickupDelay;
         private Client connectedClient;
         private Location lastLocation = null;
         private string preferredRealmName = null;
+        private bool stopNextAck = false;
         #endregion
 
         #region Config/other properties.
@@ -161,6 +165,14 @@ namespace FameBot.Core
                 keyChanged?.Invoke(this, new KeyEventArgs(Key.D, value));
             }
         }
+
+        private void ResetAllKeys()
+        {
+            A_PRESSED = false;
+            D_PRESSED = false;
+            W_PRESSED = false;
+            S_PRESSED = false;
+        }
         #endregion
 
         public void Initialize(Proxy proxy)
@@ -171,6 +183,7 @@ namespace FameBot.Core
             portals = new List<Portal>();
             enemies = new List<Enemy>();
             obstacles = new List<Obstacle>();
+            bags = new List<LootBag>();
 
             // Initialize and display gui.
             gui = new FameBotGUI();
@@ -211,6 +224,14 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
             proxy.HookPacket(PacketType.TEXT, OnText);
+            proxy.HookPacket(PacketType.GOTOACK, (client, packet) =>
+            {
+                if (stopNextAck)
+                {
+                    stopNextAck = false;
+                    packet.Send = false;
+                }
+            });
             #endregion
 
             // Runs every time a client connects.
@@ -222,12 +243,10 @@ namespace FameBot.Core
                 playerPositions.Clear();
                 enemies.Clear();
                 obstacles.Clear();
+                bags.Clear();
                 followTarget = false;
                 isInNexus = false;
-                A_PRESSED = false;
-                D_PRESSED = false;
-                W_PRESSED = false;
-                S_PRESSED = false;
+                ResetAllKeys();
             };
 
             // Runs every time a client disconnects.
@@ -507,6 +526,17 @@ namespace FameBot.Core
                     if (!obstacles.Exists(obstacle => obstacle.ObjectId == obj.Status.ObjectId))
                         obstacles.Add(new Obstacle(obj.Status.ObjectId, obj.Status.Position));
                 }
+
+                // Loot bags.
+                if (Enum.IsDefined(typeof(LootBagType), (int)obj.ObjectType))
+                {
+                    if (!bags.Exists(b => b.ObjectId == obj.Status.ObjectId))
+                    {
+                        LootBag bag = new LootBag(obj.Status.ObjectId, obj.Status.Position);
+                        bag.Parse(obj.Status.Data);
+                        bags.Add(bag);
+                    }
+                }
             }
 
             // Remove old info
@@ -534,8 +564,17 @@ namespace FameBot.Core
                 if (enemies.Exists(en => en.ObjectId == dropId))
                     enemies.RemoveAll(en => en.ObjectId == dropId);
 
+                // Remove from portals list.
                 if (portals.Exists(ptl => ptl.ObjectId == dropId))
                     portals.RemoveAll(ptl => ptl.ObjectId == dropId);
+
+                // Remove from bags list.
+                if (bags.Exists(b => b.ObjectId == dropId))
+                {
+                    if (currentBag?.ObjectId == dropId)
+                        currentBag = null;
+                    bags.RemoveAll(b => b.ObjectId == dropId);
+                }
             }
         }
 
@@ -626,6 +665,10 @@ namespace FameBot.Core
                 if (enemies.Exists(en => en.ObjectId == status.ObjectId))
                     enemies.Find(en => en.ObjectId == status.ObjectId).Location = status.Position;
 
+                // Update bags.
+                if (bags.Exists(b => b.ObjectId == status.ObjectId))
+                    bags.Find(b => b.ObjectId == status.ObjectId).Parse(status.Data);
+
                 // Update portal player counts when in nexus.
                 if (portals.Exists(ptl => ptl.ObjectId == status.ObjectId) && (isInNexus))
                 {
@@ -667,22 +710,93 @@ namespace FameBot.Core
                 {
                     if(client.PlayerData.Pos.X == lastLocation.X && client.PlayerData.Pos.Y == lastLocation.Y)
                     {
-                        W_PRESSED = false;
-                        A_PRESSED = false;
-                        S_PRESSED = false;
-                        D_PRESSED = false;
+                        ResetAllKeys();
                     }
                 }
                 lastLocation = client.PlayerData.Pos;
+
+                if (bags.Count > 0 && currentBag == null)
+                {
+                    currentBag = bags.Find(b =>
+                    {
+                        foreach (var item in b.Contents)
+                        {
+                            if (config.AutoLootItems.Contains(item))
+                                return true;
+                        }
+                        return false;
+                    });
+                }
+
+                if (currentBag != null)
+                {
+                    CalculateMovement(client, currentBag.Position, 0.5f);
+
+                    if (client.PlayerData.Pos.DistanceTo(currentBag.Position) < 1f)
+                    {
+                        if (client.PlayerData.Pos.DistanceTo(currentBag.Position) > 0.1f)
+                        {
+                            GotoPacket gotoPacket = Packet.Create(PacketType.GOTO) as GotoPacket;
+                            gotoPacket.ObjectId = client.ObjectId;
+                            gotoPacket.Location = currentBag.Position;
+                            stopNextAck = true;
+                            client.SendToClient(gotoPacket);
+                            ResetAllKeys();
+                        }
+
+                        int itemIndex = -1;
+                        for (int i = 0; i < currentBag.Contents.Length; i++)
+                        {
+                            if (config.AutoLootItems.Contains(currentBag[i]))
+                            {
+                                itemIndex = i;
+                                break;
+                            }
+                        }
+
+                        // No more wanted items left.
+                        if (itemIndex == -1)
+                        {
+                            currentBag = null;
+                            return;
+                        }
+
+                        if (pickupDelay > 0)
+                        {
+                            pickupDelay--;
+                            return;
+                        }
+                        for (int i = 4; i < client.PlayerData.Slot.Length; i++)
+                        {
+                            if (client.PlayerData.Slot[i] == -1)
+                            {
+                                pickupDelay = 2;
+                                InvSwapPacket invSwap = Packet.Create(PacketType.INVSWAP) as InvSwapPacket;
+                                invSwap.Time = client.Time;
+                                invSwap.Position = client.PlayerData.Pos;
+                                invSwap.SlotObject1 = new SlotObject()
+                                {
+                                    ObjectId = client.ObjectId,
+                                    ObjectType = -1,
+                                    SlotId = (byte)i
+                                };
+                                invSwap.SlotObject2 = new SlotObject()
+                                {
+                                    ObjectId = currentBag.ObjectId,
+                                    ObjectType = currentBag[itemIndex],
+                                    SlotId = (byte)itemIndex
+                                };
+                                client.SendToServer(invSwap);
+                            }
+                        }
+                    }
+                }
             }
 
             // Reset keys if the bot is not active.
             if (!followTarget && !gotoRealm)
             {
-                W_PRESSED = false;
-                A_PRESSED = false;
-                S_PRESSED = false;
-                D_PRESSED = false;
+                ResetAllKeys();
             }
 
             if (followTarget && targets.Count > 0)
@@ -743,6 +857,8 @@ namespace FameBot.Core
                         return;
                     }
                 }
+
+                // Loot logic goes here.
 
                 CalculateMovement(client, targetPosition, config.FollowDistanceThreshold);
             }
@@ -839,6 +955,16 @@ namespace FameBot.Core
 
             if (client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
+                if (client.PlayerData.Pos.DistanceTo(target) > 0.1f)
+                {
+                    GotoPacket gotoPacket = Packet.Create(PacketType.GOTO) as GotoPacket;
+                    gotoPacket.ObjectId = client.ObjectId;
+                    gotoPacket.Location = target;
+                    stopNextAck = true;
+                    client.SendToClient(gotoPacket);
+                    ResetAllKeys();
+                }
+
                 if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
                 {
                     // If the best realm is the last realm the client is connected to, send a reconnect.
@@ -852,7 +978,8 @@ namespace FameBot.Core
 
                 Log("Attempting connection.");
                 gotoRealm = false;
-                AttemptConnection(client, portals.OrderBy(ptl => ptl.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().ObjectId);
+                // AttemptConnection(client, portals.OrderBy(ptl => ptl.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().ObjectId);
+                return;
             }
             await Task.Delay(5);
             if (gotoRealm)
