@@ -64,6 +64,7 @@ namespace FameBot.Core
         private List<Obstacle> obstacles;
         private Client connectedClient;
         private Location lastLocation = null;
+        private bool blockNextAck = false;
         private string preferredRealmName = null;
         #endregion
 
@@ -211,6 +212,14 @@ namespace FameBot.Core
             proxy.HookPacket(PacketType.PLAYERHIT, OnHit);
             proxy.HookPacket(PacketType.MAPINFO, OnMapInfo);
             proxy.HookPacket(PacketType.TEXT, OnText);
+            proxy.HookPacket(PacketType.GOTOACK, (client, packet) =>
+            {
+                if (blockNextAck)
+                {
+                    packet.Send = false;
+                    blockNextAck = false;
+                }
+            });
             #endregion
 
             // Runs every time a client connects.
@@ -460,7 +469,7 @@ namespace FameBot.Core
             foreach (Entity obj in packet.NewObjs)
             {
                 // Player info.
-                if (Enum.IsDefined(typeof(Classes), (int)obj.ObjectType))
+                if (Enum.IsDefined(typeof(Classes), (short)obj.ObjectType))
                 {
                     PlayerData playerData = new PlayerData(obj.Status.ObjectId);
                     playerData.Class = (Classes)obj.ObjectType;
@@ -839,6 +848,14 @@ namespace FameBot.Core
 
             if (client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
+                if (client.PlayerData.Pos.DistanceTo(target) > client.PlayerData.TilesPerTick())
+                {
+                    GotoPacket gotoPacket = Packet.Create(PacketType.GOTO) as GotoPacket;
+                    gotoPacket.Location = target;
+                    gotoPacket.ObjectId = client.ObjectId;
+                    blockNextAck = true;
+                    client.SendToClient(gotoPacket);
+                }
                 if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
                 {
                     // If the best realm is the last realm the client is connected to, send a reconnect.
