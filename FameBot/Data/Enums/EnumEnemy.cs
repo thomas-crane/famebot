@@ -19,7 +19,8 @@ namespace FameBot.Data.Enums
         Leviathan = 1752,
         Djin = 2330,
 
-        LordOfTheLostLands = 3411,
+        LordOfTheLostLandsBodyguards = 3411,
+        LordOfTheLostLands = 3408,
         GrandSphinx = 3412,
         SkullShrine = 3414,
         CubeGod = 3417,
@@ -27,10 +28,21 @@ namespace FameBot.Data.Enums
         RockDragonHead = 24184,
         HeadlessHorseman = 24223,
         CrystalPrisoner = 2369,
-
         JadeStatue = 28619,
         GarnetStatue = 28618,
         LHLostSentry = 45104,
-        LHSpectralSentryE = 45095
+        LHSpectralSentryE = 45095,
+        Crystal = 2357,
+        BeerGod = 24101,
+        LuckyDjinn = 1784,
+        GhostShip = 3639,
+        EHHiveBomb = 4313,
+        EHYellowGuardianBee = 4324,
+        EHRedGuardianBee = 4325,
+        EHBlueGuardianBee = 4326,
+        EHEventHive = 4312,
+        PentaractTower = 3422,
+        RedDemon = 1640,
+        LuckyEntGod = 1768
     }
 }
