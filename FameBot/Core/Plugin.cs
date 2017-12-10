@@ -233,10 +233,7 @@ namespace FameBot.Core
                 obstacles.Clear();
                 followTarget = false;
                 isInNexus = false;
-                A_PRESSED = false;
-                D_PRESSED = false;
-                W_PRESSED = false;
-                S_PRESSED = false;
+                ResetAllKeys();
             };
 
             // Runs every time a client disconnects.
@@ -460,6 +457,17 @@ namespace FameBot.Core
             PressPlay();
         }
 
+        /// <summary>
+        /// Releases any keys which may be pressed.
+        /// </summary>
+        private void ResetAllKeys()
+        {
+            W_PRESSED = false;
+            A_PRESSED = false;
+            S_PRESSED = false;
+            D_PRESSED = false;
+        }
+
         #region PacketHookMethods
         private void OnUpdate(Client client, Packet p)
         {
@@ -676,10 +684,7 @@ namespace FameBot.Core
                 {
                     if(client.PlayerData.Pos.X == lastLocation.X && client.PlayerData.Pos.Y == lastLocation.Y)
                     {
-                        W_PRESSED = false;
-                        A_PRESSED = false;
-                        S_PRESSED = false;
-                        D_PRESSED = false;
+                        ResetAllKeys();
                     }
                 }
                 lastLocation = client.PlayerData.Pos;
@@ -688,10 +693,7 @@ namespace FameBot.Core
             // Reset keys if the bot is not active.
             if (!followTarget && !gotoRealm)
             {
-                W_PRESSED = false;
-                A_PRESSED = false;
-                S_PRESSED = false;
-                D_PRESSED = false;
+                ResetAllKeys();
             }
 
             if (followTarget && targets.Count > 0)
@@ -848,13 +850,17 @@ namespace FameBot.Core
 
             if (client.PlayerData.Pos.DistanceTo(target) < 1f && portals.Count != 0)
             {
-                if (client.PlayerData.Pos.DistanceTo(target) > client.PlayerData.TilesPerTick())
+                if (client.PlayerData.Pos.DistanceTo(target) <= client.PlayerData.TilesPerTick() && client.PlayerData.Pos.DistanceTo(target) > 0.01f)
                 {
-                    GotoPacket gotoPacket = Packet.Create(PacketType.GOTO) as GotoPacket;
-                    gotoPacket.Location = target;
-                    gotoPacket.ObjectId = client.ObjectId;
-                    blockNextAck = true;
-                    client.SendToClient(gotoPacket);
+                    if (client.Connected)
+                    {
+                        ResetAllKeys();
+                        GotoPacket gotoPacket = Packet.Create(PacketType.GOTO) as GotoPacket;
+                        gotoPacket.Location = target;
+                        gotoPacket.ObjectId = client.ObjectId;
+                        blockNextAck = true;
+                        client.SendToClient(gotoPacket);
+                    }
                 }
                 if (client.State.LastRealm?.Name.Contains(bestName) ?? false)
                 {
