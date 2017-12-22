@@ -17,7 +17,7 @@ namespace FameBot.Data.Enums
         SlimeGod = 1624,
         GhostGod = 1625,
         Leviathan = 1752,
-        Djin = 2330,
+        Djinn = 2330,
 
         LordOfTheLostLandsBodyguards = 3411,
         LordOfTheLostLands = 3408,
@@ -43,6 +43,7 @@ namespace FameBot.Data.Enums
         EHEventHive = 4312,
         PentaractTower = 3422,
         RedDemon = 1640,
-        LuckyEntGod = 1768
+        LuckyEntGod = 1768,
+        PermaLord = 8174
     }
 }
