@@ -772,7 +772,7 @@ namespace FameBot.Core
         /// 
         /// </summary>
         /// <param name="client"></param>
-        private async void MoveToRealms(Client client)
+        private async void MoveToRealms(Client client, bool realmChosen = false)
         {
             if (client == null)
             {
@@ -793,7 +793,7 @@ namespace FameBot.Core
                 target = config.FountainLocation;
 
             string bestName = "";
-            if (client.PlayerData.Pos.Y <= config.RealmLocation.Y + 1f && client.PlayerData.Pos.Y != 0)
+            if ((client.PlayerData.Pos.Y <= config.RealmLocation.Y + 1f && client.PlayerData.Pos.Y != 0) || realmChosen)
             {
                 // When the client reaches the portals, evaluate the best option.
                 if (portals.Count != 0)
@@ -808,6 +808,7 @@ namespace FameBot.Core
                             Portal preferred = portals.Single(ptl => string.Compare(ptl.Name, preferredRealmName, true) == 0);
                             target = preferred.Location;
                             bestName = preferred.Name;
+                            realmChosen = true;
                         } else
                         {
                             // The preferred realm doesn't exist anymore.
@@ -830,6 +831,7 @@ namespace FameBot.Core
                                     bestCount = count;
                                     bestName = ptl.Name;
                                     target = ptl.Location;
+                                    realmChosen = true;
                                 }
                             }
                         }
@@ -838,6 +840,7 @@ namespace FameBot.Core
                             Portal ptl = portals.OrderByDescending(prtl => prtl.PlayerCount).First();
                             target = ptl.Location;
                             bestName = ptl.Name;
+                            realmChosen = true;
                         }
                     }
                 }
@@ -880,7 +883,7 @@ namespace FameBot.Core
             await Task.Delay(5);
             if (gotoRealm)
             {
-                MoveToRealms(client);
+                MoveToRealms(client, realmChosen);
             }
             else
             {
