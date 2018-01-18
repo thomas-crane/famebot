@@ -38,8 +38,8 @@ namespace FameBot.Data.Models
             Epsilon = 8f;
             MinPoints = 5;
             EscapeIfNoTargets = true;
-            RealmLocation = new Location(107, 137);
-            FountainLocation = new Location(107, 158);
+            RealmLocation = new Location(134f, 112f);
+            FountainLocation = new Location(134f, 134f);
             FlashPlayerName = "flash";
         }
     }
