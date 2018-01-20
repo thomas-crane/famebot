@@ -16,6 +16,8 @@ namespace FameBot.Data.Models
         public float FollowDistanceThreshold { get; set; }
         public bool AutoConnect { get; set; }
         public bool EnableEnemyAvoidance { get; set; }
+        public float EnemyAvoidanceDistance { get; set; }
+        public float TrainTargetPercentage { get; set; }
 
         public bool FindClustersNearCenter { get; set; }
         public float Epsilon { get; set; }
@@ -34,6 +36,8 @@ namespace FameBot.Data.Models
             FollowDistanceThreshold = 1.5f;
             AutoConnect = true;
             EnableEnemyAvoidance = true;
+            EnemyAvoidanceDistance = 6f;
+            TrainTargetPercentage = 30f;
             FindClustersNearCenter = true;
             Epsilon = 8f;
             MinPoints = 5;

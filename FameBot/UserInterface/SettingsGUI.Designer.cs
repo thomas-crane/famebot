@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsGUI));
             this.generalSettings = new System.Windows.Forms.GroupBox();
+            this.enableEnemyAvoidance = new System.Windows.Forms.CheckBox();
             this.autoConnect = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.followDistanceThreshold = new System.Windows.Forms.NumericUpDown();
@@ -55,7 +56,11 @@
             this.label7 = new System.Windows.Forms.Label();
             this.epsilon = new System.Windows.Forms.NumericUpDown();
             this.saveButton = new System.Windows.Forms.Button();
-            this.enableEnemyAvoidance = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.avoidDistance = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.trainAIPercentage = new System.Windows.Forms.NumericUpDown();
+            this.label14 = new System.Windows.Forms.Label();
             this.generalSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.followDistanceThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teleportDistanceThreshold)).BeginInit();
@@ -64,10 +69,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.tickPerScan)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPoints)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.epsilon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.avoidDistance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trainAIPercentage)).BeginInit();
             this.SuspendLayout();
             // 
             // generalSettings
             // 
+            this.generalSettings.Controls.Add(this.trainAIPercentage);
+            this.generalSettings.Controls.Add(this.label14);
+            this.generalSettings.Controls.Add(this.label12);
+            this.generalSettings.Controls.Add(this.avoidDistance);
+            this.generalSettings.Controls.Add(this.label13);
             this.generalSettings.Controls.Add(this.enableEnemyAvoidance);
             this.generalSettings.Controls.Add(this.autoConnect);
             this.generalSettings.Controls.Add(this.label8);
@@ -81,10 +93,23 @@
             this.generalSettings.Controls.Add(this.label2);
             this.generalSettings.Location = new System.Drawing.Point(12, 56);
             this.generalSettings.Name = "generalSettings";
-            this.generalSettings.Size = new System.Drawing.Size(434, 208);
+            this.generalSettings.Size = new System.Drawing.Size(434, 292);
             this.generalSettings.TabIndex = 0;
             this.generalSettings.TabStop = false;
             this.generalSettings.Text = "General";
+            // 
+            // enableEnemyAvoidance
+            // 
+            this.enableEnemyAvoidance.AutoSize = true;
+            this.enableEnemyAvoidance.Checked = true;
+            this.enableEnemyAvoidance.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableEnemyAvoidance.Location = new System.Drawing.Point(216, 170);
+            this.enableEnemyAvoidance.Name = "enableEnemyAvoidance";
+            this.enableEnemyAvoidance.Size = new System.Drawing.Size(212, 24);
+            this.enableEnemyAvoidance.TabIndex = 10;
+            this.enableEnemyAvoidance.Text = "Enable enemy avoidance";
+            this.toolTip1.SetToolTip(this.enableEnemyAvoidance, "If this is checked, the bot will actively attempt to avoid gods.");
+            this.enableEnemyAvoidance.UseVisualStyleBackColor = true;
             // 
             // autoConnect
             // 
@@ -303,7 +328,7 @@
             this.groupBox1.Controls.Add(this.epsilon);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.findNearCenter);
-            this.groupBox1.Location = new System.Drawing.Point(12, 270);
+            this.groupBox1.Location = new System.Drawing.Point(12, 354);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(434, 272);
             this.groupBox1.TabIndex = 2;
@@ -401,7 +426,9 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(12, 571);
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Location = new System.Drawing.Point(12, 639);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(434, 47);
             this.saveButton.TabIndex = 3;
@@ -409,25 +436,88 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // enableEnemyAvoidance
+            // label12
             // 
-            this.enableEnemyAvoidance.AutoSize = true;
-            this.enableEnemyAvoidance.Checked = true;
-            this.enableEnemyAvoidance.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableEnemyAvoidance.Location = new System.Drawing.Point(216, 170);
-            this.enableEnemyAvoidance.Name = "enableEnemyAvoidance";
-            this.enableEnemyAvoidance.Size = new System.Drawing.Size(212, 24);
-            this.enableEnemyAvoidance.TabIndex = 10;
-            this.enableEnemyAvoidance.Text = "Enable enemy avoidance";
-            this.toolTip1.SetToolTip(this.enableEnemyAvoidance, "If this is checked, the bot will actively attempt to avoid gods by staying at lea" +
-        "st 7-8 game tiles away from them.");
-            this.enableEnemyAvoidance.UseVisualStyleBackColor = true;
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(391, 223);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(37, 20);
+            this.label12.TabIndex = 13;
+            this.label12.Text = "tiles";
+            // 
+            // avoidDistance
+            // 
+            this.avoidDistance.DecimalPlaces = 1;
+            this.avoidDistance.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.avoidDistance.Location = new System.Drawing.Point(265, 220);
+            this.avoidDistance.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.avoidDistance.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.avoidDistance.Name = "avoidDistance";
+            this.avoidDistance.Size = new System.Drawing.Size(120, 26);
+            this.avoidDistance.TabIndex = 12;
+            this.avoidDistance.Value = new decimal(new int[] {
+            80,
+            0,
+            0,
+            65536});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(316, 197);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(112, 20);
+            this.label13.TabIndex = 11;
+            this.label13.Text = "Avoid distance";
+            this.toolTip1.SetToolTip(this.label13, "The max distance in game tiles\r\nthe character can be from the target\r\nposition be" +
+        "fore it will start moving\r\n\r\nNOTE: It is recommended to observe\r\nhow the bot mov" +
+        "es before changing this\r\nvalue.");
+            // 
+            // trainAIPercentage
+            // 
+            this.trainAIPercentage.Location = new System.Drawing.Point(11, 244);
+            this.trainAIPercentage.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.trainAIPercentage.Name = "trainAIPercentage";
+            this.trainAIPercentage.Size = new System.Drawing.Size(171, 26);
+            this.trainAIPercentage.TabIndex = 15;
+            this.trainAIPercentage.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 220);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(200, 20);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Train AI Target percent (%)";
+            this.toolTip1.SetToolTip(this.label14, "The percentage of players at the front of the train to follow. \r\nTo disable this " +
+        "set it to 100%");
             // 
             // SettingsGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(458, 630);
+            this.ClientSize = new System.Drawing.Size(458, 698);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
@@ -447,6 +537,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.tickPerScan)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPoints)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.epsilon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.avoidDistance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trainAIPercentage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -480,5 +572,10 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox autoConnect;
         private System.Windows.Forms.CheckBox enableEnemyAvoidance;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown avoidDistance;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown trainAIPercentage;
+        private System.Windows.Forms.Label label14;
     }
 }

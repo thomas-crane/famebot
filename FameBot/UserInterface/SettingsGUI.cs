@@ -37,6 +37,8 @@ namespace FameBot.UserInterface
             config.Epsilon = (float)epsilon.Value;
             config.MinPoints = (int)minPoints.Value;
             config.EnableEnemyAvoidance = enableEnemyAvoidance.Checked;
+            config.EnemyAvoidanceDistance = (float)avoidDistance.Value;
+            config.TrainTargetPercentage = (float)trainAIPercentage.Value;
             ConfigManager.WriteXML(config);
             MessageBox.Show("Settings have been saved", "[FameBot]");
             
@@ -64,6 +66,8 @@ namespace FameBot.UserInterface
             epsilon.Value = (decimal)cfg.Epsilon;
             minPoints.Value = cfg.MinPoints;
             enableEnemyAvoidance.Checked = cfg.EnableEnemyAvoidance;
+            avoidDistance.Value = (decimal)cfg.EnemyAvoidanceDistance;
+            trainAIPercentage.Value = (decimal)cfg.TrainTargetPercentage;
         }
     }
 }

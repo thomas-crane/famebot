@@ -51,7 +51,6 @@
     <Compile Include="Data\Enums\EnumGuiEvent.cs" />
     <Compile Include="Data\Enums\EnumKey.cs" />
     <Compile Include="Data\Enums\EnumMouseButton.cs" />
-    <Compile Include="Data\Enums\EnumObstacle.cs" />
     <Compile Include="Data\Events\FameUpdateEventArgs.cs" />
     <Compile Include="Data\Events\HealthChangedEventArgs.cs" />
     <Compile Include="Data\Events\KeyEventArgs.cs" />
