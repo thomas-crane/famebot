@@ -62,8 +62,10 @@ namespace FameBot.Core
         private Dictionary<int, Target> playerPositions;
         private List<Enemy> enemies;
         private List<Obstacle> obstacles;
+        private List<ushort> obstacleIds;
         private Client connectedClient;
         private Location lastLocation = null;
+        private Location lastAverage;
         private bool blockNextAck = false;
         private string preferredRealmName = null;
         #endregion
@@ -172,6 +174,17 @@ namespace FameBot.Core
             portals = new List<Portal>();
             enemies = new List<Enemy>();
             obstacles = new List<Obstacle>();
+
+            // get obstacles
+            obstacleIds = new List<ushort>();
+            GameData.Objects.Map.ForEach((kvp) =>
+            {
+                if (kvp.Value.FullOccupy || kvp.Value.OccupySquare)
+                {
+                    obstacleIds.Add(kvp.Key);
+                }
+            });
+            PluginUtils.Log("FameBot", "Found {0} obstacles.", obstacleIds.Count);
 
             // Initialize and display gui.
             gui = new FameBotGUI();
@@ -321,11 +334,13 @@ namespace FameBot.Core
                             switch(setting)
                             {
                                 case "realmposition":
+                                case "rp":
                                     config.RealmLocation = client.PlayerData.Pos;
                                     ConfigManager.WriteXML(config);
                                     client.Notify("Successfully changed realm position!");
                                     break;
                                 case "fountainposition":
+                                case "fp":
                                     config.FountainLocation = client.PlayerData.Pos;
                                     ConfigManager.WriteXML(config);
                                     client.Notify("Successfully changed fountain position!");
@@ -519,7 +534,7 @@ namespace FameBot.Core
                 }
 
                 // Obstacles.
-                if (Enum.IsDefined(typeof(ObstacleId), (int)obj.ObjectType))
+                if (obstacleIds.Contains(obj.ObjectType))
                 {
                     if (!obstacles.Exists(obstacle => obstacle.ObjectId == obj.Status.ObjectId))
                         obstacles.Add(new Obstacle(obj.Status.ObjectId, obj.Status.Position));
@@ -700,6 +715,25 @@ namespace FameBot.Core
             {
                 // Get the target position: the average of all current targets.
                 var targetPosition = new Location(targets.Average(t => t.Position.X), targets.Average(t => t.Position.Y));
+                if (lastAverage != null)
+                {
+                    var dir = targetPosition.Subtract(lastAverage);
+                    var faraway = targetPosition.Add(dir.Scale(20));
+                    var desiredTargets = (int)(targets.Count * 0.3f);
+                    List<Target> newTargets = new List<Target>();
+                    for (int i = 0; i < desiredTargets; i++)
+                    {
+                        var closest = targets.OrderBy((t) => t.Position.DistanceSquaredTo(faraway)).First();
+                        newTargets.Add(closest);
+                        targets.RemoveAll((t) => t.Name == closest.Name);
+                    }
+                    targets.AddRange(newTargets);
+                    lastAverage = targetPosition;
+                    targetPosition = new Location(newTargets.Average(t => t.Position.X), newTargets.Average(t => t.Position.Y));
+                } else
+                {
+                    lastAverage = targetPosition;
+                }
 
                 if (client.PlayerData.Pos.DistanceTo(targetPosition) > config.TeleportDistanceThreshold)
                 {

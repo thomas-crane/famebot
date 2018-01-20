@@ -53,5 +53,29 @@ namespace FameBot.Helpers
             var diffRadians = angleA - angleB;
             return Math.Abs(diffRadians * (180 / Math.PI));
         }
+
+        public static Location Add(this Location location, Location locationToAdd)
+        {
+            Location loc = location.Clone() as Location;
+            loc.X += locationToAdd.X;
+            loc.Y += locationToAdd.Y;
+            return loc;
+        }
+
+        public static Location Subtract(this Location location, Location locationToSubtract)
+        {
+            Location loc = location.Clone() as Location;
+            loc.X -= locationToSubtract.X;
+            loc.Y -= locationToSubtract.Y;
+            return loc;
+        }
+
+        public static Location Scale(this Location location, float factor)
+        {
+            Location loc = location.Clone() as Location;
+            loc.X *= factor;
+            loc.Y *= factor;
+            return loc;
+        }
     }
 }
