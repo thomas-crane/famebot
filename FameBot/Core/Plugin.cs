@@ -267,6 +267,7 @@ namespace FameBot.Core
                         Stop();
                         break;
                     case GuiEvent.SettingsChanged:
+                        Log("Updated config");
                         config = ConfigManager.GetConfiguration();
                         break;
                 }
@@ -719,7 +720,7 @@ namespace FameBot.Core
                 {
                     var dir = targetPosition.Subtract(lastAverage);
                     var faraway = targetPosition.Add(dir.Scale(20));
-                    var desiredTargets = (int)(targets.Count * 0.3f);
+                    var desiredTargets = (int)(targets.Count * (config.TrainTargetPercentage / 100f));
                     List<Target> newTargets = new List<Target>();
                     for (int i = 0; i < desiredTargets; i++)
                     {
@@ -749,21 +750,29 @@ namespace FameBot.Core
 
                 // There should never be anything in the enemies list if EnableEnemyAvoidance is false,
                 // but just in case, only perform this behaviour if EnableEnemyAvoidance is true.
-                if (config.EnableEnemyAvoidance && enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 49))
+                if (config.EnableEnemyAvoidance && enemies.Exists(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos) <= (config.EnemyAvoidanceDistance * config.EnemyAvoidanceDistance)))
                 {
-                    // If there is an enemy within 7 tiles, actively attempt to avoid it.
+                    // If there is an enemy within the specified number of tiles, actively attempt to avoid it.
                     Location closestEnemy = enemies.OrderBy(en => en.Location.DistanceSquaredTo(client.PlayerData.Pos)).First().Location;
+                    double angleDifference = client.PlayerData.Pos.GetAngleDifferenceDegrees(targetPosition, closestEnemy);
 
-                    // Get the angle between the enemy and the player.
-                    double angle = Math.Atan2(client.PlayerData.Pos.Y - closestEnemy.Y, client.PlayerData.Pos.X - closestEnemy.X);
+                    if (Math.Abs(angleDifference) < 70.0)
+                    {
+                        // Get the angle between the enemy and the player.
+                        double angle = Math.Atan2(client.PlayerData.Pos.Y - closestEnemy.Y, client.PlayerData.Pos.X - closestEnemy.X);
+                        if (angleDifference <= 0)
+                            angle += (Math.PI / 2); // add 90 degrees to the angle to go clockwise around the enemy.
+                        if (angleDifference > 0)
+                            angle -= (Math.PI / 2); // remove 90 degrees from the angle to go anti-clockwise around the enemy.
 
-                    // Calculate a point on a 'circle' around the enemy with a radius 8 at the angle specified.
-                    float newX = closestEnemy.X + 8f * (float)Math.Cos(angle);
-                    float newY = closestEnemy.Y + 8f * (float)Math.Sin(angle);
+                        // Calculate a point on a 'circle' around the enemy with a radius 8 at the angle specified.
+                        float newX = closestEnemy.X + config.EnemyAvoidanceDistance * (float)Math.Cos(angle);
+                        float newY = closestEnemy.Y + config.EnemyAvoidanceDistance * (float)Math.Sin(angle);
 
-                    var avoidPos = new Location(newX, newY);
-                    CalculateMovement(client, avoidPos, config.FollowDistanceThreshold);
-                    return;
+                        var avoidPos = new Location(newX, newY);
+                        CalculateMovement(client, avoidPos, config.FollowDistanceThreshold);
+                        return;
+                    }
                 }
 
                 if (obstacles.Exists(obstacle => obstacle.Location.DistanceSquaredTo(client.PlayerData.Pos) <= 4))
